@@ -65,9 +65,11 @@ function buildOPDdiagnosisPage(table_data) {
             var td = document.createElement('td');
             td.innerHTML = table_data[key].children[0].accession_number;
             tr.appendChild(td);
+            
 
             var td = document.createElement('td');
-            td.innerHTML = table_data[key].value_text;;
+            
+            td.innerHTML = table_data[key].value_text +", "+ table_data[key].children[0].value_text;
             tr.appendChild(td);
 
             var td = document.createElement('td');

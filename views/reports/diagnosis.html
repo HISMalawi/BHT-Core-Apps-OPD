@@ -1,3 +1,7 @@
+<head>
+    <title>
+        Diagnosis Report
+    </title>
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
 
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
@@ -88,9 +92,13 @@
     {
     top: 770px;
     }
+    td{
+        text-align: left;
+    }
 
 </style>
 
+</head>
 <div class="title-table">
     <div class='title-row'>
         <div class='title-cell' id='title-cell-left'>
@@ -204,133 +212,67 @@
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
 <div id="report-cover"></div>
 
+
 <style>
-.modal
-{
-    position: fixed;
-    width: 70%;
-    background-color: #fff;
-    margin-left: 15%;
-    top: 0%;
-    border: solid 1px;
-    z-index: 1000;
-}
+    .modal
+    {
+        position: fixed;
+        width: 70%;
+        background-color: #fff;
+        margin-left: 15%;
+        top: 0%;
+        border: solid 1px;
+        z-index: 990;
+    }
+    
+    button.red 
+    {
+        border: solid #842020; 
+        border-radius: 3px;
+        padding: 10px;
+        background-size: 100%;
+        float:left;
+        margin: 10px;
+    }
+    button.red:hover 
+    {
+        background-size: 225%;
+    }
+   
+   
+    .sorting_patient 
+    {
+        background-color: #b9b9b9;
+    }
+    
+    ._title
+    {
+        display: flex;
+        justify-content: center;
+        font-size: 20px;
+        padding:3px;
+    }
+    
 
-button.red 
-{
-    border: solid #842020; 
-    border-radius: 3px;
-    padding: 10px;
-    background-size: 100%;
-    float:left;
-    margin: 10px;
-}
-button.red:hover 
-{
-    background-size: 225%;
-}
-.even_patientD
-{ 
-    background-color: none;
-}
-.odd_patientD
-{
-    background-color: #f1f1f1;
-}
-
-.row
-{
-    display: unset;
-}
-.sorting_patient 
-{
-    background-color: #b9b9b9;
-}
-
-._title
-{
-    display: flex;
-    justify-content: center;
-    font-size: 20px;
-    padding:3px;
-}
-
-.time_flame
-{
-    padding-bottom: 15px;
-}
-
-
-
-.table-container {
-    max-height: 30em;
-}
-#patient_details_table {
-    display: flex;
-    flex-flow: column;
-    height: 100%;
-    width: 100%;
-}
-#patient_details_table thead {
-    /* head takes the height it requires, 
-    and it's not scaled when table is resized */
-    flex: 0 0 auto;
-    width: calc(100% - 0.9em);
-}
-#patient_details_table tbody {
-    /* body takes all the remaining available space */
-    flex: 1 1 auto;
-    display: block;
-    overflow-y: scroll;
-}
-#patient_details_table tbody tr 
-{
-    width: calc(100% - 0.4em);
-margin-left: 2px;
-}
-#patient_details_table thead,
-#patient_details_table tbody tr {
-    display: table;
-    table-layout: fixed;
-}
-/* decorations */
-.table-container {
-    padding: 0.3em;
-}
-
-#patient_details_table td, #patient_details_table th {
-    padding: 0.8em;
+    .modal-header{
+        padding: 10px;
+    }
+    thead {
     text-align: left;
 }
-button.blue 
-{
-    border: solid #3e68a6; 
-    border-radius: 3px;
-    padding: 10px;
-    background-size: 100%;
-    float:right;
-    margin: 10px;
-}
-.bottom_buttons
-{
-    background-color: black;
-    position: fixed;
-    width: 70%;
-}
-button.blue:hover 
-{
-    background-size: 225%;
-}
-.modal-header{
-    padding: 10px;
-}
-.even_patientD:hover {
-    background-color: #b6bbb6;
-}
-</style>
+    th
+    {
+        width:204px !important;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+      
+        padding-left: 3px;
+    }
+    
+    </style>
 <!-- Modal -->
 <div class="modal " id="modal" style="display: none;" > 
-    <div class="modal-content" style="margin-left:0px; border-bottom: solid 1px;">
+    <div class="modal-content" style="margin-left:0px; ">
         <div class="modal-header">
             <div class="modal-title _title" ></div>
             <div class="period _title" ></div>
@@ -339,10 +281,10 @@ button.blue:hover
             <div class="container">
                 <div class="row" id="modal-div">
                     <div id="patient_details_card" style="margin-bottom: 10px; border-bottom: 1px solid;" >
-                        <table id="patient_details_table" class="display" style="width:100%">
+                        <table id="patient_details_table" class="display " >
                             <thead>
                             <tr>
-                                <th class="sorting_patient">Patient ID</th>
+                                <th class="sorting_patient" >Patient ID</th>
                                 <th class="sorting_patient">Firstname</th>
                                 <th class="sorting_patient">Surname</th>
                                 <th class="sorting_patient">Gender</th>
@@ -359,15 +301,6 @@ button.blue:hover
             </div>
         </div>
         <div class="bottom_buttons">
-<<<<<<< HEAD
-            <div class="pagination_button">
-               <button class="blue" onclick="Last()">Last</button>
-               <button class="blue" onclick="Next()">Next</button> 
-               <button class="blue" onclick="Previous()">Previous</button>
-               <button class="blue" onclick="First()">First</button>
-            </div>
-=======
->>>>>>> 86045b8a9c8ea003f4661d51e8a929692a52097b
             <button class="red"  onclick="close_modal()">Close</button>
         </div>
     </div> 
@@ -552,15 +485,10 @@ button.blue:hover
         table.setAttribute('class', 'min-tables');
         var tr = document.createElement('tr');
         table.appendChild(tr);
-        var session_data = 'false';
 
         var td = document.createElement('td');
-<<<<<<< HEAD
-        td.setAttribute('onclick', "callLoader(view_patientD.bind('"+patientD+"','"+diagnosis+"','"+"Female"+period+"','"+session_data+"'))");
-=======
-        td.setAttribute('onclick', "view_patientD('"+patientD+"','"+diagnosis+"','"+"Female"+period+"','"+session_data+"')");
+        td.setAttribute('onclick', "view_patientD('"+patientD+"','"+diagnosis+"','"+"Female"+period+"')");
         td.setAttribute('id',patientD);
->>>>>>> 86045b8a9c8ea003f4661d51e8a929692a52097b
         td.innerHTML = gender;
         tr.appendChild(td);
 
@@ -577,54 +505,22 @@ button.blue:hover
         return buildMinStat(male, patientD_M,diagnosis,period);
     }
 
-    var currentPage = 1;
-    var pageSize = 30;
-    var skip = 0;
-    var totalCount = 0;
-    var totalPage = 0;
-    var session_patientD = "";
-    var session_diagnosis = "";
-    var session_period = "";
-    var session_data2 = 'true';
 
-    
-
-    
-
-<<<<<<< HEAD
-    function Last() {
-        currentPage = totalPage;
-        skip = pageSize * (currentPage - 1);
-        view_patientD(session_patientD,session_diagnosis,session_period,session_data2);
-    }
-  
-=======
->>>>>>> 86045b8a9c8ea003f4661d51e8a929692a52097b
-    function view_patientD(patientD,diagnosis,period,session_data)
+    function view_patientD(patientD,diagnosis,period)
     {
+        if($('#virtual-keyboard').length)
+            hide_keyboard();
+
+        $('.keyboard').attr('style','display:none');
         $('#spinner').attr('style','display:block');
         $('#report-cover').attr('style','display:block');
         var y = $("#"+patientD).html();
         var mil = y*40;
-        setTimeout(function(){ dataTableContentLoader(patientD,diagnosis,period,session_data); },mil);
+        setTimeout(function(){ dataTableContentLoader(patientD,diagnosis,period); },mil);
     }
 
-    function dataTableContentLoader(patientD,diagnosis,period,session_data){
-
-        if(session_data == 'false')
-        {
-            currentPage = 1;
-            skip = 0;
-            sessionStorage.setItem("session_patientD", patientD);
-            sessionStorage.setItem("session_diagnosis", diagnosis);
-            sessionStorage.setItem("session_period", period);
-        }
-        else{
-            patientD =sessionStorage.getItem('session_patientD');
-            diagnosis =sessionStorage.getItem('session_diagnosis');
-            period = sessionStorage.getItem('session_period');
-        }
-        
+    function dataTableContentLoader(patientD,diagnosis,period)
+    {
         patientD = sessionStorage.getItem(patientD);
         $('.modal-title').html('<b>Diagnosis:</b> &nbsp;&nbsp; ' + diagnosis);
         $('.period').html('  &nbsp;&nbsp;' + period);
@@ -633,12 +529,8 @@ button.blue:hover
         document.getElementById('modal').setAttribute('style','display:block');
         patientD = patientD.substring(2);
         patientD = patientD.split('|');
-        // patientD = patientD
         patientD = patientD.sort();
-       /* totalCount = patientD.length;
-        totalPage = Math.ceil(totalCount / pageSize);
-        patientD = patientD.slice(skip, skip + pageSize); */
-        
+     
         $('#patient_details_body').html('');
         patientD.forEach(value1 => 
         {
@@ -671,32 +563,34 @@ button.blue:hover
             td.innerHTML = value[5];
             tr.appendChild(td);
 
-            $('tr').toggleClass('odd_patientD');
-            $('tr').addClass('even_patientD')
         });
         
 
         document.getElementById('spinner').style = 'display: none;';
-        // document.getElementById('report-cover').style = 'display: none;';
-
         //add export data buttons
         initializeTable_Modal();
+
+        $("label [aria-controls*='report']").attr('type','text');
     }
 
-    function callLoader(callback)
-    {
-        callback();
-    }
     function close_modal()
     {
+        $("label [aria-controls*='report']").attr('type','search');
         $('#report-cover').attr('style','display:none');
         document.getElementById('patient_details_body').innerHTML = "";
         document.getElementById('modal').setAttribute('style','display:none');
         table.destroy();
+        hide_keyboard();
+    }
+
+    function hide_keyboard()
+    {
+        var vl = document.getElementById('virtual-keyboard');
+        var w = document.getElementsByTagName('body')[0];
+        w.removeChild(vl);
     }
     function buildTotal(total,total_patients,diagnosis) 
     {
-        var session_data = 'false';
         var sp = document.createElement('span');
         var table = document.createElement('table');
         table.setAttribute('class', 'min-tables');
@@ -704,7 +598,7 @@ button.blue:hover
         table.appendChild(tr);
 
         var td = document.createElement('td');
-        td.setAttribute('onclick', "view_patientD('"+total_patients+"','"+diagnosis+"','','"+session_data+"')");
+        td.setAttribute('onclick', "view_patientD('"+total_patients+"','"+diagnosis+"','')");
         td.setAttribute('id',total_patients);
         td.innerHTML = total;
         tr.appendChild(td);

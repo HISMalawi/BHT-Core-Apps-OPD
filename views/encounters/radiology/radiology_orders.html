@@ -115,29 +115,30 @@
         var concept_map = {
            
            "Chest":"2422",
-           "C-Spine":"",
-           "T-Spine":"",
-           "L-Spine":"",
-           "Wrist":"",
-           "Elbow":"",
+           "C-Spine":"10252",
+           "T-Spine":"10254",
+           "L-Spine":"10255",
+           "Wrist":"10256",
+           "Elbow":"10257",
            "Femur":"9285",
            "Foot":"7914",
-           "Forearm":"",
+           "Forearm":"10258",
            "Abdomen":"8400",
-           "Ankle":"",
+           "Ankle":"10259",
            "Hand":"7913",
-           "Heel":"",
+           "Heel":"10260",
            "Humerus":"9287",
-           "Knee":"",
+           "Knee":"10261",
            "KUB": "101",
-           "Leg":"",
+           "Leg":"10262",
            "Pelvis":"8131",
            "Shoulder":"7915",
            "Skull":"8128",
-           "Special":""
+           "Special":"10263"
        };
        function postRadiologyOrdersObs(encounter)
        {
+           get_accession_number();
            var tests_ordered_concept_id = 8426;
            var obs = {
                encounter_id: encounter.encounter_id,
@@ -171,20 +172,22 @@
        }
        function submitRadiologyParameters(array_obj) 
        {
-        
-        var patient_data = {  
+            var patient_name = sessionStorage.getItem("family_name")+" "+sessionStorage.getItem("given_name");
+            var accession_number = array_obj[0].children[0].accession_number;
+            var date_created = array_obj[0].date_created;
+
+            var patient_data = {  
                patient_details:
                 {
-                    "family_name": sessionStorage.getItem("family_name"),
-                    "given_name": sessionStorage.getItem("given_name"),
+                    "patient_name": patient_name ,
                     "patientAge": sessionStorage.getItem("patientAge"),
                     "patientDOB": sessionStorage.getItem("patientDOB"),
                     "patientGender": sessionStorage.getItem("patientGender"),
                     "national_id": sessionStorage.getItem("national_id"),
                     "person_id": array_obj[0].person_id,
                     "encounter_id": array_obj[0].encounter_id,
-                    "date_created": array_obj[0].date_created,
-                    "accession_number": array_obj[0].children[0].accession_number,
+                    "date_created": date_created,
+                    "accession_number": accession_number,
                 },
                 physician_details:
                 {
@@ -195,6 +198,7 @@
                radiology_orders: []
             };
         
+            var radiology_orders_string = "";
             for(var key in array_obj)
             {
                 var obj = array_obj[key];
@@ -204,11 +208,29 @@
                     "obs_id": obj.obs_id,
                     "sub_value_text": obj.children[0].value_text,
                 });
+
+                if(radiology_orders_string == "")
+                    radiology_orders_string = obj.children[0].value_text;
+                else
+                    radiology_orders_string = radiology_orders_string +","+ obj.children[0].value_text;
+
             }
+
+            sessionStorage.setItem("radiology_orders", radiology_orders_string); 
+            sessionStorage.setItem("radiology_accession_number", accession_number); 
+            sessionStorage.setItem("date_created", date_created); 
+            // print_barcode();
+
             jQuery(".loader").show();
-            submitParameters(patient_data, "/radiology", "gotoPatientDashboard")
+            submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode()")
        }
-   
+
+ 
+       function print_barcode()
+       {
+            var radiology_barcode_url = "/views/print/radiology_barcode.html";
+            window.location =radiology_barcode_url;
+       }
         function changeNextButtonToSubmitRadiologyOrders() {
 
             var nextButton = document.getElementById('nextButton');
@@ -235,6 +257,11 @@
             jQuery("#buttons").hide();
             jQuery("#inputFrame" + tstCurrentPage).hide();
 
+            gotoNextPage();
+        }
+
+        function get_accession_number()
+        {
             var accession_number_url = apiProtocol + "://" + apiURL + ":" + apiPort;
             accession_number_url += "/api/v1/sequences/next_accession_number";
 
@@ -244,7 +271,7 @@
                     var new_accn_number = JSON.parse(this.responseText)["accession_number"];
                     last_accession_number = new_accn_number;
                     console.log(last_accession_number);
-                    gotoNextPage();
+                    
                 }
             };
             xhttp1.open("GET", accession_number_url, false);
@@ -259,6 +286,33 @@
             jQuery("#innerPop").show()
             jQuery("#inputFrame" + tstCurrentPage).show();
             jQuery(".loader").hide();
+        }
+
+        function gotoLabOrder()
+        {
+            jQuery("#void-confirm-message").hide();
+            jQuery("#page-cover").hide();
+            var nextButton = document.getElementById('nextButton');
+            nextButton.setAttribute('onmousedown', "redirectTo();");
+        }
+        function hideLabOrderPopup() 
+        {
+            jQuery("#void-confirm-message").hide();
+            jQuery("#page-cover").hide();
+            setOPDActivities();
+        }
+
+        
+        function setOPDActivities() 
+        { 
+        values = sessionStorage.OPD_activities.replace('radiology examination,','').replace('radiology examination','');
+        sessionStorage.OPD_activities   = values;
+        var parameters = {property: "OPD_activities", property_value: values}
+        submitParameters(parameters, "/user_properties", "redirectTo");
+        }
+        function redirectTo()
+        {
+            nextEncounter(sessionStorage.patientID, sessionStorage.programID);
         }
 
     </script>
@@ -286,6 +340,52 @@
                 transform: rotate(360deg);
             }
         }
+        #page-cover {
+        display: block;
+        position: absolute;
+        background-color: black;
+        width: 100%;
+        height: 102%;
+        left: 0%;
+        top: 0%;
+        z-index: 990;
+        opacity: 0.65;
+    }
+
+    #void-confirm-message {
+    background: #ffffff;
+    border-radius: 0.5em;
+    box-shadow: 0 10px 20px rgba(black, 0.2);
+    left: 50%;
+    max-width: 90%;
+    position: absolute;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    width: 30em;
+    text-align: left;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000000;
+    border: solid 1px;
+    display: block;
+  }
+  #void-confirm-message p {
+    font-size: 24px;
+    text-align: center;
+    padding: 50px;
+  }
+  .modal-title {
+    width: 100%;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    text-align: center;
+  }
+  
+  .modal-title h1 {
+    font-size: 20px;
+    color: #000;
+  }
     </style>
 </head>
 
@@ -301,8 +401,39 @@
         form {
             display: block !important;
         }
+     
     </style>
+    <div  id="page-cover"></div>
+    <div id="void-confirm-message">
+      <div class="modal-title">
+        <h1>Radiology Orders</h1>
+      </div>
+      <p>Do you want to take Radiology orders??</p>
+      <div style="width: 100%;margin: 5px;">
+        <div style="display: table; width: 97%;">
+          <div style="display: table-row;">
+            <div class="void-btns" style="display: table-cell;  
+              text-align: center; padding: 10%; border-top-left-radius: 9px;border-right: solid 10px white; 
+              border-bottom-left-radius: 9px; background-color: #337ab7;" onmousedown="hideLabOrderPopup();">
+              No
+            </div>
+            <div class="void-btns" style="display: table-cell; 
+              text-align: center; padding: 10%; border-top-right-radius: 9px;
+              border-bottom-right-radius: 9px; background-color: green;" onclick="gotoLabOrder();">
+             Yes
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <script>
+   if(sessionStorage.OPD_workflow_popup == 'false')
+    {
+        jQuery("#void-confirm-message").hide();
+        jQuery("#page-cover").hide();
+    }
+    </script>
     <form id='radiology_types'>
         <input type="text" name="initialize"
                tt_onLoad="initializeVariables();"

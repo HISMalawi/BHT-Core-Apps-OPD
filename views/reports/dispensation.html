@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
 
-<script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
-<!--link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/datatables.css"/-->
+
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
 
@@ -12,13 +12,25 @@
 <script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
-
 <script type="text/javascript" src="/assets/js/moment.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
 
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 
 <style>
+    #high-level-view {
+        display: none;
+        background-color: #F4F4F4;
+        border: 2px solid #E0E0E0;
+        border-radius: 15px;
+        height: 92%;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        width: 95%;
+        left: 2%;
+        z-index: 991;
+    }
 
     #spinner {
         position: absolute;
@@ -91,10 +103,9 @@
         </div>
         <div class='title-cell' id='title-cell-right'>
             <table style="width: 100%; text-align: left; margin-left: 10px;">
-                <thead>
                 <tr>
                     <th>Title:</th>
-                    <td colspan="2" id="report-title">Registration
+                    <td colspan="2" id="report-title"> Dispensation Report
                     <td>
                 </tr>
                 <tr>
@@ -104,9 +115,6 @@
                     <td id="end-date">
                     <td>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
             </table>
         </div>
     </div>
@@ -116,28 +124,21 @@
     <div class='title-row'>
         <div id='data-cell'>
             <table id="report" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Address</th>
-                        <th>Diagnosis</th>
-                        <th>Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
             </table>
         </div>
     </div>
 </div>
 
+<div>
+    <table id="example" class="display" width="100%"></table>
+</div>
 
 <div id="buttons" class="buttonsDiv">
-    <button class="button green navButton" onmousedown="location='/'"><span>Finish</span></button>
+    <button class="button blue navButton" onmousedown="javascript:location='/';"><span>Finish</span></button>
 </div>
 
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
 <div id="report-cover"></div>
-
 
 <script>
 
@@ -150,42 +151,31 @@
     document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
     document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
 
-    function buildReportingTable() {
-        buildHeaders();
-        initializeTable();
-    }
-
-    var table_columns = [];
-
-    function buildHeaders(tr) {
-       /* var headers = [ '', 'Count'];
-
-        for (var i = 0; i < headers.length; i++) {
-            table_columns.push({title: headers[i]});
-        } */
-
-       // initializeTable();
-        getData();
-    }
 
     var data_table;
+    var dataSet = [];
 
     function initializeTable() {
-        data_table = $('#report').DataTable({
-            //columns: table_columns,
+        data_table = $('#example').DataTable({
             fixedHeader: true,
             searching: true,
-            paging: true,
+            paging: false,
+            data: dataSet,
             scrollY: 430,
             Processing: true,
             ServerSide: true,
             scroller: {
                 loadingIndicator: true
             },
+            columns: [
+                {title: "Drug name"},
+                {title: "Amount Prescribed"},
+                {title: "Amount dispensed"},
+            ],
             dom: 'Bfrtip',
             buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+        ]
         });
 
         lookForTag();
@@ -193,15 +183,11 @@
 
     function getData() {
 
-        var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
-        url += '/diagnosis_by_address?start_date=' + start_date;
-        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+        var url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
+        url += '/dispensation';
+        url += "?date=" + sessionStorage.sessionDate;
+        url += "&start_date=" + start_date + "&end_date=" + end_date;
         url += '&program_id=' + sessionStorage.programID;
-
-        if (apiProtocol == undefined) {
-            setTimeout("getData()", 3000);
-            return;
-        }
 
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -218,37 +204,44 @@
         xhttp.send();
     }
 
+    var high_level_stats = {};
+
     function loadData(data) {
-        for (var diagnosis in data) {
-            var add = data[diagnosis];
-            for (var address in add) {
-                data_table.row.add([formatAddress(address), diagnosis, add[address]]);
-                data_table.draw();
+        var tbody = document.getElementById('table-body');
+
+        for (var i = 0; i < data.length; i++) {
+            var drug_name = data[i].drug_name;
+            var amount_dispensed = data[i].quantity;
+            var amount_prescribed = data[i].amount_needed;
+     
+
+            var attribues = [drug_name,amount_prescribed, amount_dispensed];
+
+            var data_table_data = [];
+
+            for (var r = 0; r < attribues.length; r++) {
+                data_table_data.push(attribues[r]);
             }
-            /*
-            data_table.destroy();
-            initializeTable(); */
+            dataSet.push(data_table_data);
         }
+
+        initializeTable();
     }
 
-    function formatAddress(address) {
+    function buildViewBtn(patient_id) {
         var sp = document.createElement('span');
-        var table = document.createElement('table');
-        table.style = 'background-color: lightyellow;width: 100%;';
-        sp.appendChild(table);
-
-        var add = address.split(',');
-        for (var i = 0; i < add.length; i++) {
-            var tr = document.createElement('tr');
-            var td = document.createElement('td');
-            td.innerHTML = add[i]
-            tr.appendChild(td);
-            table.appendChild(tr);
-        }
-
+        var btn = document.createElement('button');
+        btn.setAttribute('class', 'view-btns');
+        btn.innerHTML = '<span>view</span>';
+        btn.setAttribute('onmousedown', 'mastercardView(' + patient_id + ');');
+        sp.appendChild(btn);
         return sp.innerHTML;
     }
 
-    buildReportingTable();
+    function mastercardView(patient_id) {
+        location = '/views/patient/mastercard.html?patient_id=' + patient_id;
+    }
+
+    getData();
 </script>
 
