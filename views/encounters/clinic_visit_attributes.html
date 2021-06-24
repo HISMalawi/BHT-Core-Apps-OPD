@@ -22,7 +22,6 @@
 #tt_page_hiv_status .inputFrameClass,
  #tt_page_patient_pregnant .inputFrameClass,
   #tt_page_type_of_visit .inputFrameClass,
-    #tt_page_national_id_available .inputFrameClass,
      #tt_page_enter_national_id .inputFrameClass,
   #tt_page_hiv_test_year .inputFrameClass,
   #tt_page_hiv_test_month .inputFrameClass ,
@@ -102,8 +101,8 @@ function postNotesObs(encounter) {
 }
 
 function nextPage(obs){
-  //document.location = tt_cancel_destination;
   nextEncounter(sessionStorage.patientID, parseInt(sessionStorage.programID));
+  // document.location = tt_cancel_destination;
 }
 
 function isEmpty(str){
@@ -366,8 +365,12 @@ function checkForChanges(e) {
   }
 
 }
-
+var opd_hiv_status;
+var already_on_art;
 function submitNeverTest() {
+  if(opd_hiv_status =="Positive on ART")
+    var hiv_status = 'Positive on ART';
+  else
   var hiv_status  = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
   
   if(isEmpty(hiv_status)){
@@ -392,14 +395,19 @@ function submitNeverTest() {
 
 function createEncounterNeverTested(encounter) { 
   var observations = [];
-  
   /* ........................ HIV status starts ................*/
-  if(hiv_status == 'Never tested') {
-    var hiv_status  = document.getElementById('touchscreenInput' + tstCurrentPage).value;
-  }else{
-    var hiv_status  = document.getElementById('hiv_status').value;
+  if(already_on_art != 'true')
+  {
+    if(opd_hiv_status =="Positive on ART")
+      var hiv_status = 'Positive on ART';
+    else
+    if(hiv_status == 'Never tested') {
+      var hiv_status  = document.getElementById('touchscreenInput' + tstCurrentPage).value;
+    }else{
+      var hiv_status  = document.getElementById('hiv_status').value;
+    }
+    observations.push({concept_id: 3753, value_text: hiv_status});
   }
-  observations.push({concept_id: 3753, value_text: hiv_status});
   /* ........................ HIV status ends ................*/
   
   
@@ -432,7 +440,7 @@ function createEncounterNeverTested(encounter) {
       value_text: reffering_facility.value});
   }
  
-  if(hiv_status != 'Never tested') {
+  if(hiv_status != 'Never tested' && opd_hiv_status !="Positive on ART") {
     var test_date = moment(set_hiv_date).format('YYYY-MM-DD');
     var estimated = hiv_test_date_estimated == true ? 'Date estimated' : 'Date NOT estimated';
     var test_location = $('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
@@ -446,37 +454,7 @@ function createEncounterNeverTested(encounter) {
     observations: observations
   }; 
 
-  submitParameters(obs, "/observations", "createNationalID");
-}
-
-
-function createNationalID(obs) {
-  var national_id_available = document.getElementById('national_id_available').value;
-  var national_id = document.getElementById('national_id').value;
-  
-  var nid_available = {};
-  nid_available['No'] = 1065;
-  nid_available['Yes'] = 1066;
-  nid_available['Unknown'] = 1067;
-  if(national_id_available == 'Yes') {
-    createNID(national_id);
-  }else{
-    nextPage("");
-  }
-  
-}
-
-function createNID(nid){
-  var identifier_type = 28;
-
-  var patient_identifier = {
-    identifier: nid,
-    identifier_type: identifier_type,
-    patient_id: sessionStorage.patientID
-  }
-  
-  var pathURL = "/patient_identifiers/";
-  submitParameters(patient_identifier, pathURL, "nextPage");
+  submitParameters(obs, "/observations", "nextPage");
 }
 
 var npid_available;
@@ -500,7 +478,9 @@ function fetchNID() {
   xhttp.send();
 }
 
-var opd_hiv_status;
+
+var patientID =sessionStorage.patientID;
+var authToken = sessionStorage.authorization;
 function getHIVOPDstatus() {
   
   var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
@@ -515,7 +495,11 @@ function getHIVOPDstatus() {
       fetchNID();
       if(obj.length > 0) 
         opd_hiv_status = obj[0].value_text;
-    
+
+      if(opd_hiv_status == 'Positive on ART')
+        already_on_art = 'true';
+      else
+      checkPatientART();
     }
   };
   xhttp.open("GET", url, true);
@@ -523,13 +507,35 @@ function getHIVOPDstatus() {
   xhttp.setRequestHeader('Content-type', "application/json");
   xhttp.send();
 }
-
+/** Function which checks whether patient is already
+ * on ART or Not
+ */
+ function checkPatientART()
+ {
+    var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
+    url += '/patient_programs?patient_id='+patientID+'&program_id=1';
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () 
+    {
+      if (this.readyState == 4 && this.status == 200) 
+      {
+        var obj = JSON.parse(this.responseText);
+        if(obj.length > 0)
+        opd_hiv_status = 'Positive on ART';
+      }
+          
+    };
+    
+    xhttp.open("GET", url, false);
+    xhttp.setRequestHeader('Authorization', authToken);
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
+  }
 getHIVOPDstatus();
 
 function ARTpatient() {
   if(opd_hiv_status == undefined)
     return false;
-  
   return (opd_hiv_status.match(/on ART/i) ? true : false);
 }
 
@@ -545,13 +551,10 @@ function endEncounter(id) {
 
   if(id == 'patient_pregnant' && ARTpatient()) {
     nextButton.innerHTML = '<span>Finish</span>';
-    nextButton.setAttribute("onmousedown","patientOnART('patient_pregnant');");
-  }else if(id == 'national_id' && ARTpatient() && showPregnantQuestion() == false) {
+    nextButton.setAttribute("onmousedown","submitNeverTest();");
+  }else if(ARTpatient() && showPregnantQuestion() == false) {
     nextButton.innerHTML = '<span>Finish</span>';
-    nextButton.setAttribute("onmousedown","patientOnART('national_id');");
-  }else if(id == 'national_id_available' && ARTpatient() && showPregnantQuestion() == false) {
-    nextButton.innerHTML = '<span>Finish</span>';
-    nextButton.setAttribute("onmousedown","patientOnART('national_id_available');");
+    nextButton.setAttribute("onmousedown","patientOnART('');");
   }
 }
 
@@ -564,27 +567,9 @@ function patientOnART(id) {
     pregnant = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
   }
 
-  if(npid_available == false) {
-    var national_id_available = document.getElementById('national_id_available');
-    if(national_id_available == null){
-      national_id_available = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
-    }else{
-      national_id_available = national_id_available.value;
-    }
-    
-    if(national_id_available == 'Yes'){
-      var nid = document.getElementById('national_id');
-      if(nid == null){
-        national_id = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
-      }else{
-        national_id = nid.value;
-      }
-    }
-  }
-
   var observations = []
   
-  if(pregnant != undefined || pregnant == null) {
+  if((pregnant != undefined || pregnant == null) && showPregnantQuestion() == true) {
     var pregnant_ans = {};
     pregnant_ans['Yes'] = 1065;
     pregnant_ans['No'] = 1066;
@@ -657,17 +642,15 @@ function createObs(encounter) {
     encounter_id: encounter["encounter_id"],
     observations: gloabl_obs
   }; 
-
-  if(global_nid == undefined) {
-    submitParameters(obs, "/observations", "nextPage");
-  }else{
-    submitParameters(obs, "/observations", "setNID");
-  }
+  submitParameters(obs, "/observations", "nextPage");
+ 
 }
 
-function setNID(obs) {
-  createNID(global_nid);
+function goToPatientDashboard()
+{
+  document.location = tt_cancel_destination;
 }
+
 
 var gloabl_obs;
 var global_nid;
@@ -695,19 +678,6 @@ var global_nid;
           id="referring_facility_name"
           name="referring_facility_name">
         </select>
-        
-        <select allowFreeText="false" helpText="National ID available"
-           name="outcome" id="national_id_available" key="outcome"
-          condition='npid_available == false;' tt_onLoad="endEncounter('national_id_available');"> 
-            <option value=""></option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-            <option value="Unknown">Unknown</option>
-        </select>
-
-        <input type="text" name="national_id" id="national_id" textCase="upper"
-          condition='npid_available == false && $("national_id_available").value == "Yes";' 
-          helpText="Enter National ID" tt_onLoad="endEncounter('national_id');"/>
  
         <select allowFreeText="false" helpText="Patient pregnant"
            name="outcome" id="patient_pregnant" key="outcome"
@@ -730,7 +700,12 @@ var global_nid;
             <option value="New positive">New positive</option>
             <option value="New negative">New negative</option>
             <option value="Never tested">Never tested</option>
-        </select>
+        </select>  
+
+        <select allowFreeText="false" name="outcome" key="outcome"
+           tt_onLoad="submitNeverTest();"
+           condition="ARTpatient() == true;">
+        </select>    
 
        <!-- ................. test date ...................... --> 
         <input type="text" name="test_year" id="test_year" helpText="HIV test year"

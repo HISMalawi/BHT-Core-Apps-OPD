@@ -5,6 +5,27 @@ function clearSelection(type_of_complaint) {
   buildPresentaingComplaints(type_of_complaint);
 }
 
+function build_search_field()
+{
+
+  var helpText0 = document.getElementById('helpText0');
+  
+  var search_content = document.createElement('div');
+  search_content.setAttribute('id','search_content');
+  helpText0.appendChild(search_content);
+
+  var search_text = document.createElement('span');
+  search_text.setAttribute('id','search_text');
+  search_text.innerHTML='Search:';
+  search_content.appendChild(search_text);
+
+  var search_input = document.createElement('input');
+  search_input.setAttribute('id','search_filed');
+  search_input.setAttribute('style','height:40px;width:400px;');
+  search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
+  search_content.appendChild(search_input);
+  lookForTag();
+}
 function buildPresentaingComplaints(type_of_complaint) {
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
   frame.style = 'height: 90%; overflow: auto;';
@@ -17,9 +38,15 @@ function buildPresentaingComplaints(type_of_complaint) {
 
 function presentingComplaints(concept_sets, type_of_complaint) {
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
+  frame.innerHTML = null;
   var main_container = document.createElement('div');
   main_container.setAttribute('id','complaints-container');
+
+
+  
+
   frame.appendChild(main_container);
+  var search_value = document.getElementById('search_filed').value;
   var row_count = 1;
   var row;
 
@@ -52,25 +79,27 @@ function presentingComplaints(concept_sets, type_of_complaint) {
       if(concept_names[x].toLowerCase() != concept_sets[i].name.toLowerCase())
         continue;
 
-      if(row_count == 1){
-        row = document.createElement('div');
-        row.setAttribute('class','complaints-container-row');
-        main_container.appendChild(row);
+      if(concept_names[x].toLowerCase().match(search_value.toLowerCase())) 
+      {
+        if(row_count == 1){
+          row = document.createElement('div');
+          row.setAttribute('class','complaints-container-row');
+          main_container.appendChild(row);
+        }
+
+        cell = document.createElement('div');
+        cell.setAttribute('class','complaints-container-cell');
+        cell.innerHTML = concept_sets[i].name;
+        cell.setAttribute('selected', 'false');
+        cell.setAttribute('concept_id', concept_sets[i].concept_id);
+        cell.setAttribute('complaint-type', type_of_complaint);
+        cell.setAttribute('onmousedown','complaintClicked(this);');
+        row.appendChild(cell);
+      
+        row_count++;
+        if(row_count == 6)
+          row_count = 1;
       }
-
-      cell = document.createElement('div');
-      cell.setAttribute('class','complaints-container-cell');
-      cell.innerHTML = concept_sets[i].name;
-      cell.setAttribute('selected', 'false');
-      cell.setAttribute('concept_id', concept_sets[i].concept_id);
-      cell.setAttribute('complaint-type', type_of_complaint);
-      cell.setAttribute('onmousedown','complaintClicked(this);');
-      row.appendChild(cell);
-    
-      row_count++;
-      if(row_count == 6)
-        row_count = 1;
-
     }
   }
 

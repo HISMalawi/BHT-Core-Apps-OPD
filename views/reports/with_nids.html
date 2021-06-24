@@ -10,6 +10,8 @@
 <script type="text/javascript" src="/assets/js/moment.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
 
+<script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+
 <style>
 
     #spinner {
@@ -119,6 +121,12 @@
 
 <script>
 
+    var url = window.location.href;
+    url = new URL(url);
+    var report_type = url.searchParams.get("type");
+    var start_date = url.searchParams.get("start_date");
+    var end_date = url.searchParams.get("end_date");
+
     document.getElementById('start-date').innerHTML = moment().format('DD/MMM/YYYY');
     document.getElementById('end-date').innerHTML = moment().format('DD/MMM/YYYY');
 
@@ -164,7 +172,8 @@
     function getData() {
 
         var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
-        url += '/with_nids?date=' + sessionStorage.sessionDate;
+        url += '/with_nids?start_date=' + start_date;
+        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
         url += '&program_id=' + sessionStorage.programID;
 
         if (apiProtocol == undefined) {
@@ -178,6 +187,7 @@
                 document.getElementById('spinner').style = 'display: none;';
                 document.getElementById('report-cover').style = 'display: none;';
                 var obj = JSON.parse(this.responseText);
+                console.log(obj);
                 loadData(obj);
             }
         };

@@ -1,14 +1,19 @@
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
 
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-
+<script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/core.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
 
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
 
 <script type="text/javascript" src="/assets/js/moment.js"></script>
-<script type="text/javascript" src="/assets/js/core.js"></script>
 
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 
@@ -117,6 +122,10 @@
             <div class='title-row'>
                 <div class='title-cell' id='title-cell-left'>
                     <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png"/>
+                </div>
+                <div id="">
+
+
                 </div>
                 <div class='title-cell' id='title-cell-right'>
                     <table style="width: 100%; text-align: left; margin-left: 10px; font-weight: bold;">
@@ -281,15 +290,20 @@
     var total_la_four_dispensed_drugs;
 
     function loadData() {
+
         jQuery(".loader").html("<img src='/assets/images/ajax-loader.gif'/>");
         var la_report_url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
         la_report_url += '/programs/' + sessionStorage.programID + "/reports/la_prescriptions";
         la_report_url += "?start_date=" + start_date + "&end_date=" + end_date;
 
+
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
                 var la_prescriptions_data = JSON.parse(this.responseText);
+
+                console.log(la_prescriptions_data);
+
                 total_la_one_prescribed_drugs = la_prescriptions_data["total_la_one_prescribed_drugs"];
                 total_la_one_dispensed_drugs = la_prescriptions_data["total_la_one_dispensed_drugs"];
 
@@ -314,6 +328,8 @@
                 jQuery("#la_4_prescribed").html(total_la_four_prescribed_drugs);
                 jQuery("#la_4_dispensed").html(total_la_four_dispensed_drugs);
 
+                initializeTable();
+
             }
         };
         xhttp.open("GET", la_report_url, true);
@@ -321,6 +337,27 @@
         xhttp.setRequestHeader('Content-type', "application/json");
         xhttp.send();
     }
+
+    function initializeTable() {
+        data_table = $('#table_id').DataTable({
+            fixedHeader: true,
+            searching: true,
+            paging: false,
+            scrollY: 400,
+            Processing: true,
+            ServerSide: true,
+            scroller: {
+                loadingIndicator: true
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+        });
+
+        lookForTag();
+    }
+
 
     function printLabel() {
         var apiURL = sessionStorage.getItem("apiURL");
@@ -341,6 +378,8 @@
         iframe.src = print_url;
         iframe.style.display = "none";
         document.getElementById("content").appendChild(iframe);
+
+        
     }
 
     loadData();

@@ -1,0 +1,353 @@
+<link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
+
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
+
+
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/assets/js/core.js"></script>
+
+<script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+
+<style>
+
+    body {
+        font-family: "Nimbus Sans L", "Arial Narrow", sans-serif;
+        margin: 0;
+        -moz-user-select: none;
+        background-color: black;
+    }
+
+    #mateme {
+        background-color: #000000;
+    }
+
+    .title-table {
+        display: table;
+        width: 100%;
+    }
+
+    .title-row {
+        display: table-row;
+    }
+
+    .title-cell {
+        display: table-cell;
+        height: 30px;
+        vertical-align: top;
+        border-style: solid;
+        border-width: 0px 0px 1px 0px;
+    }
+
+    #title-cell-left {
+        vertical-align: middle;
+        width: 100px;
+    }
+
+    #title-cell-left img {
+        height: 95px;
+        width: 95px;
+        margin: 5px;
+    }
+
+    #title-cell-right {
+        margin-left: 5px;
+    }
+
+    #container {
+        background-color: #000000;
+        display: block;
+        height: 1px;
+        left: 0;
+        overflow: visible;
+        position: absolute;
+        top: 50%;
+        visibility: visible;
+        width: 100%;
+    }
+
+    #content {
+        background: #FFFFFF;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1000px;
+        height: 750px;
+        margin-left: -500px;
+        margin-top: -380px;
+
+    }
+
+    #footer {
+        background-color: rgb(51, 51, 51);
+        color: #CADCEA;
+        height: 80px;
+        width: 100%;
+        bottom: 0px;
+        position: absolute;
+        overflow: hidden;
+    }
+
+    button {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin: 0 4px;
+        -moz-user-select: none;
+    }
+
+    #container {
+        background-color: #000000;
+        display: block;
+        height: 1px;
+        left: 0;
+        overflow: visible;
+        position: absolute;
+        top: 50%;
+        visibility: visible;
+        width: 100%;
+
+    }
+
+    #table_id tbody tr{
+        height: 1.8em;
+    }
+</style>
+<div id="container">
+    <div id="content" style="position : relative; width : 96%; margin-left : -48%">
+        <div class="title-table">
+            <div class='title-row'>
+                <div class='title-cell' id='title-cell-left'>
+                    <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png"/>
+                </div>
+                <div class='title-cell' id='title-cell-right'>
+                    <table style="width: 100%; text-align: left; margin-left: 10px; font-weight: bold;">
+                        <tr>
+                            <th>Title:</th>
+                            <td colspan="2" id="report-title">Cases seen report
+                            <td>
+                        </tr>
+                        <tr>
+                            <th>Period:</th>
+                            <td>
+                                <span id="start-date"></span> - <span id="end-date"></span>
+                            <td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <table id="table_id">
+            <thead>
+            <tr style="background-color: gray; height: 0px; color: white;">
+                <th style="height: 2em;" rowspan="2">NCD type</th>
+                <th colspan="2" style="width: 200px;">New cases</th>
+                <th colspan="2">All cases</th>
+            </tr>
+            <tr style="background-color: gray; height: 0px; color: white;">
+                <th style="text-align: center;">M</th>
+                <th style="text-align: center;">F</th>
+                <th style="text-align: center;">M</th>
+                <th style="text-align: center;">F</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Diabetes</td>
+                <td style="width: 612px;" class="loader" id="diabetes_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="diabetes_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="diabetes_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="diabetes_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Hypertension</td>
+                <td style="width: 612px;" class="loader" id="hypertension_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="hypertension_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="hypertension_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="hypertension_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Stroke</td>
+                <td style="width: 612px;" class="loader" id="stroke_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="stroke_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="stroke_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="stroke_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Suspected cancer</td>
+                <td style="width: 612px;" class="loader" id="suspected_cancer_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="suspected_cancer_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="suspected_cancer_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="suspected_cancer_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Confirmed cancer</td>
+                <td style="width: 612px;" class="loader" id="confirmed_cancer_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="confirmed_cancer_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="confirmed_cancer_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="confirmed_cancer_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Palliative care clients</td>
+                <td style="width: 612px;" class="loader" id="palliative_care_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="palliative_care_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="palliative_care_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="palliative_care_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Asthma</td>
+                <td style="width: 612px;" class="loader" id="asthma_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="asthma_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="asthma_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="asthma_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Depression</td>
+                <td style="width: 612px;" class="loader" id="depression_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="depression_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="depression_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="depression_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Acute psychosis</td>
+                <td style="width: 612px;" class="loader" id="acute_psychosis_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="acute_psychosis_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="acute_psychosis_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="acute_psychosis_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Chronic psychosis</td>
+                <td style="width: 612px;" class="loader" id="chronic_psychosis_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="chronic_psychosis_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="chronic_psychosis_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="chronic_psychosis_all_cases_female"></td>
+            </tr>
+
+            <tr style="background-color: #FFEBCD;">
+                <td style="width: 612px;">Epilepsy</td>
+                <td style="width: 612px;" class="loader" id="epilepsy_new_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="epilepsy_new_cases_female"></td>
+                <td style="width: 612px;" class="loader" id="epilepsy_all_cases_male"></td>
+                <td style="width: 612px;" class="loader" id="epilepsy_all_cases_female"></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div id="footer" class="">
+            <button class="button green navButton" onmousedown="javascript:location='/';"><span>Finish</span></button>
+        </div>
+    </div>
+</div>
+
+<style>
+    div {
+        -moz-user-select: none;
+    }
+
+    .basic_span {
+        position: relative;
+        width: 50%;
+        display: block;
+        float: left;
+    }
+
+    .logo {
+        float: left
+    }
+
+    #table_id {
+        width: 100%;
+    }
+
+    #table_id_filter {
+        display: none;
+        position: absolute;
+        top: 0px;
+        right: 1%;
+        margin-top: -40px;
+    }
+
+    #table_id_filter input {
+        padding: 0.5em;
+    }
+
+    .dataTables_length select {
+        font-size: 25px;
+    }
+
+    .horizontal_line hr {
+        position: absolute;
+        bottom: 104px;
+    }
+
+    #table_id_info {
+        left: 10px;
+        position: absolute;
+        top: 488px;
+        font-weight: bold;
+    }
+
+    #table_id_length {
+        display: none;
+    }
+
+    #table_id_paginate {
+        display: none;
+    }
+
+    #num {
+        display: none;
+    }
+
+    #char {
+        display: none;
+    }
+
+</style>
+
+<script>
+
+    var url = window.location.href;
+    url = new URL(url);
+    var report_type = url.searchParams.get("type");
+    var start_date = url.searchParams.get("start_date");
+    var end_date = url.searchParams.get("end_date");
+
+    document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
+    document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
+
+
+    function loadData() {
+        jQuery(".loader").html("<img src='/assets/images/ajax-loader.gif'/>");
+        var la_report_url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
+        la_report_url += '/programs/' + sessionStorage.programID + "/reports/la_prescriptions";
+        la_report_url += "?start_date=" + start_date + "&end_date=" + end_date;
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+
+            }
+        };
+        xhttp.open("GET", la_report_url, true);
+        xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+        xhttp.setRequestHeader('Content-type', "application/json");
+        xhttp.send();
+    }
+
+</script>
+

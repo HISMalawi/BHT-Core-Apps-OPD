@@ -1,0 +1,247 @@
+<link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
+
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/assets/js/core.js"></script>
+
+<script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+
+<style>
+    #high-level-view {
+        display: none;
+        background-color: #F4F4F4;
+        border: 2px solid #E0E0E0;
+        border-radius: 15px;
+        height: 92%;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        width: 95%;
+        left: 2%;
+        z-index: 991;
+    }
+
+    #spinner {
+        position: absolute;
+        top: 15%;
+        left: 40%;
+    }
+
+    #report-cover {
+        position: absolute;
+        background-color: black;
+        width: 100%;
+        height: 102%;
+        left: 0%;
+        top: 0%;
+        z-index: 990;
+        opacity: 0.65;
+    }
+
+    .title-table {
+        display: table;
+        width: 100%;
+    }
+
+    .title-row {
+        display: table-row;
+    }
+
+    .title-cell {
+        display: table-cell;
+        height: 30px;
+        vertical-align: top;
+        border-style: solid;
+        border-width: 0px 0px 1px 0px;
+    }
+
+    #title-cell-left {
+        vertical-align: middle;
+        width: 100px;
+    }
+
+    #title-cell-left img {
+        height: 95px;
+        width: 95px;
+        margin: 5px;
+    }
+
+    #title-cell-right {
+        margin-left: 5px;
+    }
+
+    #data-cell {
+        display: table-cell;
+        width: 100%;
+    }
+
+    #report {
+        width: 100%;
+    }
+
+    th {
+        text-align: left;
+    }
+
+</style>
+
+<div class="title-table">
+    <div class='title-row'>
+        <div class='title-cell' id='title-cell-left'>
+            <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png"/>
+        </div>
+        <div class='title-cell' id='title-cell-right'>
+            <table style="width: 100%; text-align: left; margin-left: 10px;">
+                <tr>
+                    <th>Title:</th>
+                    <td colspan="2" id="report-title"> Dispensation Report
+                    <td>
+                </tr>
+                <tr>
+                    <th>Period:</th>
+                    <td id="start-date">
+                    <td>
+                    <td id="end-date">
+                    <td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="title-table">
+    <div class='title-row'>
+        <div id='data-cell'>
+            <table id="report" class="display" style="width:100%">
+            </table>
+        </div>
+    </div>
+</div>
+
+<div>
+    <table id="example" class="display" width="100%"></table>
+</div>
+
+<div id="buttons" class="buttonsDiv">
+    <button class="button blue navButton" onmousedown="javascript:location='/';"><span>Finish</span></button>
+</div>
+
+<img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
+<div id="report-cover"></div>
+
+<script>
+
+    var url = window.location.href;
+    url = new URL(url);
+    var report_type = url.searchParams.get("type");
+    var start_date = url.searchParams.get("start_date");
+    var end_date = url.searchParams.get("end_date");
+
+    document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
+    document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
+
+
+    var data_table;
+    var dataSet = [];
+
+    function initializeTable() {
+        data_table = $('#example').DataTable({
+            fixedHeader: true,
+            searching: true,
+            paging: false,
+            data: dataSet,
+            scrollY: 430,
+            Processing: true,
+            ServerSide: true,
+            scroller: {
+                loadingIndicator: true
+            },
+            columns: [
+                {title: "Drug name"},
+                {title: "Amount Prescribed"},
+                {title: "Amount dispensed"},
+            ],
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+        });
+
+        lookForTag();
+    }
+
+    function getData() {
+
+        var url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
+        url += '/dispensation';
+        url += "?date=" + sessionStorage.sessionDate;
+        url += "&start_date=" + start_date + "&end_date=" + end_date;
+        url += '&program_id=' + sessionStorage.programID;
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+                document.getElementById('spinner').style = 'display: none;';
+                document.getElementById('report-cover').style = 'display: none;';
+                var obj = JSON.parse(this.responseText);
+                loadData(obj);
+            }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+        xhttp.setRequestHeader('Content-type', "application/json");
+        xhttp.send();
+    }
+
+    var high_level_stats = {};
+
+    function loadData(data) {
+        var tbody = document.getElementById('table-body');
+
+        for (var i = 0; i < data.length; i++) {
+            var drug_name = data[i].drug_name;
+            var amount_dispensed = data[i].quantity;
+            var amount_prescribed = data[i].amount_needed;
+     
+
+            var attribues = [drug_name,amount_prescribed, amount_dispensed];
+
+            var data_table_data = [];
+
+            for (var r = 0; r < attribues.length; r++) {
+                data_table_data.push(attribues[r]);
+            }
+            dataSet.push(data_table_data);
+        }
+
+        initializeTable();
+    }
+
+    function buildViewBtn(patient_id) {
+        var sp = document.createElement('span');
+        var btn = document.createElement('button');
+        btn.setAttribute('class', 'view-btns');
+        btn.innerHTML = '<span>view</span>';
+        btn.setAttribute('onmousedown', 'mastercardView(' + patient_id + ');');
+        sp.appendChild(btn);
+        return sp.innerHTML;
+    }
+
+    function mastercardView(patient_id) {
+        location = '/views/patient/mastercard.html?patient_id=' + patient_id;
+    }
+
+    getData();
+</script>
+

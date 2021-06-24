@@ -6,6 +6,12 @@
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
 
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
 
 <script type="text/javascript" src="/assets/js/moment.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
@@ -85,6 +91,7 @@
         </div>
         <div class='title-cell' id='title-cell-right'>
             <table style="width: 100%; text-align: left; margin-left: 10px;">
+                <thead>
                 <tr>
                     <th>Title:</th>
                     <td colspan="2" id="report-title">Registration
@@ -97,6 +104,9 @@
                     <td id="end-date">
                     <td>
                 </tr>
+            </thead>
+            <tbody>
+            </tbody>
             </table>
         </div>
     </div>
@@ -106,6 +116,15 @@
     <div class='title-row'>
         <div id='data-cell'>
             <table id="report" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Address</th>
+                        <th>Diagnosis</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
             </table>
         </div>
     </div>
@@ -133,19 +152,19 @@
 
     function buildReportingTable() {
         buildHeaders();
-        // initializeTable();
+        initializeTable();
     }
 
     var table_columns = [];
 
     function buildHeaders(tr) {
-        var headers = ['Address', 'Diagnosis', 'Count'];
+       /* var headers = [ '', 'Count'];
 
         for (var i = 0; i < headers.length; i++) {
             table_columns.push({title: headers[i]});
-        }
+        } */
 
-        initializeTable();
+       // initializeTable();
         getData();
     }
 
@@ -153,14 +172,20 @@
 
     function initializeTable() {
         data_table = $('#report').DataTable({
-            columns: table_columns,
+            //columns: table_columns,
             fixedHeader: true,
             searching: true,
-            paging: false,
+            paging: true,
             scrollY: 430,
+            Processing: true,
+            ServerSide: true,
             scroller: {
                 loadingIndicator: true
-            }
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
 
         lookForTag();
@@ -200,6 +225,9 @@
                 data_table.row.add([formatAddress(address), diagnosis, add[address]]);
                 data_table.draw();
             }
+            /*
+            data_table.destroy();
+            initializeTable(); */
         }
     }
 
