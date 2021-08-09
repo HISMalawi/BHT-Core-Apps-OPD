@@ -439,7 +439,7 @@ function removeItem(drug_id){
 		}
 	}
 
-	selected_drugs_order_of_entry_counter = 0;
+	selected_drugs_order_of_entry_counter = count;
 	data_table.clear();
 	buildFreqDoseDaysPage();
 }
