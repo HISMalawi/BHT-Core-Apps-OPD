@@ -4,6 +4,10 @@ function prescriptionPage(){
 	clearButton.setAttribute("onmousedown", "keyPressed(this);");
 	clearButton.innerHTML = "<span>Clear</span>";
 
+	const nextButton = document.getElementById('nextButton');
+	nextButton.setAttribute("style","display:none;");
+
+
 	const main_container = document.getElementById(`inputFrame${tstCurrentPage}`);
 	addInputBox(main_container);
 	const ctrls = document.getElementById(`ctrls`);
@@ -150,6 +154,7 @@ function addRows(drugs){
 
 var selected_drugs = {};
 var selected_drugs_order_of_entry = [];
+var selected_drugs_order_of_entry_counter = 0;
 var data_table;
 
 function updateTextBox(e){
@@ -163,9 +168,15 @@ function updateTextBox(e){
 
 	let textBox = document.getElementById('search-string');
 	textBox.value = e.innerHTML;*/
-	selected_drugs[e.id] = e.innerHTML;
-	if(selected_drugs_order_of_entry.indexOf(e.innerHTML) < 0)
+	if(selected_drugs_order_of_entry.indexOf(e.innerHTML) < 0){
+		selected_drugs[e.id] = {
+			name: e.innerHTML,
+			freq: null, days: null, dose: null, 
+			count: selected_drugs_order_of_entry_counter
+		};
 		selected_drugs_order_of_entry.push(e.innerHTML);
+		selected_drugs_order_of_entry_counter++;
+	}
 
 	buildFreqDoseDaysPage();
 }
@@ -185,6 +196,10 @@ function updateTextBox(e){
 function buildFreqDoseDaysPage(){
 	const main_container = document.getElementById(`inputFrame${tstCurrentPage}`);
 	main_container.innerHTML = "";
+	try {
+		data_table.destroy();
+	}catch(i){}
+
 	addSelectedDrugsList(main_container);
 }
 
@@ -193,6 +208,7 @@ function addSelectedDrugsList(e){
 	<table id="selected-drugs-table">
 		<thead>
 			<tr>
+				<th>&nbsp;</th>
 				<th>Item</th>
 				<th>Frequency</th>
 				<th>Dose</th>
@@ -200,16 +216,30 @@ function addSelectedDrugsList(e){
 				<th>&nbsp;</th>
 			</tr>
 		</thead><tbody>`;
-	for(const drug_name of selected_drugs_order_of_entry){
+	
+	let names = [];
+	let count = (selected_drugs_order_of_entry.length - 1);
+
+	for(const name of selected_drugs_order_of_entry){
 		for(const drug_id in selected_drugs){
-			if(selected_drugs[drug_id] != drug_name)
+			if(count == selected_drugs[drug_id].count){
+				names.push(selected_drugs[drug_id].name);
+				count--;
+			}
+		}
+	}
+
+	for(const drug_name of names){
+		for(const drug_id in selected_drugs){
+			if(selected_drugs[drug_id].name != drug_name)
 				continue;
 
 			html += `<tr>
-				<td>${selected_drugs[drug_id]}</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+				<td>${selected_drugs[drug_id].count}</td>
+				<td>${selected_drugs[drug_id].name}</td>
+				<td>${selected_drugs[drug_id].freq == null ? '' : selected_drugs[drug_id].freq}</td>
+				<td>${selected_drugs[drug_id].dose == null ? '' : selected_drugs[drug_id].dose}</td>
+				<td>${selected_drugs[drug_id].days == null ? '' : selected_drugs[drug_id].days}</td>
 				<td><img src="/assets/images/delete.png" class="delete-img" onclick="removeItem(${drug_id});" /></td>
 			</tr>`;
 		}
@@ -228,15 +258,17 @@ function initTable(){
 		Processing: true,
 		ServerSide: true,
 		info:     false,
+		order: [[0, 'desc']],
 		scroller: {
 				loadingIndicator: true
 		},
 		columnDefs: [
-      {"className": "dt-item", "targets": 0},
-      {"className": "dt-frequency", "targets": 1},
-      {"className": "dt-dose", "targets": 2},
-      {"className": "dt-days", "targets": 3},
-      {"className": "dt-ctrls", "targets": 4}
+      {"className": "dt-counter", "targets": 0},
+      {"className": "dt-item", "targets": 1},
+      {"className": "dt-frequency", "targets": 2},
+      {"className": "dt-dose", "targets": 3},
+      {"className": "dt-days", "targets": 4},
+      {"className": "dt-ctrls", "targets": 5}
     ],
 		"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 			nRow.setAttribute("onclick", "selectRow(this);");
@@ -309,9 +341,9 @@ function pressedKey(e, id){
 	let inputBox;
 
 	if(id == "dose-container" ){
-		inputBox = targetedRow.children[2];
-	}else{
 		inputBox = targetedRow.children[3];
+	}else{
+		inputBox = targetedRow.children[4];
 	}
 
 	try{
@@ -321,6 +353,7 @@ function pressedKey(e, id){
 			inputBox.innerHTML += e.id;
 		}
 	}catch(x) { }
+	setSelect();
 }
 
 function addFrequencies(){
@@ -351,7 +384,8 @@ function addFrequencies(){
 
 function selectFreq(freq){
 	const targetedRow = document.getElementsByClassName('selected-row')[0];
-	targetedRow.children[1].innerHTML = freq.getAttribute('value');
+	targetedRow.children[2].innerHTML = freq.getAttribute('value');
+	setSelect();
 }
 
 function selectFirstRow(){
@@ -364,4 +398,82 @@ function addNewItemBTN(){
 	const btn = document.getElementById("clearButton");
 	btn.innerHTML = "<span>Add</span>";
 	btn.setAttribute("onmousedown","prescriptionPage();");
+
+	const nextButton = document.getElementById('nextButton');
+	nextButton.setAttribute("style","display:inline;");
+	nextButton.setAttribute("onmousedown","prescribeMeds();");
+}
+
+function removeItem(drug_id){
+	const drug_name = selected_drugs[drug_id].name;
+	const drug_names = selected_drugs_order_of_entry;
+	selected_drugs_order_of_entry = [];
+
+	for(const n of drug_names){
+		if(drug_name == n)
+			continue;
+
+		selected_drugs_order_of_entry.push(n);
+	}
+
+	const drugsHash = selected_drugs;
+	selected_drugs = {};
+	let count = 0;
+
+	for(const name of selected_drugs_order_of_entry.reverse()){
+		for(const id in drugsHash){
+			if(name != drugsHash[id].name)
+				continue;
+
+			if(parseInt(id) == parseInt(drug_id))
+				continue;
+
+			selected_drugs[id] = {
+				name: drugsHash[id].name,
+				freq: drugsHash[id].freq, 
+				days: drugsHash[id].days, 
+				dose: drugsHash[id].dose, 
+				count: count
+			};
+			count++;
+		}
+	}
+
+	selected_drugs_order_of_entry_counter = 0;
+	data_table.clear();
+	buildFreqDoseDaysPage();
+}
+
+function setSelect(){
+	const row = document.getElementsByClassName('selected-row')[0];
+	const drug_name = row.children[1].innerHTML;
+
+	for(const drug_id in selected_drugs){
+		if(selected_drugs[drug_id].name == drug_name){
+			let freq = row.children[2].innerHTML;
+			let dose = row.children[3].innerHTML;
+			let days = row.children[4].innerHTML;
+			selected_drugs[drug_id].freq = freq;
+			selected_drugs[drug_id].dose = dose;
+			selected_drugs[drug_id].days = days;
+			console.log(selected_drugs[drug_id]);
+		}
+	}
+}
+
+function prescribeMeds(){
+	let incomplete_prescription = false;
+	for(drug_id in selected_drugs){
+		let freq = selected_drugs[drug_id].freq;
+		let dose = selected_drugs[drug_id].dose;
+		let days = selected_drugs[drug_id].days;
+		incomplete_prescription = (freq == null || dose == null || days == null);
+	}
+
+	if(incomplete_prescription){
+		showMessage("Incomplete prescription");
+		return;
+	}
+
+
 }
