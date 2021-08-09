@@ -1,0 +1,225 @@
+
+<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+<link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+<script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/assets/js/alertifyjs/alertify.js"></script>
+<script type="text/javascript" src="/assets/js/does_connection_exist.js"></script>
+
+<link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css">
+
+<script type="text/javascript" src="../../assets/js/prescription.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="../../assets/css/DataTables/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="../../assets/js/DataTables/datatables.min.js"></script>
+
+
+
+<script>
+var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + sessionStorage.patientID;
+
+
+
+</script>
+
+<style>
+.inputFrameClass {
+  width: 95.5% !important;
+  height: 90%;
+  background: white !important;
+  border-style: none !important;
+}
+
+.keyboard {
+  display: none !important;
+}
+
+.keyboardInput {
+  width: 99.5%;
+  font-family: "Nimbus Sans L","Arial Narrow",sans-serif;
+  font-size: 2.2em;
+  background: none;
+  padding: 0px 5px 0px;
+  margin-left: 5px;
+  border-width: 0px 0px 1px 0px;
+}
+
+#selection-box-options {
+  width: 97%;
+  height: 85%;
+  padding: 0px 1px 0px 10px;
+  overflow: auto;
+}
+
+#ctrls {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 9px;
+  height: 300px;
+  background-color: #F0F0F0;
+}
+
+#keyboard-container {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 9px;
+  position: absolute;
+  width:95.5%;
+  bottom: 1px;
+  height: 250px;
+}
+
+.qwerty-table, .numbers-table {
+  display: table;
+}
+
+.qwerty-row, .numbers-row {
+  display: table-row;
+}
+
+.qwerty-cell, .numbers-cell {
+  display: table-cell;
+}
+
+.align-right {
+  margin-left: 50px;
+}
+
+.keypad-btns {
+  margin-left: 10px;
+}
+
+.even {
+    background-color: #eee;
+}
+#selection-box-options li, #frequency-container li {
+    color: black;
+    list-style: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-family: "Nimbus Sans L","Arial Narrow",sans-serif;
+    font-size: 1.2em;
+}
+ul li {
+    cursor: pointer;
+}
+
+#selection-box-options ul, #frequency-container ul {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 0px;
+}
+#selection-box-options, #frequency-container {
+    font-size: 1.5em;
+}
+
+.selected-drugs-container {
+  border-style: solid;
+  height: 300px;
+  border-width: 1px;
+  border-radius: 9px;
+  background-color: lightyellow;
+  width: 100%;
+}
+#selected-drugs-table {
+  width: 100%;
+}
+
+#selected-drugs-table th, #selected-drugs-table td {
+  border-style: solid;
+  border-width: 0px 0px 1px 1px;
+  font-size: 1.5em;
+}
+
+.dt-item, .dt-frequency {
+  text-align: left;
+  padding-left: 5px;
+}
+
+.dt-ctrls {
+  text-align: center;
+  width: 50px;
+}
+
+.dt-dose, .dt-days {
+  text-align: right;
+  padding-right: 5px;
+}
+
+
+.control-container {
+  display: table;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 9px;
+  position: absolute;
+  bottom: 1px;
+  height: 300px;
+  width: 95.5%;
+}
+
+.control-container-row {
+  display: table-row;
+}
+
+.control-container-cell {
+  display: table-cell;
+}
+
+#frequency-container, #dose-container {
+  border-style: solid;
+  border-width: 0px 1px 0px 0px;
+}
+
+#frequency-container {
+  width: 40%;
+} 
+#dose-container, #days-container {
+  width: 30%;
+}
+
+.dt-frequency, .dt-dose, .dt-days {
+  width: 100px;
+}
+
+.selected-row {
+  background-color: lightblue !important;
+}
+
+.delete-img {
+  width: 45px;
+  height: 45px;
+}
+
+.small-btns {
+  height: 60px;
+  width: 80px;
+  margin: 0px 10px 0px 5px !important;
+}
+</style>
+
+<body id="mateme">
+  <div id="container">
+    <div id="content">
+
+      <form>
+        
+				<input type="text" name="summary"
+          tt_onLoad="__$('keyboard').style.display = 'none'; prescriptionPage();" 
+          tt_pageStyleClass= "NoControls" helpText="Prescription" optional = "true"/>
+
+      </form>
+
+   </div>
+ </div>
+</body>
+
