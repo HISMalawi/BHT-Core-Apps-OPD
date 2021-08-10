@@ -485,7 +485,7 @@ function prescribeMeds(){
 		drug_orders.push({
 			drug_inventory_id: drug_id,
 			dose: dose,
-			equivalent_daily_dose: dose,
+			equivalent_daily_dose: equivalentDailyDose(freq, dose),
 			frequency: freq,
 			start_date: sessionStorage.sessionDate,
 			auto_expire_date: auto_expire_date,
@@ -533,4 +533,30 @@ function postRegimenOrders(encounter) {
 
 function gotoPatientDashboard() {
 	window.location = tt_cancel_destination;
+}
+
+function equivalentDailyDose(frequency, dose){
+	const frequencies = [
+		["OD", "Once a day(OD)", 1], 
+		["BD", "Twice a day(BD)",2], 
+		["TDS", "Three a day(TDS)",3],
+		["QID", "Four times a day(QID)",4], 
+		["5X/D", "Five times a day(5X/D)",5], 
+		["Q4hrs", "Six times a day(Q4hrs)",6],
+		["QWK", "Once a week(QWK)", 1], 
+		["QOD", "Every other day(QOD)",1],
+		["QHS", "Once a day at night(QHS)",1], 
+		["Qnoon", "Once a day at noon(Qnoon)",1], 
+		["QAM", "In the morning(QAM)",1], 
+		["QPM", "In the evening(QPM)",1]
+	];
+
+	let freq;
+	for(const f of frequencies){
+		console.log(f[0] == frequency)
+		if(f[0] == frequency)
+			freq = f[2];
+
+	}
+	return (parseFloat(dose)*freq);
 }
