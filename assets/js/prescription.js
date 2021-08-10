@@ -278,7 +278,11 @@ function initTable(){
 }
 
 function selectRow(e){
-	let rows = document.getElementById('selected-drugs-table').getElementsByTagName('tbody')[0].children;
+	const t = document.getElementById('selected-drugs-table');
+	if(!t)
+		return;
+
+	const rows = t.getElementsByTagName('tbody')[0].children;
 	for(const r of rows){
 		let class_name = r.getAttribute("class").replace("selected-row").trimEnd();
 		r.setAttribute("class", class_name);
@@ -440,8 +444,15 @@ function removeItem(drug_id){
 	}
 
 	selected_drugs_order_of_entry_counter = count;
+	
+	if(count < 1){
+		prescriptionPage();
+		return;
+	}
+
 	data_table.clear();
 	buildFreqDoseDaysPage();
+	setTimeout(selectFirstRow, 100);
 }
 
 function setSelect(){
@@ -456,17 +467,30 @@ function setSelect(){
 			selected_drugs[drug_id].freq = freq;
 			selected_drugs[drug_id].dose = dose;
 			selected_drugs[drug_id].days = days;
-			console.log(selected_drugs[drug_id]);
 		}
 	}
 }
 
+var drug_orders = [];
 function prescribeMeds(){
 	let incomplete_prescription = false;
+
 	for(drug_id in selected_drugs){
 		let freq = selected_drugs[drug_id].freq;
 		let dose = selected_drugs[drug_id].dose;
-		let days = selected_drugs[drug_id].days;
+		let days = parseFloat(selected_drugs[drug_id].days);
+		let start_date = moment(sessionStorage.sessionDate);
+		let auto_expire_date = start_date.add(days, 'days').format("YYYY-MM-DD");
+		
+		drug_orders.push({
+			drug_inventory_id: drug_id,
+			dose: dose,
+			equivalent_daily_dose: dose,
+			frequency: freq,
+			start_date: sessionStorage.sessionDate,
+			auto_expire_date: auto_expire_date,
+			instructions:  `${selected_drugs[drug_id].name}: ${dose} ${freq} duration ${days}`
+		})
 		incomplete_prescription = (freq == null || dose == null || days == null);
 	}
 
@@ -475,5 +499,38 @@ function prescribeMeds(){
 		return;
 	}
 
+	submitTreatmentEncounter();
+}
 
+function submitTreatmentEncounter() {
+	var currentTime = moment().format(' HH:mm:ss');
+	var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD');
+	encounter_datetime += currentTime;
+
+	var encounter = {
+			encounter_type_id: 25,
+			patient_id: sessionStorage.patientID,
+			encounter_datetime: encounter_datetime
+	};
+
+	submitParameters(encounter, "/encounters", "postRegimenOrders");
+}
+
+
+function postRegimenOrders(encounter) {
+	if (!encounter.encounter_id) {
+			encounter_id = encounter[0].encounter_id;
+	} else {
+			encounter_id = encounter.encounter_id;
+	}
+
+	let drug_orders_params = {
+		encounter_id: encounter_id, 
+		drug_orders: drug_orders
+	}
+	submitParameters(drug_orders_params, "/drug_orders", "gotoPatientDashboard");
+}
+
+function gotoPatientDashboard() {
+	window.location = tt_cancel_destination;
 }
