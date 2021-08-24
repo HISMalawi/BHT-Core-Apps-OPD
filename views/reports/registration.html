@@ -184,7 +184,7 @@ function highLevelView() {
 
 function buildReportingTable() {
   buildHeaders();
- // initializeTable();
+  initializeTable();
 }
 
 var table_columns= [];
@@ -212,7 +212,7 @@ function initializeTable() {
     data: table_data,
     fixedHeader: true,
     searching: true,
-    paging: false,
+    paging: true,
     scrollY: 430,
     Processing: true,
     ServerSide: true,
@@ -242,6 +242,7 @@ function getData() {
       document.getElementById('spinner').style = 'display: none;';
       document.getElementById('report-cover').style = 'display: none;';
       var obj = JSON.parse(this.responseText);
+      console.log(obj);
       loadData(obj);
     }
   };
