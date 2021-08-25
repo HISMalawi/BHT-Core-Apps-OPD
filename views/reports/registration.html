@@ -2,14 +2,19 @@
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
 
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/core.js"></script>
 
-<!--link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/datatables.css"/-->
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
 
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
 
 <script type="text/javascript" src="/assets/js/moment.js"></script>
-<script type="text/javascript" src="/assets/js/core.js"></script>
 
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 
@@ -218,7 +223,11 @@ function initializeTable() {
     ServerSide: true,
     scroller: {
       loadingIndicator: true
-    }
+    },
+    dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
   });
 
   lookForTag();
@@ -242,7 +251,6 @@ function getData() {
       document.getElementById('spinner').style = 'display: none;';
       document.getElementById('report-cover').style = 'display: none;';
       var obj = JSON.parse(this.responseText);
-      console.log(obj);
       loadData(obj);
     }
   };
@@ -277,12 +285,11 @@ function loadData(data) {
 
     high_level_stats[visit_type] += 1;
 
-    //data_table.row.add([visit_type, given_name, family_name, gender, birthdate, visit_date, address]); 
-    //data_table.draw();
+    data_table.row.add([visit_type, given_name, family_name, gender, birthdate, visit_date, address]); 
+    data_table.draw();
     table_data.push([visit_type, given_name, family_name, gender, birthdate, visit_date, address]);
   }
 
-  initializeTable();
 }
 
 buildReportingTable();

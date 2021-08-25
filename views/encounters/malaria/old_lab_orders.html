@@ -143,9 +143,9 @@
       values = sessionStorage.OPD_activities.replace('lab orders,','').replace('lab orders','');
       sessionStorage.OPD_activities   = values;
       var parameters = {property: "OPD_activities", property_value: values}
-      submitParameters(parameters, "/user_properties", "redirectOnFinishOrder");
+      submitParameters(parameters, "/user_properties", "redirectTo");
     }
-    function redirectOnFinishOrder()
+    function redirectTo()
     {
       if(sessionStorage.getItem('orderFlowStatus') == 'true') {
           if(sessionStorage.getItem('radiology_is_set') == 'true') {
@@ -165,6 +165,7 @@
            // history.go(-1);
           } 
       }
+      
       nextEncounter(sessionStorage.patientID, sessionStorage.programID);
     }
 

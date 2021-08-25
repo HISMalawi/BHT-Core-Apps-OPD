@@ -1,0 +1,614 @@
+<head>
+    <title>
+        Diagnosis Report
+    </title>
+<link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
+
+<script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/core.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
+
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+
+<script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+
+<style>
+    div {
+    -moz-user-select: unset;
+    cursor: pointer;
+}
+    #spinner {
+        position: absolute;
+        top: 15%;
+        left: 40%;
+    }
+
+    #report-cover {
+        position: absolute;
+        background-color: black;
+        width: 100%;
+        height: 102%;
+        left: 0%;
+        top: 0%;
+        z-index: 990;
+        opacity: 0.65;
+    }
+
+    .min-tables {
+        width: 100%;
+        text-align: right;
+    }
+
+    .title-table {
+        display: table;
+        width: 100%;
+    }
+
+    .title-row {
+        display: table-row;
+    }
+
+    .title-cell {
+        display: table-cell;
+        height: 30px;
+        vertical-align: top;
+        border-style: solid;
+        border-width: 0px 0px 1px 0px;
+    }
+
+    #title-cell-left {
+        vertical-align: middle;
+        width: 100px;
+    }
+
+    #title-cell-left img {
+        height: 95px;
+        width: 95px;
+        margin: 5px;
+    }
+
+    #title-cell-right {
+        margin-left: 5px;
+    }
+
+    #data-cell {
+        display: table-cell;
+        width: 100%;
+    }
+
+    #report {
+        width: 100%;
+    }
+    .buttonsDiv 
+    {
+    top: 770px;
+    }
+    td{
+        text-align: left;
+    }
+
+</style>
+
+</head>
+<div class="title-table">
+    <div class='title-row'>
+        <div class='title-cell' id='title-cell-left'>
+            <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png"/>
+        </div>
+        <div class='title-cell' id='title-cell-right'>
+            <table style="width: 100%; text-align: left; margin-left: 10px;">
+                <tr>
+                    <th>Title:</th>
+                    <td colspan="2" id="report-title">OPD Diagnosis
+                    <td>
+                </tr>
+                <tr>
+                    <th>Period:</th>
+                    <td id="start-date">
+                    <td>
+                    <td id="end-date">
+                    <td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="title-table">
+    <div class='title-row'>
+        <div id='data-cell'>
+            <table id="report" class="display" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Diagnosis</th>
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>&#60;6 months</td></tr><tr><td>    F</td></tr>
+                        </table>
+                    </th>
+                      
+                     <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>&#60;6 months</td></tr><tr><td>    M</td></tr>
+                        </table>
+                     </th>
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>6 months &#60; 5 yrs</td></tr><tr><td>   F</td></tr>
+                        </table>
+                    </th>
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>6 months &#60; 5 yrs</td></tr><tr><td>   M</td></tr>
+                        </table>
+                    </th>
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>5 months to 14 yrs</td></tr><tr><td>   F</td></tr>
+                        </table>
+                    </th>
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>5 months to 14 yrs</td></tr><tr><td>   M</td></tr>
+                        </table>
+                    </th>
+
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>&#62; 14 yrs</td></tr><tr><td>   F</td></tr>
+                        </table>
+                    </th>
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>&#62; 14 yrs</td></tr><tr><td>   M</td></tr>
+                        </table>
+                    </th>
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>Unknown</td></tr><tr><td>   F</td></tr>
+                        </table>
+                    </th>
+
+                    <th>
+                        <table class='min-tables'>
+                            <tr><td colspan=1>Unknown</td></tr><tr><td>   M</td></tr>
+                        </table>
+                    </th>
+
+
+                    <th>
+                        Total
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div id="buttons" class="buttonsDiv">
+    <button class="button green navButton" onmousedown="location='/'"><span>Finish</span></button>
+</div>
+
+<img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
+<div id="report-cover"></div>
+
+
+<style>
+    .modal
+    {
+        position: fixed;
+        width: 70%;
+        background-color: #fff;
+        margin-left: 15%;
+        top: 0%;
+        border: solid 1px;
+        z-index: 990;
+    }
+    
+    button.red 
+    {
+        border: solid #842020; 
+        border-radius: 3px;
+        padding: 10px;
+        background-size: 100%;
+        float:left;
+        margin: 10px;
+    }
+    button.red:hover 
+    {
+        background-size: 225%;
+    }
+   
+   
+    .sorting_patient 
+    {
+        background-color: #b9b9b9;
+    }
+    
+    ._title
+    {
+        display: flex;
+        justify-content: center;
+        font-size: 20px;
+        padding:3px;
+    }
+    
+
+    .modal-header{
+        padding: 10px;
+    }
+    thead {
+    text-align: left;
+}
+    th
+    {
+        width:204px !important;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+      
+        padding-left: 3px;
+    }
+    
+    </style>
+<!-- Modal -->
+<div class="modal " id="modal" style="display: none;" > 
+    <div class="modal-content" style="margin-left:0px; ">
+        <div class="modal-header">
+            <div class="modal-title _title" ></div>
+            <div class="period _title" ></div>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <div class="row" id="modal-div">
+                    <div id="patient_details_card" style="margin-bottom: 10px; border-bottom: 1px solid;" >
+                        <table id="patient_details_table" class="display " >
+                            <thead>
+                            <tr>
+                                <th class="sorting_patient" >Patient ID</th>
+                                <th class="sorting_patient">Firstname</th>
+                                <th class="sorting_patient">Surname</th>
+                                <th class="sorting_patient">Gender</th>
+                                <th class="sorting_patient">Phone Number</th>
+                                <th class="sorting_patient">Address</th>
+                            </tr>
+                            </thead>
+                            <tbody id="patient_details_body">
+                            </tbody>
+                        </table>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom_buttons">
+            <button class="red"  onclick="close_modal()">Close</button>
+        </div>
+    </div> 
+</div>
+<!-- Modal -->
+<script>
+
+    var url = window.location.href;
+    url = new URL(url);
+    var report_type = url.searchParams.get("type");
+    var start_date = url.searchParams.get("start_date");
+    var end_date = url.searchParams.get("end_date");
+
+    document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
+    document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
+
+    function buildReportingTable() {
+        initializeTable();
+        getData();
+    }
+
+    var table_columns = [];
+
+    var data_table;
+
+    function initializeTable() {
+        data_table = $('#report').DataTable({
+            fixedHeader: true,
+            searching: true,
+            paging: false,
+            scrollY: 400,
+            Processing: true,
+            ServerSide: true,
+            scroller: {
+                loadingIndicator: true
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+        });
+
+        lookForTag();
+    }
+
+    function initializeTable_Modal() {
+        table = $('#patient_details_table').DataTable({
+            fixedHeader: true,
+            searching: true,
+            paging: true,
+            scrollY: 520,
+            Processing: true,
+            ServerSide: true,
+            scroller: {
+                loadingIndicator: true
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+        });
+
+        lookForTag();
+    }
+
+    function getData() {
+
+        var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+        url += '/diagnosis?start_date=' + start_date;
+        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+        url += '&program_id=' + sessionStorage.programID;
+
+        if (apiProtocol == undefined) {
+            setTimeout("getData()", 3000);
+            return;
+        }
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+                document.getElementById('spinner').style = 'display: none;';
+                document.getElementById('report-cover').style = 'display: none;';
+                var obj = JSON.parse(this.responseText);
+                loadData(obj);
+            }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+        xhttp.setRequestHeader('Content-type', "application/json");
+        xhttp.send();
+    }
+
+    function loadData(data) 
+    {
+        var count = 0;
+        var patientsD_counter = 0;
+        for (var diagnosis in data) 
+        {
+            col_one_female = data[diagnosis].female_less_than_six_months;
+            sessionStorage.setItem("patientD_col_one_female"+patientsD_counter, data[diagnosis].patientD_F_LessSixMonths); 
+
+            col_one_male = data[diagnosis].male_less_than_six_months;
+            sessionStorage.setItem("patientD_col_one_male"+patientsD_counter, data[diagnosis].patientD_M_LessSixMonths); 
+
+            col_two_female = data[diagnosis].female_six_months_to_less_than_five_yrs;
+            sessionStorage.setItem("patientD_col_two_female"+patientsD_counter, data[diagnosis].patientD_F_LessFiveYrs); 
+
+            col_two_male = data[diagnosis].male_six_months_to_less_than_five_yrs;
+            sessionStorage.setItem("patientD_col_two_male"+patientsD_counter, data[diagnosis].patientD_M_LessFiveYrs); 
+
+            col_three_female = data[diagnosis].female_five_yrs_to_fourteen_years;
+            sessionStorage.setItem("patientD_col_three_female"+patientsD_counter, data[diagnosis].patientD_F_5yrsTo14yrs); 
+
+            col_three_male = data[diagnosis].male_five_yrs_to_fourteen_years;
+            sessionStorage.setItem("patientD_col_three_male"+patientsD_counter, data[diagnosis].patientD_M_5yrsTo14yrs); 
+
+            col_four_female = data[diagnosis].female_over_fourteen_years;
+            sessionStorage.setItem("patientD_col_four_female"+patientsD_counter, data[diagnosis].patientD_F_Over14Yrs); 
+
+            col_four_male = data[diagnosis].male_over_fourteen_years;
+            sessionStorage.setItem("patientD_col_four_male"+patientsD_counter, data[diagnosis].patientD_M_Over14Yrs);
+
+            col_five_female = data[diagnosis].female_unknowns;
+            sessionStorage.setItem("patientD_col_five_female"+patientsD_counter, data[diagnosis].patientD_F_unknowns); 
+
+            col_five_male = data[diagnosis].male_unknowns;
+            sessionStorage.setItem("patientD_col_five_male"+patientsD_counter, data[diagnosis].patientD_M_unknowns); 
+
+            var total_diagnosis = 0;
+            total_diagnosis = col_five_male + col_five_female;
+            total_diagnosis += col_four_male + col_four_female;
+            total_diagnosis += col_three_male + col_three_female;
+            total_diagnosis += col_two_male + col_two_female;
+            total_diagnosis += col_one_male + col_one_female;
+
+            var total_patients = "";
+            total_patients = data[diagnosis].patientD_F_LessSixMonths + data[diagnosis].patientD_M_LessSixMonths +  data[diagnosis].patientD_F_LessFiveYrs;
+            total_patients += data[diagnosis].patientD_M_LessFiveYrs + data[diagnosis].patientD_F_5yrsTo14yrs;
+            total_patients += data[diagnosis].patientD_M_5yrsTo14yrs + data[diagnosis].patientD_F_Over14Yrs;
+            total_patients += data[diagnosis].patientD_M_Over14Yrs + data[diagnosis].patientD_F_unknowns;
+            total_patients += data[diagnosis].patientD_M_unknowns;
+
+            sessionStorage.setItem("total_patients"+patientsD_counter, total_patients); 
+            total_patients = "total_patients"+patientsD_counter;
+            data_table.row.add([diagnosis, 
+                buildMinStatFemale(col_one_female, 'patientD_col_one_female'+patientsD_counter,diagnosis,' less than six months'),
+
+                buildMinStatMale( col_one_male, 'patientD_col_one_male'+patientsD_counter,diagnosis,' less than six months'),
+
+                buildMinStatFemale(col_two_female, 'patientD_col_two_female'+patientsD_counter,diagnosis,' six months to less than five yrs'),
+
+                buildMinStatMale(col_two_male, 'patientD_col_two_male'+patientsD_counter,diagnosis,' six months to less than five yrs'),
+
+                buildMinStatFemale(col_three_female, 'patientD_col_three_female'+patientsD_counter,' five yrs to fourteen years'),
+
+                buildMinStatMale( col_three_male, 'patientD_col_three_male'+patientsD_counter,diagnosis,' five yrs to fourteen years'),
+
+                buildMinStatFemale(col_four_female,'patientD_col_four_female'+patientsD_counter, diagnosis,' over fourteen years'),
+
+                buildMinStatMale(col_four_male,'patientD_col_four_female'+patientsD_counter,diagnosis,' over fourteen years'),
+
+                buildMinStatFemale(col_five_female, 'patientD_col_five_female'+patientsD_counter,diagnosis,' unknowns'), 
+
+                buildMinStatMale( col_five_male, 'patientD_col_five_male'+patientsD_counter,diagnosis,' unknowns'),
+                
+                buildTotal(total_diagnosis,total_patients,diagnosis)]);
+            data_table.draw();
+
+            count++;
+            patientsD_counter++;
+            if (count == 99) {
+                count = 0;
+                sleep(3000);
+            }
+        }
+    }
+
+    function buildMinStat(gender,patientD, diagnosis,period) 
+    {
+        var sp = document.createElement('span');
+        var table = document.createElement('table');
+        table.setAttribute('class', 'min-tables');
+        var tr = document.createElement('tr');
+        table.appendChild(tr);
+
+        var td = document.createElement('td');
+        td.setAttribute('onclick', "view_patientD('"+patientD+"','"+diagnosis+"','"+"Female"+period+"')");
+        td.setAttribute('id',patientD);
+        td.innerHTML = gender;
+        tr.appendChild(td);
+
+        sp.appendChild(table);
+        return sp.innerHTML;
+    }
+
+    function buildMinStatFemale(female, patientD_F, diagnosis,period)
+    {
+       return buildMinStat(female, patientD_F, diagnosis,period);
+    } 
+    function buildMinStatMale(male, patientD_M,diagnosis,period)
+    {
+        return buildMinStat(male, patientD_M,diagnosis,period);
+    }
+
+
+    function view_patientD(patientD,diagnosis,period)
+    {
+        if($('#virtual-keyboard').length)
+            hide_keyboard();
+
+        $('.keyboard').attr('style','display:none');
+        $('#spinner').attr('style','display:block');
+        $('#report-cover').attr('style','display:block');
+        var y = $("#"+patientD).html();
+        var mil = y*40;
+        setTimeout(function(){ dataTableContentLoader(patientD,diagnosis,period); },mil);
+    }
+
+    function dataTableContentLoader(patientD,diagnosis,period)
+    {
+        console.log("he2: "+patientD);
+        patientD = sessionStorage.getItem(patientD);
+        $('.modal-title').html('<b>Diagnosis:</b> &nbsp;&nbsp; ' + diagnosis);
+        $('.period').html('  &nbsp;&nbsp;' + period);
+        if(period == "")
+        $('.period').attr('style','display:none')
+        document.getElementById('modal').setAttribute('style','display:block');
+        patientD = patientD.substring(2);
+        patientD = patientD.split('|');
+        patientD = patientD.sort();
+     
+        $('#patient_details_body').html('');
+        patientD.forEach(value1 => 
+        {
+            var value = value1.split(',');
+                
+            var tr = document.createElement('tr');
+            document.getElementById('patient_details_body').appendChild(tr);
+
+            var td = document.createElement('td');
+            td.innerHTML = value[1];
+            tr.appendChild(td);
+
+            td = document.createElement('td');
+            td.innerHTML = value[0];
+            tr.appendChild(td);
+
+            var td = document.createElement('td');
+            td.innerHTML = value[2];
+            tr.appendChild(td);
+
+            td = document.createElement('td');
+            td.innerHTML = value[3];
+            tr.appendChild(td);
+
+            td = document.createElement('td');
+            td.innerHTML = value[4];
+            tr.appendChild(td);
+            
+            td = document.createElement('td');
+            td.innerHTML = value[5];
+            tr.appendChild(td);
+
+        });
+        
+
+        document.getElementById('spinner').style = 'display: none;';
+        //add export data buttons
+        initializeTable_Modal();
+
+        $("label [aria-controls*='report']").attr('type','text');
+    }
+
+    function close_modal()
+    {
+        $("label [aria-controls*='report']").attr('type','search');
+        $('#report-cover').attr('style','display:none');
+        document.getElementById('patient_details_body').innerHTML = "";
+        document.getElementById('modal').setAttribute('style','display:none');
+        table.destroy();
+        hide_keyboard();
+    }
+
+    function hide_keyboard()
+    {
+        var vl = document.getElementById('virtual-keyboard');
+        var w = document.getElementsByTagName('body')[0];
+        w.removeChild(vl);
+    }
+    function buildTotal(total,total_patients,diagnosis) 
+    {
+        var sp = document.createElement('span');
+        var table = document.createElement('table');
+        table.setAttribute('class', 'min-tables');
+        var tr = document.createElement('tr');
+        table.appendChild(tr);
+
+        var td = document.createElement('td');
+        td.setAttribute('onclick', "view_patientD('"+total_patients+"','"+diagnosis+"','')");
+        td.setAttribute('id',total_patients);
+        td.innerHTML = total;
+        tr.appendChild(td);
+        sp.appendChild(table);
+        return sp.innerHTML;
+    }
+
+    buildReportingTable();
+    
+</script>
+
+

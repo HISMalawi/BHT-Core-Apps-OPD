@@ -40,6 +40,11 @@
   font-size: 18px;
 }
 
+.charts-st {
+  float: left;
+  width: 50%;
+}
+
 </style>
 
 <div id='opd-stats'>
@@ -53,7 +58,8 @@
   </tr>
 </table>
 
-<div id="opd-encounters"></div>
+<div class="charts-st" id="opd-encounters"></div>
+<div class="charts-st" id="opd-encounters-for-syndromic-statistics"></div>
 
 </div>
 
@@ -178,6 +184,127 @@ function fetchDashboardStats() {
   xhttp.send();
 }
 
-setTimeout("fetchDashboardStats()", 200);
+function fetchDashboardStatsForRespiratorySympotoms() {
+  var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+  url += "/dashboard_stats_for_syndromic_statistics?date=" + sessionStorage.sessionDate;
+  url+= "&program_id=" + sessionStorage.programID;
+
+  console.log(url);
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      var obj = JSON.parse(this.responseText);
+      dashboardStatsForSyndromic(obj)
+    }
+  };
+  xhttp.open("GET", url, true);
+  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+  xhttp.setRequestHeader('Content-type', "application/json");
+  xhttp.send();
+
+
+}
+
+function dashboardStatsForSyndromic(stats) {
+
+// var top_colunm = stats['top']; 
+// // document.getElementById('reg-today').innerHTML = top_colunm.ILI;
+// // document.getElementById('returning-today').innerHTML = top_colunm.returning_today;
+// // document.getElementById('referred-today').innerHTML = top_colunm.referred_today;
+// // var total = parseInt(top_colunm.referred_today);
+// // total += parseInt(top_colunm.returning_today);
+// // total += parseInt(top_colunm.registered_today);
+// // document.getElementById('reg-total').innerHTML = total;
+
+var chart_keys = [];
+var chart_data = stats['down'];
+
+for(key in chart_data){
+  var keys = chart_data[key];
+  for(key in keys){
+    chart_keys.push(parseInt(key));
+  }
+  break;
+}
+
+var dates = [];
+chart_keys = chart_keys.sort(function(a, b){return a-b});
+var chart_numbers_new = [];
+
+var types = ['ILI','Respiratory'];
+var numbers = {};
+
+for(var i = 0 ; i < chart_keys.length ; i++){
+  var sdate = (chart_data[types[0]][chart_keys[i]].start_date);
+  dates.push(moment(sdate).format('MMM/YYYY'));
+}
+
+for(var i = 0 ; i < dates.length ; i++){
+  for(name in chart_data){
+    var attr = chart_data[name];
+    for(key in attr){
+      var sdate = chart_data[name][key].start_date;
+      sdate = moment(sdate).format('MMM/YYYY');
+      if(sdate != dates[i])
+        continue;
+    
+        console.log(numbers[name]);
+        if(numbers[name] == undefined)
+        numbers[name] = [];
+
+      numbers[name].push(chart_data[name][key].count);
+    }
+  }
+}
+
+Highcharts.chart('opd-encounters-for-syndromic-statistics', {
+    chart: {
+        type: 'spline',
+        height: 320
+    },
+    title: {
+        text: 'Syndromic Statistics'
+    },
+    subtitle: {
+        text: 'For the past 12 months'
+    },
+    xAxis: {
+      categories: dates,
+      crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        allowDecimals: false,
+        title: {
+            text: 'Number of clients'
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    exporting: {
+        enabled: false
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Influeza like infection',
+        data: numbers['ILI']
+
+    }, {
+        name: 'Respiratory',
+        data: numbers['Respiratory']
+
+    }]
+});
+
+}
+
+setTimeout("fetchDashboardStats(); fetchDashboardStatsForRespiratorySympotoms()", 200);
 </script>
 

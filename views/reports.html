@@ -42,8 +42,19 @@
         color: #fff;
     }
 
-</style>
+    .under-development {
+        position: absolute;
+        background-color: black;
+        width: 80%;
+        height: 90%;
+        left: 10%;
+        top: 7%;
+        z-index: 2000;
+        opacity: .99;
+        border-radius: 14px 14px;
+    }
 
+</style>
 <script>
 
     function reportGrouping(group) {
@@ -66,6 +77,7 @@
                 ["Diagnosis", "", "reports/report_dates.html?report=diagnosis", 'link'],
                 ["Registration report", "", "reports/report_dates.html?report=registration", 'link'],
                 ["LA report", "", "reports/report_dates.html?report=la", 'link'],
+                ["Malaria report", "", "reports/report_dates.html?report=malaria_report", 'link'],
                 ["Cases seen report", "", "reports/report_dates.html?report=cases_seen", 'link'],
                 ["Mental health report", "", "reports/report_dates.html?report=mental_health", 'link'],
                 ["Drugs given", "", "reports/report_dates.html?report=drugs_given", 'link'],
@@ -115,6 +127,9 @@
 
             var td = document.createElement("td");
             td.setAttribute("id", i.toString());
+
+            
+
             if (reports[i][3] == 'link') {
                 if (reports[i][2] != '#')
                     cell.setAttribute("onmousedown", "window.top.location='" + reports[i][2] + "'");
@@ -122,6 +137,12 @@
             } else {
                 cell.setAttribute("onmousedown", "buildReportLinks('" + reports[i][2] + "');");
             }
+
+            if (reports[i][0] == 'Malaria report') {
+                cell.setAttribute("onmousedown", "underDevelopmentModal()");
+            }
+
+            
             td.innerHTML = reports[i][0];
             tr.appendChild(td);
 
@@ -135,9 +156,20 @@
         }
     }
 
+
     function _testFunc() {
         var newURL = window.location.protocol + "//" + window.location.host + reports[parseInt(this.id)][2];
         window.top.location = newURL;
+    }
+
+    function underDevelopmentModal() {
+        window.parent.document.body.setAttribute("class", "modal-open");
+        var div = document.createElement('div');
+        div.id = "modal-backdrop";
+        div.className = 'modal-backdrop fade in';
+        window.parent.document.body.appendChild(div);
+        window.parent.document.getElementById("mo-modal").setAttribute("class", "modal fade in under-development");
+        window.parent.document.getElementById("mo-modal").style = "display: block;";
     }
 
 </script>
