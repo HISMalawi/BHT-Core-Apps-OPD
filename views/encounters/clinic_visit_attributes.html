@@ -373,7 +373,7 @@ function submitNeverTest() {
   else
   var hiv_status  = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
   
-  if(isEmpty(hiv_status)){
+  if(isEmpty(hiv_status) && sessionStorage.HIV_question_status != 'false'){
     showMessage('Please select HIV status');
     return;
   }
@@ -396,7 +396,7 @@ function submitNeverTest() {
 function createEncounterNeverTested(encounter) { 
   var observations = [];
   /* ........................ HIV status starts ................*/
-  if(already_on_art != 'true')
+  if(already_on_art != 'true' && sessionStorage.HIV_question_status != 'false')
   {
     if(opd_hiv_status =="Positive on ART")
       var hiv_status = 'Positive on ART';
@@ -440,7 +440,7 @@ function createEncounterNeverTested(encounter) {
       value_text: reffering_facility.value});
   }
  
-  if(hiv_status != 'Never tested' && opd_hiv_status !="Positive on ART") {
+  if(hiv_status != 'Never tested' && opd_hiv_status !="Positive on ART" && sessionStorage.HIV_question_status != 'false') {
     var test_date = moment(set_hiv_date).format('YYYY-MM-DD');
     var estimated = hiv_test_date_estimated == true ? 'Date estimated' : 'Date NOT estimated';
     var test_location = $('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
@@ -533,7 +533,42 @@ function getHIVOPDstatus() {
   }
 getHIVOPDstatus();
 
+function getHIVActivationStatus() 
+{
+    var radiology_property_url = apiProtocol + "://" + apiURL + ":" + apiPort;
+    radiology_property_url += "/api/v1/global_properties?property=activate.HIV.status.question";
+
+    var xhttp1 = new XMLHttpRequest();
+    xhttp1.onreadystatechange = function () {
+        if (this.readyState == 4 && (this.status == 201 || this.status == 200 || this.status == 404)) {
+            try {
+                var activate_HIV_status_property = JSON.parse(this.responseText);
+
+                if (activate_HIV_status_property["activate.HIV.status.question"] == "true") 
+                {
+                    sessionStorage.setItem("HIV_question_status", 'true');
+                    return true;
+                }
+                else
+                {
+                  sessionStorage.setItem("HIV_question_status", 'false');
+                  return false;
+                }
+                    
+            } catch (e) {
+            }
+        }
+    };
+    xhttp1.open("GET", radiology_property_url, false);
+    xhttp1.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp1.setRequestHeader('Content-type', "application/json");
+    xhttp1.send();
+}
 function ARTpatient() {
+  getHIVActivationStatus();
+  if(sessionStorage.HIV_question_status == 'false')
+  return true
+  else
   if(opd_hiv_status == undefined)
     return false;
   return (opd_hiv_status.match(/on ART/i) ? true : false);
