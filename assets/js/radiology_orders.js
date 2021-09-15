@@ -332,7 +332,7 @@ function submitRadiologyParameters(array_obj)
      sessionStorage.setItem("radiology_orders", radiology_orders_string); 
      sessionStorage.setItem("radiology_accession_number", accession_number); 
      sessionStorage.setItem("date_created", date_created); 
-     print_barcode();
+    //  print_barcode();
 
      jQuery(".loader").show();
      submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")

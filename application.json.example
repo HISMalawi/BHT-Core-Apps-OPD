@@ -92,7 +92,7 @@
        "activitiesName": "lab results",
       "available": true,
       "activitiesIcon": "/assets/images/clinical-notes.png",
-      "url": "/apps/OPD/views/encounters/malaria/lab_results.html"
+      "url": "/views/patient/lab/test_without_results.html"
     },
     {
       "activitiesName": "radiology examination",
