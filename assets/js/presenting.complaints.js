@@ -4,6 +4,7 @@ sessionStorage.setItem('radiology_order_done','false');
 sessionStorage.setItem('lab_order_done','false');
 sessionStorage.setItem('radiology_is_set', 'false');
 
+
 function clearSelection(type_of_complaint) {
   presentingComplaintsHash[type_of_complaint] = [];
   presentingComplaintsNameHash = [];
@@ -63,7 +64,7 @@ function changeToSelected(e) {
 
 function redirectToLabOrders(){
   sessionStorage.setItem('lab_is_set', 'true');
-  sessionStorage.orderFlowStatus = true;
+  //sessionStorage.orderFlowStatus = true;
   window.location.href= "./malaria/intermediately_blank_page.html";
 }
 
@@ -464,8 +465,9 @@ function nextPage(obs){
       return;
     } else {
       odersButton.setAttribute('selected','false');
-      redirectToLabOrders();
-      return;
+      //redirectToLabOrders();
+      nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+      //return;
     }
   }
   nextEncounter(sessionStorage.patientID, sessionStorage.programID);
