@@ -62,9 +62,6 @@
       __$("buttons").removeChild(__$("addHere"));
     }
   }
-  
-  fetchMonths();
-
 
 function load() {
 
@@ -113,11 +110,11 @@ function OptSubmit(vl) {
     
 </head>
 
-<body id="mateme">
+<body id="mateme" onload="fetchMonths()">
   <div id="container">
     <div id="content">
       <form id='month' action="javascript:OptSubmit(this);">
-        <select helpText="Select EPI Week" id="months" 
+        <select helpText="Select Month" id="months" 
           name="month" tt_onLoad="__$('keyboard').style.display = 'none';" 
           tt_onUnLoad="__checkSelected();">
         </select>

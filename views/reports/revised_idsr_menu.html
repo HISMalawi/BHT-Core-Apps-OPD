@@ -62,9 +62,6 @@
       __$("buttons").removeChild(__$("addHere"));
     }
   }
-  
-  fetchWeeks();
-
 
 function load() {
 
@@ -110,7 +107,7 @@ function OptSubmit(vl) {
     
 </head>
 
-<body id="mateme">
+<body id="mateme" onload="fetchWeeks()">
   <div id="container">
     <div id="content">
       <form id='week' action="javascript:OptSubmit(this);">

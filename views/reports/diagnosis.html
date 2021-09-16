@@ -1,7 +1,7 @@
 <html>
   <meta charset="utf-8"/>
 
-<title>IDSR</title>
+<title>Diagnosis Report</title>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
 
@@ -214,13 +214,14 @@ a:focus, a:hover {
   text-align: center;
   left: 170px !important;
   top: 320px !important;
+  height: auto !important;
 }
 
 .keyboardButton {
     font-size: 35px;
     font-family: arial, helvetica, sans-serif;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
-    margin-top: 3%;
+    margin-top: 1%;
 }
 
 .modal-header {
@@ -582,7 +583,7 @@ function initializeTable() {
   table = $('#diagnosis_table').DataTable({
     
             fixedHeader: false,
-            scrollY: 300,
+            scrollx: 300,
             Processing: true,
             ServerSide: true,
             scroller: {
@@ -635,14 +636,57 @@ function initializeTable_Modal() {
           period = "Total";
         }
 
-        if (data.indexOf('ls-5yrs') != -1) {
-          diagName = data.replace('ls-5yrs','');
-          period = "Less Than Five Years";
+        if (data.indexOf('ls_6_f') != -1) {
+          diagName = data.replace('ls_6_f','');
+          period = "less than 6 Years, Females";
         }
 
-        if (data.indexOf('grt-5yrs') != -1) {
-          diagName = data.replace('grt-5yrs','');
-          period = "Greater Than Five Years";
+        if (data.indexOf('ls_6_m') != -1) {
+          diagName = data.replace('ls_6_m','');
+          period = "less than 6 Months, Males";
+        }
+
+        if (data.indexOf('6_ls_5_f') != -1) {
+          diagName = data.replace('6_ls_5_f','');
+          period = "6 Months To 5 Years, Females";
+        }
+
+        if (data.indexOf('6_ls_5_m') != -1) {
+          diagName = data.replace('6_ls_5_m','');
+          period = "6 Months To 5 Years, Males";
+        }
+        
+
+        if (data.indexOf('5_t_14_f') != -1) {
+          diagName = data.replace('5_t_14_f','');
+          period = "5 Months To 14 Years, Females";
+        }
+
+        if (data.indexOf('5_t_14_m') != -1) {
+          diagName = data.replace('5_t_14_f','');
+          period = "5 Months to 14 Years, Males";
+        }
+
+        if (data.indexOf('grt_14_f') != -1) {
+          diagName = data.replace('grt_14_f','');
+          period = "Greater Than 14 Years, Females";
+        }
+
+
+        if (data.indexOf('grt_14_m') != -1) {
+          diagName = data.replace('grt_14_m','');
+          period = "Greater Than 14 Years, Males";
+        }
+
+
+        if (data.indexOf('un_f') != -1) {
+          diagName = data.replace('un_f','');
+          period = "Unknown, Females";
+        }
+
+        if (data.indexOf('un_m') != -1) {
+          diagName = data.replace('un_m','');
+          period = "Unknown, Males";
         }
         
         patientD = sessionStorage.getItem(data);

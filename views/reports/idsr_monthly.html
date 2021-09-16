@@ -213,6 +213,7 @@ a:focus, a:hover {
   text-align: center;
   left: 170px !important;
   top: 320px !important;
+  height: auto !important;
 }
 
 .keyboardButton {
@@ -697,7 +698,7 @@ var month = getUrlVars()['month'];
 month = month.split('&');
 document.getElementById('faci_name').innerHTML = sessionStorage.currentLocation;
 document.getElementById('mth').innerHTML = month;
-document.getElementById('wkdates').innerHTML = start_date +"----------"+ end_date;
+document.getElementById('wkdates').innerHTML = start_date +"&nbsp;&nbsp;&nbsp;to&nbsp;&nbsp;&nbsp;"+ end_date;
 document.getElementById('spinner').style = 'display: inline;';
 document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
