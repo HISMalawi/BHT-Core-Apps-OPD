@@ -5,18 +5,40 @@
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
     <link rel="stylesheet" href="/assets/css/background.css" type="text/css">
-
     
     <script language="javascript" defer="true">
       //<!--
       tstUsername = "";
       tstUserKeyboardPref = "abc";
 
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var months;
+
+      function fetchMonths() {
+      var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/get_months";
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+          var obj = JSON.parse(this.responseText);
+          months = obj;
+          load();
+        }
+
+      };
+      xhttp.open("GET", url, true);
+      xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+      xhttp.setRequestHeader('Content-type', "application/json");
+      xhttp.send();
+    }
+
       tstCurrentDate = sessionStorage.sessionDate;
       var tt_cancel_destination = "/";
 
     function __checkSelected(){
-        console.log(window.location.href);
+       // console.log(window.location.href);
     }
     
     function addHereButton(){
@@ -40,140 +62,38 @@
       __$("buttons").removeChild(__$("addHere"));
     }
   }
-
-    function getSelected(){
-    var choices = "";
-
-    for(var o = 0; o < __$('choice').options.length; o++){
-      if(__$('choice').options[o].selected == true){
-        choices += __$('choice').options[o].innerHTML + " ";
-        console.log(choices);
-      }
-    }
-   
-    return choices;
-
-  }
-
-
-
-function loadQuarters() {
-  var qtrs = [];
-  var current_qtr = "";
-  var curr_date = new Date();
-  var curr_year = curr_date.getFullYear();
-  curr_date = new Date(curr_date.getFullYear() +'-'+ (curr_date.getMonth()+1) +'-'+ curr_date.getDate() + " 00:00");
-  console.log(curr_date);
-  if(  curr_date >= (new Date(curr_year + '-01-01 00:00')) && curr_date <= (new Date(curr_year + '-03-31 00:00'))  ){
-      current_qtr = '1 ' + curr_year;
-      console.log(curr_year);
-    }else if ( curr_date >= (new Date(curr_year + '-04-01 00:00')) && curr_date <= (new Date(curr_year + '-06-30 00:00')) ){
-      current_qtr = '2 ' + curr_year;
-    }else if ( curr_date >= (new Date(curr_year + '-07-01 00:00')) && curr_date <= (new Date(curr_year + '-09-30 00:00')) ){
-      current_qtr = '3 ' + curr_year;
-    }else if ( curr_date >= (new Date(curr_year + '-10-01 00:00')) && curr_date <= (new Date(curr_year + '-12-31 00:00')) ){
-      current_qtr = '4 ' + curr_year;
-      
-    }
-
-    
-
-  var count = parseInt(current_qtr.substring(0,1));
-  var i = 0;
-
-  while(i < 14) { 
-
-    if(i == 0)
-      addFollowingQ(qtrs, count, curr_year);
-
-    qtrs.push('Q' + count + ' ' + curr_year);
-    count = (count > 0 ? (count -= 1) : count);
-    curr_year = (count == 0 ? (curr_year - 1) : curr_year);
-    count = (count == 0 ? (count += 4) : count);
-
-    i++;
-  }
-
-  var theMonths = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-  var today = new Date();
-  var aMonth = today.getMonth();
-  var aYear = today.getFullYear();
-
-  var i;
-  var monthList = [];
-  for (i=0; i<12; i++) {
-      //console.log(theMonths[aMonth]); //here you can do whatever you want...
-      monthList.push(theMonths[aMonth]);
-      aMonth++;
-      if (aMonth > 11) {
-          aMonth = 0;
-      }
-  }
-
-
-  function addFollowingQ(qtrs, count, curr_year){
-    if(count < 4){
-      qtrs.push('Q' + (count + 1) + " " + curr_year);
-    }else{
-      qtrs.push('Q1' + " " + (curr_year + 1));
-    }
-  }
-
-  var sel = document.getElementById('quarters');
-  var opt = document.createElement('option');
-  opt.setAttribute('value', "Set custom period");
-  //opt.innerHTML = 'Set custom period';
-  sel.appendChild(opt);
   
-  for ( var j = 12; j--; ) {
-    console.log(monthList[j]);
+  fetchMonths();
 
+
+function load() {
+
+  var sel = document.getElementById('months');
+  var opt = document.createElement('option');
+
+  for (var i=0; i<months.length; i++) {
+    var payload = months[i];
+    var _payload = payload[1];
+    var month_and_year = _payload[0]
+    var start_and_end_months = _payload[1];
     var opt = document.createElement('option');
-    opt.setAttribute('value', monthList[j]);
-    opt.innerHTML = monthList[j];
-    sel.appendChild(opt);
+    var dates = start_and_end_months.split("to");
+    var month = month_and_year.split('-')[0];
+    opt.innerHTML = month_and_year;
+    var value = dates[0]+ " " +dates[1] +" "+ month;
+    opt.setAttribute('value', value);
+    sel.appendChild(opt);  
   }
-
-  if(quarters_set == false) {
-    quarters_set = true;
-    gotoPage(0);
-  }
-
 }
 
-var quarters_set = false;
-var action_set = false;
+function OptSubmit(vl) {
+    var selected_val = $("touchscreenInput0");
+    var dates = selected_val.getAttribute('tstvalue');
+    dates = dates.split(" ");
 
-function changeFinishBtn() {
-  var btn = document.getElementById("nextButton");
-  btn.setAttribute("onmousedown","submitSelectedOpts();");
-}
+    console.log("dates: ",dates);
 
-function submitSelectedOpts(){
-  var selected_val = $("touchscreenInput0").value;
-  if(selected_val.length < 1){
-    showMessage('Please select one option from the list');
-    return;
-  }
-
-  var url = window.location.href;
-  url = new URL(url);
-  var type = url.searchParams.get("type");
-  if(type == 'survival_analysis'){
-    if(selected_val == 'Set custom period'){
-      showMessage("Currently Survival analysis<br />can not process custom dates.<br/>Please select a quarter");
-    }else{
-      document.location = 'survival_analysis.html?quarter=' + selected_val;
-    }
-    return;
-  }
-
-  if(selected_val == 'Set custom period'){
-    document.location = '../reports/clinic/report_dates.html?report=cohort';
-    return;
-  }
-
-  document.location = "idsr_monthly.html?" + 'start_date=2021-01-01&end_date=2021-09-08&type=idsr';
+    document.location = "idsr_monthly.html?" + 'start_date='+dates[0]+'&end_date='+dates[3]+"&month="+dates[4]+"&";
 }
 </script>
 
@@ -196,9 +116,9 @@ function submitSelectedOpts(){
 <body id="mateme">
   <div id="container">
     <div id="content">
-      <form id='quarter' action="revised_cohort.html" method="get">
-        <select helpText="Select Month" id="quarters" 
-          name="quarter" tt_onLoad="__$('keyboard').style.display = 'none';loadQuarters();changeFinishBtn();" 
+      <form id='month' action="javascript:OptSubmit(this);">
+        <select helpText="Select EPI Week" id="months" 
+          name="month" tt_onLoad="__$('keyboard').style.display = 'none';" 
           tt_onUnLoad="__checkSelected();">
         </select>
 

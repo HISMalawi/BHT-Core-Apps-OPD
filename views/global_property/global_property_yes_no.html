@@ -9,48 +9,6 @@
 <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
 
 <script>
-
-function fetchWeeks() {
-  var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/get_weeks";
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-      var obj = JSON.parse(this.responseText);
-      // dashboardStats(obj);
-      console.log('fetchWeeks');
-      console.log(obj);
-    }
-
-  };
-  xhttp.open("GET", url, true);
-  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-  xhttp.setRequestHeader('Content-type', "application/json");
-  xhttp.send();
-
-}
-function fetchMonths() {
-  var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/get_months";
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-      var obj = JSON.parse(this.responseText);
-      // dashboardStats(obj);
-      console.log('fetchMonths');
-      console.log(obj);
-    }
- 
-  };
-  xhttp.open("GET", url, true);
-  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-  xhttp.setRequestHeader('Content-type', "application/json");
-  xhttp.send();
-
-}
-fetchWeeks();
-fetchMonths();
-
 var tt_cancel_destination = "/";
 
 function addYesNo() {

@@ -5,18 +5,40 @@
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
     <link rel="stylesheet" href="/assets/css/background.css" type="text/css">
-
     
     <script language="javascript" defer="true">
       //<!--
       tstUsername = "";
       tstUserKeyboardPref = "abc";
 
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var weeks;
+
+      function fetchWeeks() {
+      var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/get_weeks";
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+          var obj = JSON.parse(this.responseText);
+          weeks = obj.reverse();
+          load();
+        }
+
+      };
+      xhttp.open("GET", url, true);
+      xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+      xhttp.setRequestHeader('Content-type', "application/json");
+      xhttp.send();
+    }
+
       tstCurrentDate = sessionStorage.sessionDate;
       var tt_cancel_destination = "/";
 
     function __checkSelected(){
-        console.log(window.location.href);
+       // console.log(window.location.href);
     }
     
     function addHereButton(){
@@ -40,124 +62,35 @@
       __$("buttons").removeChild(__$("addHere"));
     }
   }
-
-    function getSelected(){
-    var choices = "";
-
-    for(var o = 0; o < __$('choice').options.length; o++){
-      if(__$('choice').options[o].selected == true){
-        choices += __$('choice').options[o].innerHTML + " ";
-        console.log(choices);
-      }
-    }
-   
-    return choices;
-
-  }
-
-
-
-function loadQuarters() {
-  var qtrs = [];
-  var current_qtr = "";
-  var curr_date = new Date();
-  var curr_year = curr_date.getFullYear();
-  curr_date = new Date(curr_date.getFullYear() +'-'+ (curr_date.getMonth()+1) +'-'+ curr_date.getDate() + " 00:00");
-  console.log(curr_date);
-  if(  curr_date >= (new Date(curr_year + '-01-01 00:00')) && curr_date <= (new Date(curr_year + '-03-31 00:00'))  ){
-      current_qtr = '1 ' + curr_year;
-      console.log(curr_year);
-    }else if ( curr_date >= (new Date(curr_year + '-04-01 00:00')) && curr_date <= (new Date(curr_year + '-06-30 00:00')) ){
-      current_qtr = '2 ' + curr_year;
-    }else if ( curr_date >= (new Date(curr_year + '-07-01 00:00')) && curr_date <= (new Date(curr_year + '-09-30 00:00')) ){
-      current_qtr = '3 ' + curr_year;
-    }else if ( curr_date >= (new Date(curr_year + '-10-01 00:00')) && curr_date <= (new Date(curr_year + '-12-31 00:00')) ){
-      current_qtr = '4 ' + curr_year;
-      
-    }
-
-    
-
-  var count = parseInt(current_qtr.substring(0,1));
-  var i = 0;
-
-  while(i < 14) { 
-
-    if(i == 0)
-      addFollowingQ(qtrs, count, curr_year);
-
-    //qtrs.push('Q' + count + ' ' + curr_year);
-    qtrs.push('EPI WEEK ' + (count + 1) );
-    count = (count > 0 ? (count -= 1) : count);
-    curr_year = (count == 0 ? (curr_year - 1) : curr_year);
-    count = (count == 0 ? (count += 4) : count);
-
-    i++;
-  }
-
-  function addFollowingQ(qtrs, count, curr_year){
-    if(count < 4){
-      //qtrs.push('Q' + (count + 1) + " " + curr_year);
-      //qtrs.push('EPI WEEK ' + (count + 1) );
-    }else{
-      //qtrs.push('Q1' + " " + (curr_year + 1));
-      qtrs.push('EPI WEEK ' + (count + 1) );
-    }
-  }
-
-  var sel = document.getElementById('quarters');
-  var opt = document.createElement('option');
-  opt.setAttribute('value', "Set custom period");
-  opt.innerHTML = 'Set custom period';
-  sel.appendChild(opt);
   
-  for(var i = 0; i < qtrs.length; i++){
+  fetchWeeks();
+
+
+function load() {
+
+  var sel = document.getElementById('weeks');
+  var opt = document.createElement('option');
+
+  for (var i=0; i<weeks.length; i++) {
+    var week = weeks[i];
     var opt = document.createElement('option');
-    opt.setAttribute('value', qtrs[i]);
-    opt.innerHTML = qtrs[i];
-    sel.appendChild(opt);
-  } 
-
-  if(quarters_set == false) {
-    quarters_set = true;
-    gotoPage(0);
+    var dates = week[1].split(" ");
+    var txt = week[0].split('W');
+    var weekNumber = txt[1];
+    txt = txt[0] +"/W"+ txt[1] +" - ("+  dates[0] +" to "+ dates[2] +")";
+    opt.innerHTML = txt;
+    var value = dates[0]+ " " +dates[2]+" "+weekNumber+"&";
+    opt.setAttribute('value', value);
+    sel.appendChild(opt);  
   }
-
 }
 
-var quarters_set = false;
-var action_set = false;
+function OptSubmit(vl) {
+    var selected_val = $("touchscreenInput0");
+    var dates = selected_val.getAttribute('tstvalue');
+    dates = dates.split(" ");
 
-function changeFinishBtn() {
-  var btn = document.getElementById("nextButton");
-  btn.setAttribute("onmousedown","submitSelectedOpts();");
-}
-
-function submitSelectedOpts(){
-  var selected_val = $("touchscreenInput0").value;
-  if(selected_val.length < 1){
-    showMessage('Please select one option from the list');
-    return;
-  }
-
-  var url = window.location.href;
-  url = new URL(url);
-  var type = url.searchParams.get("type");
-  if(type == 'survival_analysis'){
-    if(selected_val == 'Set custom period'){
-      showMessage("Currently Survival analysis<br />can not process custom dates.<br/>Please select a quarter");
-    }else{
-      document.location = 'survival_analysis.html?quarter=' + selected_val;
-    }
-    return;
-  }
-
-  if(selected_val == 'Set custom period'){
-    document.location = '../reports/clinic/report_dates.html?report=cohort';
-    return;
-  }
-
-  document.location = "idsr.html?" + 'start_date=2021-01-01&end_date=2021-09-30&type=idsr';
+    document.location = "idsr.html?" + 'start_date='+dates[0]+'&end_date='+dates[1]+"&week_number="+dates[2];
 }
 </script>
 
@@ -180,9 +113,9 @@ function submitSelectedOpts(){
 <body id="mateme">
   <div id="container">
     <div id="content">
-      <form id='quarter' action="revised_cohort.html" method="get">
-        <select helpText="Select Quarter" id="quarters" 
-          name="quarter" tt_onLoad="__$('keyboard').style.display = 'none';loadQuarters();changeFinishBtn();" 
+      <form id='week' action="javascript:OptSubmit(this);">
+        <select helpText="Select EPI Week" id="weeks" 
+          name="week" tt_onLoad="__$('keyboard').style.display = 'none';" 
           tt_onUnLoad="__checkSelected();">
         </select>
 

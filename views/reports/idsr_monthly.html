@@ -354,16 +354,20 @@ var print_pdf_attr = {};
       <td colspan="5" id="" style="border-right-style: solid; font-weight: bold; text-align: center;">MONTHLY DISEASE SURVEILLANCE REPORT</td>
     </tr>
     <tr>
-      <td class="td-text-align-left">Health Zone: </td>
-      <td class="td-text-align-left">Mzuzu Central</td>
+      <td class="td-text-align-left">Country:</td>
+      <td class="td-text-align-left">Malawi</td>
     </tr>
     <tr>
-      <td class="td-text-align-left">Facility Population:</td>
-      <td class="td-text-align-left"></td>
+      <td class="td-text-align-left">Reporting Facility Name:</td>
+      <td class="td-text-align-left"><span id="faci_name"></span></td>
     </tr>
     <tr>
       <td class="td-text-align-left">Month:</td>
-      <td class="td-text-align-left"> </td>
+      <td class="td-text-align-left"><span id="mth"></span></td>
+    </tr>
+    <tr>
+      <td class="td-text-align-left">Month Dates: </td>
+      <td class="td-text-align-left"><span id="wkdates"></span></td>
     </tr>
     <tr>
       <table>
@@ -687,24 +691,13 @@ function fillTableRows() {
 }
 
 
-var quarter_val  = getUrlVars()["quarter"];
-
-if(quarter_val == undefined) {
-    var start_date = getUrlVars()["start_date"];
-    var end_date = getUrlVars()["end_date"];
-    var Quarter = 'Custom';
-    var Year = moment(start_date).format("DD/MMM/YYYY"); 
-    Year += " " + moment(end_date).format("DD/MMM/YYYY"); 
-}else{
-    quarter_val  = quarter_val.replace(/%20/," ");
-    var Year    = quarter_val.split(" ")[1];
-    var Quarter = quarter_val.split(" ")[0];
-}
-
-// document.getElementById("display-quarter").innerHTML = "Quarter: " + Quarter;
-// document.getElementById("display-quarter-year").innerHTML = "Year: " + Year;
-
-// document.getElementById('clinic-name').innerHTML = sessionStorage.currentLocation;
+var start_date = getUrlVars()["start_date"];
+var end_date = getUrlVars()["end_date"];
+var month = getUrlVars()['month'];
+month = month.split('&');
+document.getElementById('faci_name').innerHTML = sessionStorage.currentLocation;
+document.getElementById('mth').innerHTML = month;
+document.getElementById('wkdates').innerHTML = start_date +"----------"+ end_date;
 document.getElementById('spinner').style = 'display: inline;';
 document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
