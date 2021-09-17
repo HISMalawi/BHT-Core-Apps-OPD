@@ -63,6 +63,8 @@
     }
   }
 
+  fetchMonths();
+
 function load() {
 
   var sel = document.getElementById('months');
@@ -110,7 +112,7 @@ function OptSubmit(vl) {
     
 </head>
 
-<body id="mateme" onload="fetchMonths()">
+<body id="mateme" onload="">
   <div id="container">
     <div id="content">
       <form id='month' action="javascript:OptSubmit(this);">

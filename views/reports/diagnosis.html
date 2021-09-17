@@ -583,7 +583,8 @@ function initializeTable() {
   table = $('#diagnosis_table').DataTable({
     
             fixedHeader: false,
-            scrollx: 300,
+            scrollX: 300,
+            scrolly: 300,
             Processing: true,
             ServerSide: true,
             scroller: {
@@ -616,19 +617,71 @@ function initializeTable_Modal() {
         lookForTag();
     }
 
-    function view_patientD(data)
-    {    console.log("hello");
-         if($('#virtual-keyboard').length)
-             hide_keyboard();
+    function patient_details_request(patient_id){
 
-        $('.keyboard').attr('style','display:none');
-        document.getElementById('spinner').style = 'display: block;';
-        document.getElementById('report-cover').style = 'display: block;';
-        dataTableContentLoader(data);
+    }
+
+    function getPatientDetails(data) {
+      var data = sessionStorage.getItem(data);
+
+      var IDsArray = data.split('|');
+
+      var patients_inf = '';
+      var progressTracker = 0;
+
+      for (var n=1; n<IDsArray.length; n++) {
+
+        var patient_id = IDsArray[n];
+        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patients/' + patient_id;
+        console.log("idddd: ",patient_id);
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+        if (this.readyState == 4) {
+        if (this.status == 200) {
+          progressTracker++;
+          var results = JSON.parse(this.responseText);
+         // patients_inf +='|'
+         if (progressTracker == IDsArray.length-1)
+          console.log("FINISHED",);
+          // document.getElementById("name").innerHTML = results.person.names[0].given_name + " " + results.person.names[0].family_name;
+          // document.getElementById("gender").innerHTML = results.person.gender;
+          // document.getElementById("birthdate").innerHTML = moment(results.person.birthdate).format("DD/MMM/YYYY");
+          // document.getElementById("district").innerHTML = results.person.addresses[0].neighborhood_cell;
+          // document.getElementById("home-district").innerHTML = results.person.addresses[0].address2;
+          // document.getElementById("current-village").innerHTML = results.person.addresses[0].city_village;
+          // document.getElementById("current-ta").innerHTML = results.person.addresses[0].township_division;
+          // document.getElementById("home-village").innerHTML = results.person.addresses[0].county_district;
+          // document.getElementById("current-district").innerHTML = results.person.addresses[0].state_province;
+          // document.getElementById("malawi-national-id").innerHTML = sessionStorage.national_id;
+        }
+        }
+        };
+        try {
+          req.open('GET', url, true);
+          req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+          req.send(null);
+        } catch (e) {
+        }   
+      }
+    }
+
+    function view_patientD(data)
+    {   
+     // getPatientDetails(data);
+      // console.log(sessionStorage.getItem(data));
+        //  if($('#virtual-keyboard').length)
+        //      hide_keyboard();
+
+        // $('.keyboard').attr('style','display:none');
+        // document.getElementById('spinner').style = 'display: block;';
+        // document.getElementById('report-cover').style = 'display: block;';
+        // dataTableContentLoader(data);
     }
 
     function dataTableContentLoader(data)
     {   
+        //data = sessionStorage.getItem(data);
+
         var diagName;
         var period;
         if (data.indexOf('total') != -1) {
@@ -910,41 +963,62 @@ function initializeTable_Modal() {
 
           if (total != 0)   
           row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'total'+'\')">'+total+'</a>';
-          sessionStorage.setItem(diagnosis+'total', diagnosisDetails[diagnosis].patientD_F_LessSixMonths +
-          diagnosisDetails[diagnosis].patientD_M_LessSixMonths +
-          diagnosisDetails[diagnosis].patientD_F_LessFiveYrs +
-          diagnosisDetails[diagnosis].patientD_M_LessFiveYrs +
-          diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs +
-          diagnosisDetails[diagnosis].patientD_M_5yrsTo14yrs +
-          diagnosisDetails[diagnosis].patientD_F_Over14Yrs +
-          diagnosisDetails[diagnosis].patientD_M_Over14Yrs +
-          diagnosisDetails[diagnosis].patientD_F_unknowns +
-          diagnosisDetails[diagnosis].patientD_M_unknowns);
+
+          // sessionStorage.setItem(diagnosis+'total', diagnosisDetails[diagnosis].patientD_F_LessSixMonths +
+          // diagnosisDetails[diagnosis].patientD_M_LessSixMonths +
+          // diagnosisDetails[diagnosis].patientD_F_LessFiveYrs +
+          // diagnosisDetails[diagnosis].patientD_M_LessFiveYrs +
+          // diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs +
+          // diagnosisDetails[diagnosis].patientD_M_5yrsTo14yrs +
+          // diagnosisDetails[diagnosis].patientD_F_Over14Yrs +
+          // diagnosisDetails[diagnosis].patientD_M_Over14Yrs +
+          // diagnosisDetails[diagnosis].patientD_F_unknowns +
+          // diagnosisDetails[diagnosis].patientD_M_unknowns);
 
           }
           else if (row.children[i].getAttribute('id') == 'ls_6_f') {
             if (diagnosisDetails[diagnosis].female_less_than_six_months != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'ls_6_f'+'\')">'+diagnosisDetails[diagnosis].female_less_than_six_months+'</a>';
-              sessionStorage.setItem(diagnosis+'ls_6_f', diagnosisDetails[diagnosis].patientD_F_LessSixMonths);
+              //sessionStorage.setItem(diagnosis+'ls_6_f', diagnosisDetails[diagnosis].patientD_F_LessSixMonths);
             }
           }
           else if (row.children[i].getAttribute('id') == 'ls_6_m') {
             if (diagnosisDetails[diagnosis].male_less_than_six_months != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'ls_6_m'+'\')">'+diagnosisDetails[diagnosis].male_less_than_six_months+'</a>';
-              sessionStorage.setItem(diagnosis+'ls_6_m', diagnosisDetails[diagnosis].patientD_M_LessSixMonths);
+              //sessionStorage.setItem(diagnosis+'ls_6_m', diagnosisDetails[diagnosis].patientD_M_LessSixMonths);
             }
           }
 
           else if (row.children[i].getAttribute('id') == '6_ls_5_f') {
             if (diagnosisDetails[diagnosis].female_six_months_to_less_than_five_yrs != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'6_ls_5_f'+'\')">'+diagnosisDetails[diagnosis].female_six_months_to_less_than_five_yrs+'</a>';
-              sessionStorage.setItem(diagnosis+'6_ls_5_f', diagnosisDetails[diagnosis].patientD_F_LessFiveYrs);
+              //sessionStorage.setItem(diagnosis+'6_ls_5_f', diagnosisDetails[diagnosis].patientD_F_LessFiveYrs);
             }
           }
           else if (row.children[i].getAttribute('id') == '6_ls_5_m') {
             if (diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs != 0) {
-              row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'6_ls_5_m'+'\')">'+diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs+'</a>';
-              sessionStorage.setItem(diagnosis+'6_ls_5_m', diagnosisDetails[diagnosis].patientD_M_LessFiveYrs);
+             // console.log("strokes: ",diagnosisDetails[diagnosis].patientD_M_LessFiveYrs.split(" ")[1].split(',')[1]);
+             //sessionStorage.setItem(diagnosis+'6_ls_5_m', diagnosisDetails[diagnosis].patientD_M_LessFiveYrs);
+             var person = diagnosisDetails[diagnosis].patientD_M_LessFiveYrs.split('|');
+
+             //console.log("person: ",person);
+             //var size = 3;
+             
+             console.log("lengh: ",person.length);
+             if (person.length > 1) {
+               var perons_id_ls = diagnosis;
+              for (var x=1; x<person.length; x++) {
+                   //for (var z=0; z<person[i].split(','))
+                   
+                   //console.log(person[x].split(',')[1]);
+                  // if (person[x] != 'undefined')
+                  perons_id_ls +='|'+person[x].split(',')[1]
+             }
+             //console.log("perons_id_ls: ",perons_id_ls);
+            // sessionStorage.setItem(diagnosis+'6_ls_5_m', perons_id_ls);
+             row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'6_ls_5_m'+'\')">'+diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs+'</a>';
+             //row.children[i].innerHTML = '<a href="#" onclick="view_patientD(perons_id_ls)">'+diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs+'</a>';
+             }
             }
           }
 
@@ -953,39 +1027,39 @@ function initializeTable_Modal() {
           else if (row.children[i].getAttribute('id') == '5_t_14_f') {
             if (diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'5_t_14_f'+'\')">'+diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years+'</a>';
-              sessionStorage.setItem(diagnosis+'5_t_14_f', diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs);
+              //sessionStorage.setItem(diagnosis+'5_t_14_f', diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs);
             }
           }
           else if (row.children[i].getAttribute('id') == '5_t_14_m') {
             if (diagnosisDetails[diagnosis].male_five_yrs_to_fourteen_years != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'5_t_14_m'+'\')">'+diagnosisDetails[diagnosis].male_five_yrs_to_fourteen_years+'</a>';
-              sessionStorage.setItem(diagnosis+'5_t_14_m', diagnosisDetails[diagnosis].patientD_M_5yrsTo14yrs);
+             //sessionStorage.setItem(diagnosis+'5_t_14_m', diagnosisDetails[diagnosis].patientD_M_5yrsTo14yrs);
             }
           }
 
           else if (row.children[i].getAttribute('id') == 'grt_14_f') {
             if (diagnosisDetails[diagnosis].female_over_fourteen_years != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'grt_14_f'+'\')">'+diagnosisDetails[diagnosis].female_over_fourteen_years +'</a>';
-              sessionStorage.setItem(diagnosis+'grt_14_f', diagnosisDetails[diagnosis].patientD_F_Over14Yrs);
+              //sessionStorage.setItem(diagnosis+'grt_14_f', diagnosisDetails[diagnosis].patientD_F_Over14Yrs);
             }
           }
           else if (row.children[i].getAttribute('id') == 'grt_14_m') {
             if (diagnosisDetails[diagnosis].male_over_fourteen_years != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'grt_14_m'+'\')">'+diagnosisDetails[diagnosis].male_over_fourteen_years+'</a>';
-              sessionStorage.setItem(diagnosis+'grt_14_m', diagnosisDetails[diagnosis].patientD_M_Over14Yrs);
+             // sessionStorage.setItem(diagnosis+'grt_14_m', diagnosisDetails[diagnosis].patientD_M_Over14Yrs);
             }
           }
 
           else if (row.children[i].getAttribute('id') == 'un_f') {
             if (diagnosisDetails[diagnosis].female_unknowns != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'un_f'+'\')">'+diagnosisDetails[diagnosis].female_unknowns+'</a>';
-              sessionStorage.setItem(diagnosis+'un_f', diagnosisDetails[diagnosis].patientD_F_unknowns);
+              //sessionStorage.setItem(diagnosis+'un_f', diagnosisDetails[diagnosis].patientD_F_unknowns);
             }
           }
           else if (row.children[i].getAttribute('id') == 'un_m') {
             if (diagnosisDetails[diagnosis].male_unknowns != 0) {
               row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'un_m'+'\')">'+diagnosisDetails[diagnosis].male_unknowns+'</a>';
-              sessionStorage.setItem(diagnosis+'un_f', diagnosisDetails[diagnosis].patientD_M_unknowns);
+              //sessionStorage.setItem(diagnosis+'un_f', diagnosisDetails[diagnosis].patientD_M_unknowns);
             }
           }
          
