@@ -566,6 +566,10 @@ function getHIVActivationStatus()
 }
 function ARTpatient() {
   getHIVActivationStatus();
+  
+  if(sessionStorage.userRoles.match(/Clinician/i))
+  return true;
+
   if(sessionStorage.HIV_question_status == 'false')
   return true
   else
@@ -685,8 +689,14 @@ function goToPatientDashboard()
 {
   document.location = tt_cancel_destination;
 }
+function showVisitTypeQuestion()
+{
+  if(sessionStorage.userRoles.match(/Clinician/i))
+  return false;
+  else
+  return true;
 
-
+}
 var gloabl_obs;
 var global_nid;
 
@@ -698,6 +708,7 @@ var global_nid;
 
       <form>
         <select allowFreeText="false" helpText="Type of visit"
+        condition='showVisitTypeQuestion() == true;'
            name="outcome" id="visit_type" key="outcome">
             <option value=""></option>
             <option value="New">New</option>
