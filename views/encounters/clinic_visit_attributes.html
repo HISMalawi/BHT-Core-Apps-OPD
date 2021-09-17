@@ -113,9 +113,22 @@ function isEmpty(str){
   }
 }
 
+
+function setOPDActivities() { 
+        values = sessionStorage.OPD_activities.replace('patient registration,','').replace('patient registration','');
+        sessionStorage.OPD_activities   = values;
+        var parameters = {property: "OPD_activities", property_value: values}
+        submitParameters(parameters, "/user_properties", "nextPage");
+}
 function showPregnantQuestion() {
+
   if(sessionStorage.patientGender == 'M')
-    return false;
+  {
+    if(sessionStorage.userRoles.match(/Clinician/i) && sessionStorage.gender == 'M' )
+      setOPDActivities();
+
+      return false;
+  }
 
   var age = parseInt(sessionStorage.patientAge);   
   if(age >= 9 && age <= 55)
@@ -566,7 +579,7 @@ function getHIVActivationStatus()
 }
 function ARTpatient() {
   getHIVActivationStatus();
-  
+
   if(sessionStorage.userRoles.match(/Clinician/i))
   return true;
 

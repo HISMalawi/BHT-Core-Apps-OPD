@@ -18,6 +18,7 @@
   type="text/javascript"
   src="/assets/js/does_connection_exist.js"
 ></script>
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
 
 <script src="/assets/js/httpUtils.js"></script>
 <script src="/assets/js/uiUtils.js"></script>
@@ -712,7 +713,7 @@ var global_property = GlobalProperty({
     patient_id = patient["patient_id"];
     sessionStorage.patientID = patient_id;
     checkIfEnrolled(patient_id);
-    checkIfDemographicsUpdated(patient_id);
+    // checkIfDemographicsUpdated(patient_id);
     var names = obj["names"][0];
     var client_name = document.getElementById("client-name");
     client_name.innerHTML = names["given_name"] + " " + names["family_name"];
@@ -792,6 +793,8 @@ var global_property = GlobalProperty({
       10000;
     bmindex = Math.round(bmindex * 10) / 10;
     getBMIResult(gender, roundedAge, bmindex);
+
+  
   }
 
   function getHeight(patient_id) {
@@ -2019,33 +2022,33 @@ function checkIfEnrolled(patient_id) {
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.send();
 }
-function checkIfDemographicsUpdated(patient_id) {
+// function checkIfDemographicsUpdated(patient_id) {
   
-  var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/dde/patients/diff?patient_id=";
-  url += sessionStorage.patientID + "&program_id="+sessionStorage.programID;
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    console.log
-    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-      var obj = JSON.parse(this.responseText);
-      if(Object.keys(obj.diff).length !== 0) {
-        const f = buildDiffs(obj.diff);
-        alertify
-          .confirm("Demographics changed", "Patient demographics have been changed remotely.<br />Use remote demographics? " + f,  function(){
-            refreshDemographics(patient_id);
-            alertify.success('Successfully updated');
-        },
-        function(){
-          alertify.error('Update Cancelled');
-        });
-      } 
-    }
-  };
-  xhttp.open("GET", url, true);
-  xhttp.setRequestHeader("Authorization",sessionStorage.getItem("authorization"));
-  xhttp.setRequestHeader("Content-type", "application/json");
-  xhttp.send();
-}
+//   var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/dde/patients/diff?patient_id=";
+//   url += sessionStorage.patientID + "&program_id="+sessionStorage.programID;
+//   var xhttp = new XMLHttpRequest();
+//   xhttp.onreadystatechange = function() {
+//     console.log
+//     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+//       var obj = JSON.parse(this.responseText);
+//       if(Object.keys(obj.diff).length !== 0) {
+//         const f = buildDiffs(obj.diff);
+//         alertify
+//           .confirm("Demographics changed", "Patient demographics have been changed remotely.<br />Use remote demographics? " + f,  function(){
+//             refreshDemographics(patient_id);
+//             alertify.success('Successfully updated');
+//         },
+//         function(){
+//           alertify.error('Update Cancelled');
+//         });
+//       } 
+//     }
+//   };
+//   xhttp.open("GET", url, true);
+//   xhttp.setRequestHeader("Authorization",sessionStorage.getItem("authorization"));
+//   xhttp.setRequestHeader("Content-type", "application/json");
+//   xhttp.send();
+// }
 function refreshDemographics(patient_id) {
   
   var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/dde/patients/refresh?patient_id=";
@@ -2222,16 +2225,16 @@ function confirmVoid(){
 }
 
 
-function selectReason(reason, e){
-  let cells = document.getElementsByClassName('void-reason');
-  for(let i =  0; i < cells.length; i++){
-    cells[i].setAttribute("class", "void-reason unselected-cells");
-  }
-  e.setAttribute("class", "void-reason selected-cells");
-  let voidButton = document.getElementById("voidButton");
-  voidButton.setAttribute("onmousedown","voidClient('" + reason + "');");
-  voidButton.style.backgroundColor="red";
-}
+// function selectReason(reason, e){
+//   let cells = document.getElementsByClassName('void-reason');
+//   for(let i =  0; i < cells.length; i++){
+//     cells[i].setAttribute("class", "void-reason unselected-cells");
+//   }
+//   e.setAttribute("class", "void-reason selected-cells");
+//   let voidButton = document.getElementById("voidButton");
+//   voidButton.setAttribute("onmousedown","voidClient('" + reason + "');");
+//   voidButton.style.backgroundColor="red";
+// }
 
 function enrollProgramPoP() {
   const box = document.getElementById('enroll-program');
@@ -2246,6 +2249,8 @@ function closeEnrollProgramPoP(){
   page_cover.style = 'display: none;';
   box.style = 'display:none;';
 }
+
+
 
 if(sessionStorage.userRoles.match(/Pharmacist/i))
   window.location = '/views/patient/dispensing.html';
