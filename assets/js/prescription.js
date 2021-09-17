@@ -1422,6 +1422,8 @@ function addDrug(id)
   img.style.cursor = "pointer";
 
   img.onclick = function(){
+    document.getElementById('search').value = '';
+  loadAllDrugs();
 
       removeDrug(this.getAttribute("tag"));   
   }
