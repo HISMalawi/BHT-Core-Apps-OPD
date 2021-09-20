@@ -189,8 +189,6 @@ function fetchDashboardStatsForRespiratorySympotoms() {
   url += "/dashboard_stats_for_syndromic_statistics?date=" + sessionStorage.sessionDate;
   url+= "&program_id=" + sessionStorage.programID;
 
-  console.log(url);
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
@@ -248,8 +246,7 @@ for(var i = 0 ; i < dates.length ; i++){
       sdate = moment(sdate).format('MMM/YYYY');
       if(sdate != dates[i])
         continue;
-    
-        console.log(numbers[name]);
+        
         if(numbers[name] == undefined)
         numbers[name] = [];
 

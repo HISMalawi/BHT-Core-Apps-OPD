@@ -60,16 +60,18 @@
     function reportGrouping(group) {
         if (group == 'main') {
             return [
-                ['MoH', '/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png', '#', 'link'],
-                ["PEPFAR", "/assets/images/login-logos/PEPFAR.png", "#", 'link'],
+                ['MoH', '/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png', 'MoH', 'function'],
+                ["PEPFAR", "/assets/images/login-logos/PEPFAR.png",  '#', 'link'],
                 ["Clinic", "", "Clinic", 'function']
             ];
         } else if (group == 'MoH') {
             return [
-                ["LA report", "", "#", 'link'],
-                ["Drug report", "", "#", 'link'],
-                ["Malaria report", "", "#", 'link'],
-                ["IPT", "", "#", 'link']
+                // ["LA report", "", "#", 'link'],
+                // ["Drug report", "", "#", 'link'],
+                // ["Malaria report", "", "#", 'link'],
+                // ["IPT", "", "#", 'link']
+                   ['Weekly IDSR Report','','/apps/OPD/views/reports/revised_idsr_menu.html', 'link'],
+                   ['Monthly IDSR Report','','/apps/OPD/views/reports/revised_idsr_monthly_menu.html', 'link']
             ];
         } else if (group == 'Clinic') {
             return [
@@ -87,8 +89,8 @@
             ];
         } else if (group == 'PEPFAR') {
             return [
-                ['IDSR report', "/assets/images/login-logos/PEPFAR.png", "PEPFAR", '#', 'link'],
-                ["DHIS 2", "/assets/images/login-logos/PEPFAR.png", "PEPFAR", "#", 'link']
+                // ['IDSR report', "/assets/images/login-logos/PEPFAR.png", "PEPFAR", '#', 'link'],
+                // ["DHIS 2", "/assets/images/login-logos/PEPFAR.png", "PEPFAR", "#", 'link'],
             ];
         } else {
         }

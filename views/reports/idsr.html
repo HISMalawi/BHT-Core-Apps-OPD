@@ -1,0 +1,1007 @@
+<html>
+  <meta charset="utf-8"/>
+
+<title>IDSR Weekly Report</title>
+<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
+
+<link rel="stylesheet" href="/assets/css/custom.css">
+
+
+<script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/core.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
+
+
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
+
+
+
+<script src="/assets/js/moment.js"></script>
+
+
+<script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
+
+#tasks {
+  visibility: hidden;
+  margin-right: 10px;
+}
+
+@page {
+  size: auto;   /* auto is the current printer page size */
+  margin: 0mm;  /* this affects the margin in the printer settings */
+  font-size: 12px;
+}
+
+body {
+  background-color:#FFFFFF; 
+  border: solid 1px black ;
+  margin: 0px;  /* the margin on the content before printing */
+}
+
+#spinner{
+  display: none;
+}
+
+#report-cover {
+  display: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  border-style: solid;
+  border-width: 1px;
+}
+
+#version {
+  text-align: right;
+  padding-right: 5px;
+  font-size: 10px;
+}
+
+.numbers {
+  width: 2.5%;
+  text-align: center;
+  border-width: 0px 1px 0px 0px;
+  border-style: dotted;
+}
+
+.td-clear-left {
+ border-left-style: none;
+}
+
+.td-clear-right {
+ border-right-style: none;
+}
+
+.td-text-align-left {
+  text-align: left;
+  padding-left: 10px;
+  width: 20%;
+}
+
+.td-text-align-right {
+  text-align: center;
+
+}
+
+.td-span-width {
+ 
+}
+
+.row-title {
+  width: 17.75%;
+  text-align: left;
+  padding-left: 5px;
+  border-style: dotted;
+}
+
+.signatures {
+  width: 39.875%;
+  text-align: left;
+  padding-left: 5px;
+  border-style: dotted;
+}
+
+.row-name {
+  width: 39.875%;
+  text-align: left;
+  padding-left: 5px;
+  border-style: dotted;
+  border-left-style: solid;
+}
+
+.no-borders {
+  border-width: 0px;
+}
+
+#version-row td {
+  height: 30px;
+}
+
+.modal {
+  position: fixed;
+  width: 93%;
+  margin-left: 4%;
+  top: 4%;
+  border: solid 1px;
+  z-index: 992;
+}
+
+.dt-button {
+  border: 1px solid #7eb9d0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 28px;
+    font-family: arial, helvetica, sans-serif;
+    padding: 10px 10px 10px 10px;
+    text-decoration: none;
+    display: inline-block;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #a7cfdf;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
+    background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
+}
+
+.keyboardButton {
+  border: 1px solid #7eb9d0;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 5px !important;
+font-size: 25px !important;
+font-family: arial, helvetica, sans-serif;
+padding: 10px 10px 10px 10px;
+text-decoration: none;
+display: inline-block;
+text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+font-weight: 700;
+color: #fff;
+background-color: #a7cfdf;
+background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
+background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
+background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
+background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
+background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
+background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
+filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
+min-width: 70px;
+min-height: 55px;
+cursor: pointer;
+width: ;
+height: 35px;
+text-align: center;
+margin: 3.3px;
+}
+
+a {
+  background-color: #eaeaea;
+border: solid 8px #eaeaea;
+border-right: solid 60px #eaeaea;
+border-left: solid 60px #eaeaea;
+font-size: large;
+}
+
+a:focus, a:hover {
+    color: #23527c;
+    text-decoration: none;
+}
+
+#virtual-keyboard{
+  z-index: 993 !important;
+  text-align: center;
+  left: 170px !important;
+  top: 320px !important;
+  height: auto !important;
+}
+
+.keyboardButton {
+    font-size: 35px;
+    font-family: arial, helvetica, sans-serif;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+    margin-top: 3%;
+}
+
+.modal-header {
+  font-size: 16px !important;
+}
+
+.gray-cell {
+  background-color: grey;
+}
+
+
+
+
+/* .......... second section starts here ------- */
+table {
+  width: 97%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+tr {
+  height: 45px;
+}
+
+.vertical-separator {
+  border-width: 0px;
+}
+
+td {
+  border-style: solid;
+  border-width: 1px;
+}
+
+.section-description td {
+  border-width: 0px;
+}
+
+.horisonatl-separator td {
+  border-width: 0px;
+}
+
+.numbers {
+  width: 2.5%;
+  text-align: center;
+  border-width: 0px 1px 0px 0px;
+  border-style: dotted;
+}
+
+.sum-arrows {
+  width: 75px;
+  height: 55px;
+}
+
+.postfixes {
+  font-size: x-small;
+  font-weight: bold;
+  position: relative;
+  top: -15px;
+  left: -40px;
+}
+
+#spinner {
+    position: absolute;
+    top: 150px;
+    left: 40%;
+    z-index: 1000;
+  }
+
+#report-cover {
+    position: absolute;
+    background-color: black;
+    width: 100%;
+    height: 102%;
+    left: 0%;
+    top: 0%;
+    z-index: 990;
+    opacity: 0.65;
+}
+
+td {
+  padding-right: 15px;
+  text-align: right;
+}
+
+#consistency_check div{
+  color: red;
+  padding-left: 20px;
+}
+
+#incosistence_title {
+  text-align: center;
+}
+
+.granules {
+  width: 100%;
+  height: 32px;
+  margin: 10px;
+  display: table;
+}
+
+.granules-row {
+  display: table-row;
+}
+
+.granules-cell {
+  display: table-cell;
+  text-align: center;
+}
+
+.granules span{
+  font-size: 10px;
+}
+
+.granules-right-td {
+  border-right-style: dotted !important;
+  border-right-width: 1px;
+}
+
+</style>
+
+<script>
+
+var print_pdf_attr = {};
+
+function drillDown(indicator, report_name, quarter) {
+    indicator = indicator.split(",");
+    window.location = "/apps/ART/views/cohort_tool/driller/driller.html?resource_id=" + indicator[0] + "&report_name=" + indicator[1]+ "&quarter=" + Quarter;
+}
+
+
+function showDisaggregatedReport(){
+  var url = window.location.href;
+  url = new URL(url);
+  var quarter = url.searchParams.get("we1ek");
+
+  if(quarter == undefined || quarter == null) {
+    var start_date = getUrlVars()["start_date"];
+    var end_date = getUrlVars()["end_date"];
+    quarter = 'Custom';
+    url = 'disaggregated.html?quarter=' + quarter;
+    url += "&start_date=" + start_date; 
+    url += "&end_date=" + end_date; 
+  }else{
+    url = 'disaggregated.html?quarter=' + quarter; 
+  }
+
+  var on_art = document.getElementById('total_alive_and_on_art').innerHTML;
+  url += '&total_alive_and_on_art=' + on_art;
+  location = url;
+}
+
+</script>
+
+
+<div id="consistency_check">
+  <div id="patients_consistency"></div>
+  <div id="cum_patients_consistency"></div>
+
+  <div id="total_registered_disag"></div>
+  <div id="cum_total_registered_disag"></div>
+  
+  <div id="gender_consistency"></div>
+  <div id="cum_gender_consistency"></div>
+  <div id="age_consistency"></div>
+  <div id="cum_age_consistency"></div>
+  <div id="reasons_consistency"></div>
+  <div id="cum_reasons_consistency"></div>
+  <div id="conditions_consistency"></div>
+  <div id="cum_conditions_consistency"></div>
+  <div id="died_consistency"></div>
+  <div id="total_consistency"></div>
+  <div id="regimen_consistency"></div>
+  <div id="pregnant_consistency"></div>
+  <div id="tb_status_consistency"></div>
+  <div id="side_effect_consistency"></div>
+  <div id="adherence_consistency"></div>
+</div>
+
+<div id="content" style="margin-bottom: 65px;">
+
+  <table>
+  <tr id="">
+    <td colspan="5" id="" style="border-right-style: solid; font-weight: bold; text-align: center;">WEEKLY DISEASE SURVEILLANCE REPORT</td>
+  </tr>
+  <tr>
+    <td class="td-text-align-left">Country:</td>
+    <td class="td-text-align-left">Malawi</td>
+  </tr>
+  <tr>
+    <td class="td-text-align-left">Reporting Facility Name:</td>
+    <td class="td-text-align-left"><span id="faci_name"></span></td>
+  </tr>
+  <tr>
+    <td class="td-text-align-left">Week Number:</td>
+    <td class="td-text-align-left"><span id="wknum"></span></td>
+  </tr>
+  <tr>
+    <td class="td-text-align-left">Week Dates: </td>
+    <td class="td-text-align-left"><span id="wkdates"></span></td>
+  </tr>
+  <tr>
+    <table id="idsr_weekly">
+  <tr>
+    <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
+    <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
+  </tr>
+  <tr>
+    <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
+    <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
+    <td class="td-text-align-left td-span-width">Total</td>
+  </tr>
+
+  <tr id="AEFI">
+    <td class="td-text-align-right" style="width: 5%;">1</td -->
+    <td class="td-text-align-right" style="width: 30%;">AEFI</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right" >0</a></td>
+  </tr>
+  <tr id="Poliomyelitis">
+    <td class="td-text-align-right">2</td>
+    <td class="td-text-align-right" style="width: 30%;">AFP (Poliomyelitis***)</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="AHFS">
+    <td class="td-text-align-right">3</td>
+    <td class="td-text-align-right" style="width: 30%;">AHFS</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Anthrax">
+    <td class="td-text-align-right">4</td>
+    <td class="td-text-align-right" style="width: 30%;">Anthrax</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Cholera">
+    <td class="td-text-align-right">5</td>
+    <td class="td-text-align-right" style="width: 30%;">Cholera</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="COVID-19">
+    <td class="td-text-align-right">6</td>
+    <td class="td-text-align-right" style="width: 30%;">Covid-19</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Dengue">
+    <td class="td-text-align-right">7</td>
+    <td class="td-text-align-right" style="width: 30%;">Dengue</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Dysentery">
+    <td class="td-text-align-right">8</td>
+    <td class="td-text-align-right" style="width: 30%;">Diarrhoea with blood (Shigella)</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+
+  <tr id="Influenza due to new subtype">
+    <td class="td-text-align-right">9</td>
+    <td class="td-text-align-right" style="width: 30%;">Influenza due to new subtype</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Listeriosis">
+    <td class="td-text-align-right">10</td>
+    <td class="td-text-align-right" style="width: 30%;">Listeriosis</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Malaria">
+    <td class="td-text-align-right">11</td>
+    <td class="td-text-align-right" style="width: 30%;">Malaria</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Maternal death">
+    <td class="td-text-align-right">12</td>
+    <td class="td-text-align-right" style="width: 30%;">Maternal death</td>
+    <td id="ls-5yrs" class="td-text-align-right gray-cell"></td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Measles">
+    <td class="td-text-align-right">13</td>
+    <td class="td-text-align-right" style="width: 30%;">Measles</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Meningococcal Meningitis">
+    <td class="td-text-align-right">14</td>
+    <td class="td-text-align-right" style="width: 30%;">Meningococcal Meningitis</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Neonatal tetanus">
+    <td class="td-text-align-right">15</td>
+    <td class="td-text-align-right" style="width: 30%;">Neonatal tetanus</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right gray-cell"></td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="PHEIC">
+    <td class="td-text-align-right">16</td>
+    <td class="td-text-align-right" style="width: 30%;">PHEIC</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+
+  <tr id="Plague">
+    <td class="td-text-align-right">17</td>
+    <td class="td-text-align-right" style="width: 30%;">Plague</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Rabies">
+    <td class="td-text-align-right">18</td>
+    <td class="td-text-align-right" style="width: 30%;">Rabies (Human)</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Acute respiratory infection">
+    <td class="td-text-align-right">19</td>
+    <td class="td-text-align-right" style="width: 30%;">SARIs**</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="SARS">
+    <td class="td-text-align-right">20</td>
+    <td class="td-text-align-right" style="width: 30%;">SARS</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Small pox">
+    <td class="td-text-align-right">21</td>
+    <td class="td-text-align-right" style="width: 30%;">Small pox</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Typhoid fever">
+    <td class="td-text-align-right">22</td>
+    <td class="td-text-align-right" style="width: 30%;">Typhoid fever</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  <tr id="Yellow fever">
+    <td class="td-text-align-right">23</td>
+    <td class="td-text-align-right" style="width: 30%;">Yellow fever</td>
+    <td id="ls-5yrs" class="td-text-align-right">0</td>
+    <td id="grt-5yrs" class="td-text-align-right">0</td>
+    <td id="total" class="td-text-align-right">0</td>
+  </tr>
+  </table>
+</tr>
+</table>
+
+</div>
+<div id="editor"></div>
+
+<!-- Controls -->
+<!-- <div class="row-button-print">
+  <div class="buttons">
+    <button class="button button-finish" onmousedown="javascript:location='/'">Finish</button>
+    <button class="button button-print" onmousedown="javascript:printPDF();">Print</button>
+    <button class="button button-disaggregated" onmousedown="showDisaggregatedReport();">Cohort disaggregated report</button>
+
+  </div>
+</div> -->
+<footer class="footer">
+    <div class="container-footer">
+        <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
+            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
+        </button>
+        <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
+            <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
+        </button>
+        <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
+            <span>&nbsp; Export &nbsp;</span>
+        </button>
+        <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
+            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp;&nbsp;</span>
+        </button>
+    </div>
+</footer>
+
+<form id="patients" method="post" action="/cohort_tool/list_more_details" name="pat_drilldown">
+  <input id='patient_ids' type='hidden' name = 'patient_ids' />
+  <input id='indicator' type='hidden' name = 'indicator' />
+</form>
+
+<img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
+<div id="report-cover"></div>
+
+
+<form id="pdf" method="post" action="/cohort_tool/pdf_printout_cohort.pdf" name="pdf_printout">
+</form>
+
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+<script>
+
+function printPDF() {
+  var pdfForm = document.getElementById('pdf')
+  for (name in print_pdf_attr){
+    var input = document.createElement('input');
+    input.setAttribute('type','hidden');
+    input.setAttribute('name',"cohort_params[" + name + "]");
+    input.setAttribute('value', print_pdf_attr[name]);
+    pdfForm.appendChild(input);
+  }
+
+  var year = Year
+  
+  var cohort_quarter = ': ' + Quarter;
+
+  var input = document.createElement('input');
+  input.setAttribute('type','hidden');
+  input.setAttribute('name',"cohort_year");
+  input.setAttribute('value', year);
+  pdfForm.appendChild(input);
+
+  input = document.createElement('input');
+  input.setAttribute('type','hidden');
+  input.setAttribute('name',"cohort_quarter");
+  input.setAttribute('value', cohort_quarter);
+  pdfForm.appendChild(input);
+
+
+  document.pdf_printout.target = "my_pdf";
+  var w = (window.innerWidth - 80) ; var h = (window.innerHeight - 8);
+  window.open("","my_pdf","width=" + w + ",height=" + h + ",toolbar=0");
+  document.pdf_printout.submit();
+}
+
+function getUrlVars() {
+  var vars = {};
+  var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+    vars[key] = value;
+  });
+  return vars;
+}
+
+var idsrResults;
+
+function getIndicators() {
+
+  var responseTracker = 0;
+  var trackerSupport = Math.round(idsr_diagnosis.length/2)+2;
+
+  for (var i=0; i<idsr_diagnosis.length; i++) { 
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+        url += '/idsr?start_date=' + start_date;
+        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+        url += '&program_id=' + sessionStorage.programID;
+        url += '&diagnosis=' + idsr_diagnosis[i];
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+        runningReport = false
+        idsrResults = JSON.parse(this.responseText);
+        fillTableRow();
+
+        responseTracker++;
+       
+        if (trackerSupport == responseTracker) {
+            //initializeTable();
+            document.getElementById('spinner').style = 'display: none';
+            document.getElementById('report-cover').style = 'display: none;';
+          }
+        
+        if(reload_status == true) 
+          location.reload();
+
+      } else if (this.readyState === 4) {
+        runningReport = true;
+        //setTimeout(getIndicators, 10000);
+      } else if (this.status == 500) {
+          //trackerSupport--;
+        }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
+    }
+}
+
+var myVar;
+var runningReport = true;
+var reload_status = false;
+
+function checkIfReportReady() {
+  // myVar = setTimeout(getIndicators, 10000);
+  // if(runningReport == false)
+  //   location.reload()
+
+}
+
+const idsr_diagnosis = ["Diarrhea",
+"Poliomyelitis",
+"AHFS",
+"Anthrax",
+"Cholera",
+"Covid-19",
+"Dengue",
+"Dysentery",
+"Influenza due to new subtype",
+"Listeriosis",
+"Malaria",
+"Maternal death",
+"Measles",
+"Meningococcal Meningitis",
+"Neonatal tetanus",
+"PHEIC",
+"Plague",
+"Rabies",
+"Acute respiratory infection",
+"SARS",
+"Small pox",
+"Typhoid fever",
+"Yellow fever"
+];
+
+function fillTableRow() {
+  var idsrValues = idsrResults;
+  var row;
+
+  
+  for (var diagnosis in idsrResults) {
+      row = document.getElementById(diagnosis);
+
+      if(row != null)
+      for (var i = 2; i < row.children.length; i++) {
+        if (row.children[i].getAttribute('id') == 'ls-5yrs') {
+          if (idsrResults[diagnosis].patientD_LessThanFiveYrs != 0) {
+            row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'ls-5yrs'+'\')">'+idsrResults[diagnosis].less_than_five_yrs+'</a>';
+            //console.log(idsrResults[diagnosis].patientD_LessThanFiveYrs.split(" "));
+            //idsrResults[diagnosis].patientD_LessThanFiveYrs;
+            sessionStorage.setItem(diagnosis+'ls-5yrs', idsrResults[diagnosis].patientD_LessThanFiveYrs); 
+          }
+        }
+        else if (row.children[i].getAttribute('id') == 'grt-5yrs') {
+          if (idsrResults[diagnosis].patientD_GreaterThanFiveYrs != 0) {
+            row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'grt-5yrs'+'\')">'+idsrResults[diagnosis].greater_than_five_years+'</a>';
+            //idsrResults[diagnosis].patientD_GreaterThanFiveYrs;
+            sessionStorage.setItem(diagnosis+'grt-5yrs', idsrResults[diagnosis].patientD_GreaterThanFiveYrs);
+          }
+        }
+        else if (row.children[i].getAttribute('id') == 'total') {
+          row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'total'+'\')">'+(idsrResults[diagnosis].less_than_five_yrs + idsrResults[diagnosis].greater_than_five_years)+'</a>';
+          sessionStorage.setItem(diagnosis+'total', idsrResults[diagnosis].patientD_LessThanFiveYrs+idsrResults[diagnosis].patientD_GreaterThanFiveYrs);
+
+        }
+      }
+  } 
+}
+
+
+
+var start_date = getUrlVars()["start_date"];
+var end_date = getUrlVars()["end_date"];
+var week_number = getUrlVars()['week_number'];
+week_number = week_number.split('&');
+document.getElementById('wknum').innerHTML = week_number[0];
+document.getElementById('faci_name').innerHTML = sessionStorage.currentLocation;
+document.getElementById('wkdates').innerHTML = start_date +"&nbsp;&nbsp;&nbsp;to&nbsp;&nbsp;&nbsp;"+ end_date;
+document.getElementById('spinner').style = 'display: inline;';
+document.getElementById('report-cover').style = 'display: inline;';
+getIndicators();
+
+
+
+function printWindow() {
+  var footer = document.getElementsByClassName('footer')[0];
+  footer.style = 'display: none;';
+  window.print();
+  footer.style = 'display: inline;';
+}
+
+function initializeTable() {
+  table = $('#idsr_weekly').DataTable({
+    
+           
+            scrollY: 300,
+            Processing: true,
+            ServerSide: true,
+            scroller: {
+                loadingIndicator: true
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+          ]
+  });
+}
+
+function initializeTable_Modal() {
+            table = $('#patient_details_table').DataTable({
+            fixedHeader: true,
+            searching: true,
+            paging: true,
+            scrollY: 300,
+            Processing: true,
+            ServerSide: true,
+            scroller: {
+                loadingIndicator: true
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+        });
+        lookForTag();
+    }
+
+    function view_patientD(data)
+    {    
+         if($('#virtual-keyboard').length)
+             hide_keyboard();
+
+        $('.keyboard').attr('style','display:none');
+        document.getElementById('spinner').style = 'display: block;';
+        document.getElementById('report-cover').style = 'display: block;';
+        dataTableContentLoader(data);
+    }
+
+    function dataTableContentLoader(data)
+    {   
+        var diagName;
+        var period;
+        if (data.indexOf('total') != -1) {
+          diagName = data.replace('total','');
+          period = "Total";
+        }
+
+        if (data.indexOf('ls-5yrs') != -1) {
+          diagName = data.replace('ls-5yrs','');
+          period = "Less Than Five Years";
+        }
+
+        if (data.indexOf('grt-5yrs') != -1) {
+          diagName = data.replace('grt-5yrs','');
+          period = "Greater Than Five Years";
+        }
+        
+        patientD = sessionStorage.getItem(data);
+        $('.modal-title').html('<b>Condition:</b> &nbsp;&nbsp; ' + diagName);
+        $('.period').html('<b>Age Group:</b>  &nbsp;&nbsp;' + period);
+        // if(period == "")
+        // $('.period').attr('style','display:none')
+        document.getElementById('modal').setAttribute('style','display:block');
+        patientD = patientD.substring(2);
+        patientD = patientD.split('|');
+        patientD = patientD.sort();
+     
+        $('#patient_details_body').html('');
+        patientD.forEach(value1 => 
+        {
+            var value = value1.split(',');
+                
+            var tr = document.createElement('tr');
+            document.getElementById('patient_details_body').appendChild(tr);
+
+            var td = document.createElement('td');
+            td.setAttribute("class","td-text-align-left");
+            td.innerHTML = value[1];
+            tr.appendChild(td);
+
+            td = document.createElement('td');
+            td.setAttribute("class","td-text-align-left");
+            td.innerHTML = value[0];
+            tr.appendChild(td);
+
+            var td = document.createElement('td');
+            td.setAttribute("class","td-text-align-left");
+            td.innerHTML = value[2];
+            tr.appendChild(td);
+
+            td = document.createElement('td');
+            td.setAttribute("class","td-text-align-left");
+            td.innerHTML = value[3];
+            tr.appendChild(td);
+
+            td = document.createElement('td');
+            td.setAttribute("class","td-text-align-left");
+            td.innerHTML = value[4];
+            tr.appendChild(td);
+            
+            td = document.createElement('td');
+            td.innerHTML = value[5];
+            tr.appendChild(td);
+
+        });
+        
+
+        document.getElementById('spinner').style = 'display: none;';
+        //add export data buttons
+        initializeTable_Modal();
+
+        //$("label [aria-controls*='report']").attr('type','text');
+    }
+
+    function close_modal()
+    {
+        document.getElementById('spinner').style = 'display: none;';
+        document.getElementById('report-cover').style = 'display: none;';
+        document.getElementById('patient_details_body').innerHTML = "";
+        document.getElementById('modal').setAttribute('style','display:none');
+        table.destroy();
+        hide_keyboard();
+    }
+
+    function hide_keyboard()
+    {
+        var vl = document.getElementById('virtual-keyboard');
+        var w = document.getElementsByTagName('body')[0];
+        w.removeChild(vl);
+    }
+
+</script>
+<!-- Modal -->
+<div class="modal " id="modal" style="display: none;" > 
+  <div class="modal-content" style="margin-left:0px; ">
+      <div class="modal-header">
+          <div class="modal-title _title" ></div>
+          <div class="period _title" ></div>
+      </div>
+      <div class="modal-body">
+          <div class="container">
+              <div class="row" id="modal-div">
+                  <div id="patient_details_card" style="margin-bottom: 10px; border-bottom: 1px solid; width: 95%;" >
+                      <table id="patient_details_table" class="display " >
+                          <thead>
+                          <tr>
+                              <th class="sorting_patient" >Patient ID</th>
+                              <th class="sorting_patient">Firstname</th>
+                              <th class="sorting_patient">Surname</th>
+                              <th class="sorting_patient">Gender</th>
+                              <th class="sorting_patient">Phone Number</th>
+                              <th class="sorting_patient">Address</th>
+                          </tr>
+                          </thead>
+                          <tbody id="patient_details_body">
+                          </tbody>
+                      </table>
+                     
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="bottom_buttons">
+          <button class="red"  onclick="close_modal()" style="margin-left: 2%;
+          margin-top: -1%;
+          margin-bottom: 2%;">Close</button>
+      </div>
+  </div> 
+</div>
+<!-- Modal -->
+
+</html>
