@@ -632,7 +632,12 @@ function initializeTable_Modal() {
       for (var n=1; n<IDsArray.length; n++) {
 
         var patient_id = IDsArray[n];
-        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patients/' + patient_id;
+        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patient_details_by_id?';
+        url +=   'patient_id='+patient_id;
+        //url += '&program_id=' + sessionStorage.programID;
+
+       // var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patients/' + patient_id;
+
         console.log("idddd: ",patient_id);
         var req = new XMLHttpRequest();
         req.onreadystatechange = function(){
@@ -667,15 +672,15 @@ function initializeTable_Modal() {
 
     function view_patientD(data)
     {   
-     // getPatientDetails(data);
+      getPatientDetails(data);
       // console.log(sessionStorage.getItem(data));
-        //  if($('#virtual-keyboard').length)
-        //      hide_keyboard();
+         if($('#virtual-keyboard').length)
+             hide_keyboard();
 
-        // $('.keyboard').attr('style','display:none');
-        // document.getElementById('spinner').style = 'display: block;';
-        // document.getElementById('report-cover').style = 'display: block;';
-        // dataTableContentLoader(data);
+        $('.keyboard').attr('style','display:none');
+        document.getElementById('spinner').style = 'display: block;';
+        document.getElementById('report-cover').style = 'display: block;';
+        dataTableContentLoader(data);
     }
 
     function dataTableContentLoader(data)
@@ -1015,7 +1020,7 @@ function initializeTable_Modal() {
                   perons_id_ls +='|'+person[x].split(',')[1]
              }
              //console.log("perons_id_ls: ",perons_id_ls);
-            // sessionStorage.setItem(diagnosis+'6_ls_5_m', perons_id_ls);
+             sessionStorage.setItem(diagnosis+'6_ls_5_m', perons_id_ls);
              row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'6_ls_5_m'+'\')">'+diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs+'</a>';
              //row.children[i].innerHTML = '<a href="#" onclick="view_patientD(perons_id_ls)">'+diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs+'</a>';
              }
