@@ -1,5 +1,6 @@
 var presentingComplaintsHash = {};
 var presentingComplaintsNameHash = {};
+var _concept_set;
 sessionStorage.setItem('radiology_order_done','false');
 sessionStorage.setItem('lab_order_done','false');
 sessionStorage.setItem('radiology_is_set', 'false');
@@ -33,7 +34,7 @@ function insertAfter(newNode, existingNode) {
   search_input.setAttribute('id','search_field');
   search_input.setAttribute('style','height:40px;width:400px;');
   //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
-  //search_input.setAttribute('onkeyup','lookForSearchString()');
+  search_input.setAttribute('onkeyup','search_results()');
   search_content.appendChild(search_input);
   lookForTag();
 }
@@ -43,6 +44,50 @@ function  search_results() {
   var x = document.getElementById("search_field").value;
   console.log('X: ',x);
 
+  console.log('presentingComplaintsHash: ',presentingComplaintsHash[1]);
+
+  console.log('presentingComplaintsNameHash: ',presentingComplaintsNameHash[1]);
+
+  console.log("LOG: ",_concept_set);
+
+  console.log("Length: ",_concept_set.length);
+
+  var groups_ls_parent = document.getElementById('side-bar-pre-grouped');
+
+  if (x != '')
+  for (n=0; n < groups_ls_parent.children.length; n++) {
+    groups_ls_parent.children[n].setAttribute('style','display: none');
+  } 
+
+  if (x == '')
+  for (n=0; n < groups_ls_parent.children.length; n++) {
+    groups_ls_parent.children[n].setAttribute('style','display: show');
+  }
+
+  for (var t=0; t < _concept_set.length; t++) {
+
+    //_concept_set[t].group.indexOf(x);
+    var srch_str = '_'+_concept_set[t].group.toLowerCase();
+    //var srch_str_for_complaint = '_'+_concept_set[t]
+     var condition_for_group_name = srch_str.indexOf(x);
+    // var condition_for_complaint = 
+
+     //console.log("pre---name: ",_concept_set[t].group.toLowerCase());
+     if (condition_for_group_name > 0) {
+      console.log("name: ",_concept_set[t].group);
+
+      var id = _concept_set[t].group;
+
+      var bv = document.getElementById(id);
+
+
+
+      console.log("parent: ",bv.parentElement);
+      bv.parentElement.setAttribute('style','display: show');
+
+
+     }
+  }
 
 }
 
@@ -345,6 +390,7 @@ function getPresentingComplaints(type_of_complaint) {
     if (this.readyState == 4 && this.status == 200) {
       var objs = JSON.parse(this.responseText);
      presentingComplaints(objs, type_of_complaint);
+     _concept_set = objs;
     }
   };
   xhttp.open("GET", (url + "?id=" + concept_set + "&name="), true);
