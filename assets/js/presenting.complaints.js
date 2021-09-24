@@ -12,14 +12,17 @@ function clearSelection(type_of_complaint) {
   messageBar.style.display = "none";
 }
 
-/* function build_search_field()
-{
+function insertAfter(newNode, existingNode) {
+  existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+}
 
+ function build_search_field() {
   var helpText0 = document.getElementById('helpText0');
-  
   var search_content = document.createElement('div');
   search_content.setAttribute('id','search_content');
-  helpText0.appendChild(search_content);
+  //helpText0.appendChild(search_content);
+
+  insertAfter(search_content, helpText0);
 
   var search_text = document.createElement('span');
   search_text.setAttribute('id','search_text');
@@ -27,12 +30,22 @@ function clearSelection(type_of_complaint) {
   search_content.appendChild(search_text);
 
   var search_input = document.createElement('input');
-  search_input.setAttribute('id','search_filed');
+  search_input.setAttribute('id','search_field');
   search_input.setAttribute('style','height:40px;width:400px;');
-  search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
+  //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
+  //search_input.setAttribute('onkeyup','lookForSearchString()');
   search_content.appendChild(search_input);
   lookForTag();
-} */
+}
+
+
+function  search_results() {
+  var x = document.getElementById("search_field").value;
+  console.log('X: ',x);
+
+
+}
+
 function buildPresentaingComplaints(type_of_complaint) {
   document.getElementById('buttons').setAttribute('style','width: 100% !important');
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
@@ -466,8 +479,10 @@ function nextPage(obs){
     } else {
       odersButton.setAttribute('selected','false');
       //redirectToLabOrders();
-      nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+      //nextEncounter(sessionStorage.patientID, sessionStorage.programID);
       //return;
+      closeOrdersPopupModal();
+      //reset_lab_and_radio_setting();
     }
   }
   nextEncounter(sessionStorage.patientID, sessionStorage.programID);
