@@ -42,15 +42,6 @@ function insertAfter(newNode, existingNode) {
 
 function  search_results() {
   var x = document.getElementById("search_field").value;
-  console.log('X: ',x);
-
-  console.log('presentingComplaintsHash: ',presentingComplaintsHash[1]);
-
-  console.log('presentingComplaintsNameHash: ',presentingComplaintsNameHash[1]);
-
-  console.log("LOG: ",_concept_set);
-
-  console.log("Length: ",_concept_set.length);
 
   var groups_ls_parent = document.getElementById('side-bar-pre-grouped');
 
@@ -65,30 +56,94 @@ function  search_results() {
   }
 
   for (var t=0; t < _concept_set.length; t++) {
-
-    //_concept_set[t].group.indexOf(x);
     var srch_str = '_'+_concept_set[t].group.toLowerCase();
-    //var srch_str_for_complaint = '_'+_concept_set[t]
      var condition_for_group_name = srch_str.indexOf(x);
-    // var condition_for_complaint = 
+    
+    for (var y=0; y<_concept_set[t].complaints.length;y++) {
+      var _srch_str = '_'+_concept_set[t].complaints[y].name.toLowerCase();
+      var condition_for_complaint = 0;
 
-     //console.log("pre---name: ",_concept_set[t].group.toLowerCase());
+      var complaint_id = _concept_set[t].complaints[y].concept_id;
+      var _name =  document.getElementById(complaint_id).getAttribute('name');
+      var elementsByName = document.getElementsByName(_name);
+      
+      if (x != '') {
+
+        document.getElementById(complaint_id).setAttribute('style','display: none');
+        if (elementsByName.length > 1) {
+
+          for (var m=0; m<elementsByName.length; m++) {
+            elementsByName[m].setAttribute('style','display: none');
+          }
+        }
+      }
+      
+      if (x == '') {
+        document.getElementById(complaint_id).setAttribute('style','display: show');
+
+        var selected = document.getElementById(complaint_id).getAttribute('selected');
+        if (selected == 'true') {
+          document.getElementById(complaint_id).setAttribute('style','display: show; background-color: lightblue;');
+        }
+
+        if (elementsByName.length > 1) {
+
+          for (var m=0; m<elementsByName.length; m++) {
+            elementsByName[m].setAttribute('style','display: show');
+
+            var _selected = elementsByName[m].getAttribute('selected');
+
+            if (_selected == 'true') {
+              elementsByName[m].setAttribute('style','display: show; background-color: lightblue;');
+            }
+          }
+        }
+      }
+
+
+      condition_for_complaint = _srch_str.indexOf(x);
+
+      if (condition_for_complaint > 0) {
+
+        document.getElementById(complaint_id).setAttribute('style','display: show');
+
+        var selected = document.getElementById(complaint_id).getAttribute('selected');
+
+        if (selected == 'true') {
+          document.getElementById(complaint_id).setAttribute('style','display: show; background-color: lightblue;');
+        }
+
+
+        if (elementsByName.length > 1) {
+
+          for (var m=0; m<elementsByName.length; m++) {
+            elementsByName[m].setAttribute('style','display: show');
+
+            var _selected = elementsByName[m].getAttribute('selected');
+
+            if (_selected == 'true') {
+              elementsByName[m].setAttribute('style','display: show; background-color: lightblue;');
+            }
+          }
+        }
+
+        var id = _concept_set[t].group;
+        var bv = document.getElementById(id);
+  
+        bv.parentElement.setAttribute('style','display: show');
+        groupClicked(bv);
+      }
+    }
+
      if (condition_for_group_name > 0) {
-      console.log("name: ",_concept_set[t].group);
 
       var id = _concept_set[t].group;
-
       var bv = document.getElementById(id);
 
-
-
-      console.log("parent: ",bv.parentElement);
       bv.parentElement.setAttribute('style','display: show');
-
-
+      groupClicked(bv);
      }
   }
-
 }
 
 function buildPresentaingComplaints(type_of_complaint) {
@@ -209,6 +264,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
               cell.innerHTML = concept_sets[t].complaints[i].name;
               cell.setAttribute('selected', 'false');
               cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
+              cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
               cell.setAttribute('group_concept_id', concept_sets[t].concept_id);
               cell.setAttribute('group_name', concept_sets[t].group);
               cell.setAttribute('complaint-type', type_of_complaint);
@@ -221,9 +277,9 @@ function presentingComplaints(concept_sets, type_of_complaint) {
                 row_count = 1;
   }  
   }
-  var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
-    var other = document.getElementById('Other');
-    sideBarPreGrouped.appendChild(other);
+  // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
+  //   var other = document.getElementById('Other');
+  //   sideBarPreGrouped.appendChild(other);
 }
 
 function autoHighLight(type_of_complaint) {
@@ -245,17 +301,9 @@ function autoHighLight(type_of_complaint) {
 
 function complaintClicked(e) {
   var type_of_complaint = e.getAttribute('complaint-type');
-  
   var groupID = e.parentElement.parentElement.getAttribute('id').split('list-');
-  console.log('groupID: ', groupID[1]);
-  //console.log(getElementById(groupID[1]));
   var groupSelected = document.getElementById(groupID[1]);
   var childNodes = e.parentElement.parentElement.childNodes;
-  
-
-  console.log('type_of_complaint: ', e.parentElement.parentElement.getAttribute('id'));
-
-
   
   if(e.getAttribute('selected') == 'false'){
     if(e.innerHTML.toUpperCase() == 'NONE'){
@@ -269,7 +317,6 @@ function complaintClicked(e) {
     addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
-        //console.log('Child: ', childNodes[i].childNodes[j].getAttribute('selected'));
         if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {
           groupSelected.setAttribute('selected', 'true');
           groupSelected.style = 'background-color: #aaaaf4 !important;';
@@ -463,7 +510,6 @@ function prepareToSaveForOrders() {
 }
 
 function showValidate() {
-  console.log(presentingComplaintsNameHash);
   var message = "Complaints Selected";
   var msg = "Are you sure you want to proced?";
   var td_string = "";
