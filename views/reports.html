@@ -42,23 +42,36 @@
         color: #fff;
     }
 
-</style>
+    .under-development {
+        position: absolute;
+        background-color: black;
+        width: 80%;
+        height: 90%;
+        left: 10%;
+        top: 7%;
+        z-index: 2000;
+        opacity: .99;
+        border-radius: 14px 14px;
+    }
 
+</style>
 <script>
 
     function reportGrouping(group) {
         if (group == 'main') {
             return [
-                ['MoH', '/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png', '#', 'link'],
-                ["PEPFAR", "/assets/images/login-logos/PEPFAR.png", "#", 'link'],
+                ['MoH', '/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png', 'MoH', 'function'],
+                ["PEPFAR", "/assets/images/login-logos/PEPFAR.png",  '#', 'link'],
                 ["Clinic", "", "Clinic", 'function']
             ];
         } else if (group == 'MoH') {
             return [
-                ["LA report", "", "#", 'link'],
-                ["Drug report", "", "#", 'link'],
-                ["Malaria report", "", "#", 'link'],
-                ["IPT", "", "#", 'link']
+                // ["LA report", "", "#", 'link'],
+                // ["Drug report", "", "#", 'link'],
+                // ["Malaria report", "", "#", 'link'],
+                // ["IPT", "", "#", 'link']
+                   ['Weekly IDSR Report','','/apps/OPD/views/reports/revised_idsr_menu.html', 'link'],
+                   ['Monthly IDSR Report','','/apps/OPD/views/reports/revised_idsr_monthly_menu.html', 'link']
             ];
         } else if (group == 'Clinic') {
             return [
@@ -66,16 +79,18 @@
                 ["Diagnosis", "", "reports/report_dates.html?report=diagnosis", 'link'],
                 ["Registration report", "", "reports/report_dates.html?report=registration", 'link'],
                 ["LA report", "", "reports/report_dates.html?report=la", 'link'],
+                ["Malaria report", "", "reports/report_dates.html?report=malaria_report", 'link'],
                 ["Cases seen report", "", "reports/report_dates.html?report=cases_seen", 'link'],
                 ["Mental health report", "", "reports/report_dates.html?report=mental_health", 'link'],
                 ["Drugs given", "", "reports/report_dates.html?report=drugs_given", 'link'],
                 ["Drugs (prescribed and dispensed)", "", "reports/report_dates.html?report=drugs_prescribed_and_given", 'link'],
-                ["With NIDs", "", "reports/with_nids.html", 'link']
+                ["With NIDs", "", "reports/report_dates.html?report=with_nids", 'link'],
+                ["Dispensation Report", "", "reports/report_dates.html?report=dispensation", 'link'],
             ];
         } else if (group == 'PEPFAR') {
             return [
-                ['IDSR report', "/assets/images/login-logos/PEPFAR.png", "PEPFAR", '#', 'link'],
-                ["DHIS 2", "/assets/images/login-logos/PEPFAR.png", "PEPFAR", "#", 'link']
+                // ['IDSR report', "/assets/images/login-logos/PEPFAR.png", "PEPFAR", '#', 'link'],
+                // ["DHIS 2", "/assets/images/login-logos/PEPFAR.png", "PEPFAR", "#", 'link'],
             ];
         } else {
         }
@@ -114,6 +129,9 @@
 
             var td = document.createElement("td");
             td.setAttribute("id", i.toString());
+
+            
+
             if (reports[i][3] == 'link') {
                 if (reports[i][2] != '#')
                     cell.setAttribute("onmousedown", "window.top.location='" + reports[i][2] + "'");
@@ -121,6 +139,12 @@
             } else {
                 cell.setAttribute("onmousedown", "buildReportLinks('" + reports[i][2] + "');");
             }
+
+            if (reports[i][0] == 'Malaria report') {
+                cell.setAttribute("onmousedown", "underDevelopmentModal()");
+            }
+
+            
             td.innerHTML = reports[i][0];
             tr.appendChild(td);
 
@@ -134,9 +158,20 @@
         }
     }
 
+
     function _testFunc() {
         var newURL = window.location.protocol + "//" + window.location.host + reports[parseInt(this.id)][2];
         window.top.location = newURL;
+    }
+
+    function underDevelopmentModal() {
+        window.parent.document.body.setAttribute("class", "modal-open");
+        var div = document.createElement('div');
+        div.id = "modal-backdrop";
+        div.className = 'modal-backdrop fade in';
+        window.parent.document.body.appendChild(div);
+        window.parent.document.getElementById("mo-modal").setAttribute("class", "modal fade in under-development");
+        window.parent.document.getElementById("mo-modal").style = "display: block;";
     }
 
 </script>

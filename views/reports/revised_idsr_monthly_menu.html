@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+    <link rel="stylesheet" href="/assets/css/background.css" type="text/css">
+    
+    <script language="javascript" defer="true">
+      //<!--
+      tstUsername = "";
+      tstUserKeyboardPref = "abc";
+
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var months;
+
+      function fetchMonths() {
+      var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/get_months";
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+          var obj = JSON.parse(this.responseText);
+          months = obj;
+          load();
+        }
+
+      };
+      xhttp.open("GET", url, true);
+      xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+      xhttp.setRequestHeader('Content-type', "application/json");
+      xhttp.send();
+    }
+
+      tstCurrentDate = sessionStorage.sessionDate;
+      var tt_cancel_destination = "/";
+
+    function __checkSelected(){
+       // console.log(window.location.href);
+    }
+    
+    function addHereButton(){
+
+        var button = document.createElement("button");
+        button.id = "addHere";
+        button.innerHTML = "<span>Here</span>";
+        button.style.cssFloat = "right";
+
+        button.onclick = function(){
+        __$("touchscreenInput" + tstCurrentPage).value = "Lighthouse clinic"
+        }
+
+        if(__$("buttons")){
+        __$("buttons").appendChild(button);
+        }
+    }
+
+    function removeHereButton(){
+    if(__$("addHere")){
+      __$("buttons").removeChild(__$("addHere"));
+    }
+  }
+
+  fetchMonths();
+
+function load() {
+
+  var sel = document.getElementById('months');
+  var opt = document.createElement('option');
+
+  for (var i=0; i<months.length; i++) {
+    var payload = months[i];
+    var _payload = payload[1];
+    var month_and_year = _payload[0]
+    var start_and_end_months = _payload[1];
+    var opt = document.createElement('option');
+    var dates = start_and_end_months.split("to");
+    var month = month_and_year.split('-')[0];
+    opt.innerHTML = month_and_year;
+    var value = dates[0]+ " " +dates[1] +" "+ month;
+    opt.setAttribute('value', value);
+    sel.appendChild(opt);  
+  }
+}
+
+function OptSubmit(vl) {
+    var selected_val = $("touchscreenInput0");
+    var dates = selected_val.getAttribute('tstvalue');
+    dates = dates.split(" ");
+
+    console.log("dates: ",dates);
+
+    document.location = "idsr_monthly.html?" + 'start_date='+dates[0]+'&end_date='+dates[3]+"&month="+dates[4]+"&";
+}
+</script>
+
+<style>
+  .inputFrameClass{
+    height:600px;
+  }
+  #viewport{
+    height:550px ! important;
+  }
+</style>
+
+
+<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<script language="javascript" type="text/javascript" src="/assets/js/show_category_hack.js" defer="true"></script>
+
+    
+</head>
+
+<body id="mateme" onload="">
+  <div id="container">
+    <div id="content">
+      <form id='month' action="javascript:OptSubmit(this);">
+        <select helpText="Select Month" id="months" 
+          name="month" tt_onLoad="__$('keyboard').style.display = 'none';" 
+          tt_onUnLoad="__checkSelected();">
+        </select>
+
+      </form>
+      <div id="footer">
+      </div>
+    </div>
+  </div>
+</body>
+</html>

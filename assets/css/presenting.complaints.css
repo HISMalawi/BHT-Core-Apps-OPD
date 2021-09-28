@@ -1,14 +1,59 @@
 
 
 #complaints-container {
-  display: table;
-  width: 100%;
   margin: 5px;
   border-spacing: 10px;
+  margin-left: calc(45vh);
+  border: 1px solid black;
+  width: 100%;
+}
+
+
+#side-bar-pre-grouped {
+  margin: 5px;
+  border-spacing: 10px;
+  position: fixed;
+  border: 1px solid darkgray;
+  display: table-column-group;
+  width: calc(40vh);
+  background-color: white;
+  height: 575;
+  overflow: scroll;
+}
+
+.complaints-list-show {
+  display: block;
+}
+
+.complaints-list-hide {
+  display: none;
+}
+
+.group-list-highlight-color {
+  background-color: #aaaaf4;
+}
+
+.group-list-color {
+  background-color: white;
+}
+
+.complaints-container-column {
+  display: table-row;
 }
 
 .complaints-container-row {
   display: table-row;
+}
+
+.complaints-container-box {
+  display: table-cell;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 3px 3px 5px 6px #f4efef;
+  height: 50px;
+  vertical-align: middle;
+  text-align: center;
+  width: 20%;
 }
 
 .complaints-container-cell {
@@ -19,6 +64,28 @@
   height: 50px;
   vertical-align: middle;
   text-align: center;
-  width: 20%;
+  width: 1%;
 }
 
+.modal-content {
+  background-color: beige;
+  border: 1px solid black;
+  margin-left: 10%;
+}
+
+.modal-body {
+  position: initial;
+}
+
+.td-st {
+  font-size: 22px;
+  background: white;
+  border: solid 3px;
+  padding: 3;
+  background: #ac5c5c;
+}
+
+.table-st {
+  max-height: 300px;
+  overflow: scroll;
+}

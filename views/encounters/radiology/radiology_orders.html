@@ -1,0 +1,73 @@
+
+<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/void_order_popup.css" type="text/css">
+
+<script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+<link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+<script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/assets/js/alertify/js/alertify.js"></script>
+<script type="text/javascript" src="/assets/js/does_connection_exist.js"></script>
+
+<link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css">
+
+<link rel="stylesheet" href="/apps/OPD/assets/css/presenting.complaints.css" type="text/css">
+<script type="text/javascript" src="/apps/OPD/assets/js/radiology_orders.js"></script>
+<script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+<style>
+
+.inputFrameClass {
+  width: 96% !important;
+}
+
+#search_content
+{
+  float:right;
+  margin: 8px;
+  margin-right: 33px;
+}
+#search_text
+{
+margin-right: 8px;
+font-size: 20px;
+}
+body {
+  -webkit-overflow-scrolling: touch; /* Lets it scroll lazy */
+}
+
+body {
+  -webkit-overflow-scrolling: auto; /* Stops scrolling immediately */
+}
+</style>
+
+<script>
+var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + sessionStorage.patientID;
+
+function changeNextButton() {
+  var nextButton = document.getElementById('nextButton');
+  nextButton.setAttribute('onmousedown','save_encounter();');
+}
+
+</script>
+
+<body id="mateme">
+  <div id="container">
+    <div id="content">
+ 
+      <form>
+        <input type="text" name="summary"
+          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildRadiologyOrders('Presenting complaint');"
+          tt_pageStyleClass= "NoControls" helpText="Radiology Orders" optional = "true"/>
+
+      </form>
+
+   </div>
+ </div>
+ <div  id="page-cover"></div>
+</body>
+

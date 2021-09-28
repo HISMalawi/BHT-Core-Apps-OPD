@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OPD Prescription</title>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js"
+    defer="true"></script>
+    <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
+    <link rel="stylesheet" href="/apps/OPD/assets/css/prescription.css" type="text/css"/>
+    <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+    <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+    <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
+    <script type="text/javascript" src="/apps/OPD/assets/js/common.js"></script>
+    <script type="text/javascript" src="/apps/OPD/assets/js/prescription.js"></script>
+    <style>
+      #print-iframe {
+        display: none;
+      }
+      body{
+        background-color: #fff !important;
+      }
+      #tblKeyboard button span 
+      {
+          background: unset;
+          height: unset;
+          line-height: unset;
+      }
+    </style>
+    <!--link rel="stylesheet" href="styles.css" type="text/css"-->
+    <!-- %= stylesheet_link_tag "prescription/styles" % -->
+  </head>
+  <body onresize="resize()">
+    <iframe id="print-iframe" src="" frameborder="0"></iframe>
+    <div id="container" style="border: 0px solid #999; width: 100%; height: 100%;">
+      <div class="table" style="width: 100%; border: 0px solid #666; height: 100%;">
+        <div class="row">
+          <div class="cell" style="border: 0px solid #999;">
+            <div class="table" style="width: 100%; border: 0px solid #666; height: 100%;">
+              <div class="row">
+                <div id="cummulative" class="cell cummulative_hight" style="border: 1px solid #999; 
+                     background-color: #f6f2ca; height: 200px;
+                     overflow: auto; padding: 5px;">
+                  <div class="table" style="width: 100%; border-spacing: 0px;">
+                    <div class="row" style="color: #000;">
+                      <div class="cell borderBottom" style="font-weight: bold; 
+                           text-align: center; padding: 5px; width: 49.5%;">
+                        Drug
+                      </div>
+                      <div class="cell borderBottom" style="font-weight: bold; 
+                           text-align: center; padding: 5px; width: 25%;">
+                        Frequency
+                      </div>
+                      <div class="cell borderBottom" style="font-weight: bold;
+                           text-align: center; width: 4%;">
+                        Dosage
+                      </div>
+                      <div class="cell borderBottom" style="font-weight: bold;
+                           text-align: center; width: 77%; text-align: left; padding-left: 20px;">
+                        Duration
+                      </div>
+                      <div class="cell borderBottom" style="font-weight: bold; 
+                           text-align: center; padding: 5px; ">
+                        &nbsp;
+                      </div>
+                    </div>
+                  </div>                  
+                  <div id="scroll_me" style="width: 100%; height: 190px; overflow: auto;">
+                    <div id="drugs" class="table" style="width: 100%; border-spacing: 0px;">
+
+                    </div>
+                  
+                  </div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell" id="switcher" style="border: 0px solid #fff; overflow: auto; 
+                     border: 0px #999 solid; background-color: #fff; ">
+
+                  <div class="table" style="width: 100%; height: 100%;">
+                    <div class="row">
+                      <div id="selections" class="cell" style="border: 0px solid #fff; height: 200pxpx; background-color: #c8e1d3;">
+
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div id="keying" class="cell" style="border: 1px solid #999; overflow: auto; text-align: center; height: 200px;">
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+         
+
+            </div>
+          </div>
+          <div class="cell" style="background-color: #f7f7f7;
+          border: solid 1px #999; width: 150px; text-align: center; vertical-align: top;">
+            <!--button class='button_red' id='btncancel' style='float: none;'-->
+            <button class='big_button button_green' id='btndone' style='float: none;' onmousedown = 'submitTreatmentEncounter();'>
+              Finish
+            </button>
+            <button class='big_button button_blue' id='btnback' style='float: none;' onmousedown="clearAll();">
+              Clear
+            </button>
+            <button class='big_button button_red' id='btncancel' style='float: none;' onmousedown="window.location = tt_cancel_destination">
+              Cancel
+            </button>
+
+
+            <div id="searchbox" style="position: absolute; bottom: 0; left: 10px; width: 82.5%; display: none;">
+              <input type="text" style="margin: 0 auto;" id="search" value="" class="input" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  setInterval("setAmounts();", 500);
+</script>

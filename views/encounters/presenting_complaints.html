@@ -2,6 +2,8 @@
 <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
 <!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/void_order_popup.css" type="text/css">
 
 <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
 <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
@@ -9,20 +11,58 @@
 <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
 <script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
 <script type="text/javascript" src="/assets/js/moment.js"></script>
-<script type="text/javascript" src="/assets/js/alertifyjs/alertify.js"></script>
+<script type="text/javascript" src="/assets/js/alertify/js/alertify.js"></script>
 <script type="text/javascript" src="/assets/js/does_connection_exist.js"></script>
 
 <link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css">
 
 <link rel="stylesheet" href="/apps/OPD/assets/css/presenting.complaints.css" type="text/css">
 <script type="text/javascript" src="/apps/OPD/assets/js/presenting.complaints.js"></script>
-
+<script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 <style>
 
 .inputFrameClass {
   width: 96% !important;
 }
 
+.helpTextClass {
+    width: 40% !important;
+}
+
+.keyboard {
+height: 320px !important;
+position: absolute;
+display: block;
+z-index: 10;
+bottom: 85px;
+left: 150px !important;
+border: 1px solid #333;
+border-radius: 15px;
+padding: 5px;
+background-color: #fff;
+width: 830px !important;
+top: 330px !important;
+
+}
+
+#search_content
+{
+  float:right;
+  margin: 9.5px;
+  padding-right: 7px;
+}
+#search_text
+{
+margin-right: 8px;
+font-size: 20px;
+}
+body {
+  -webkit-overflow-scrolling: touch; /* Lets it scroll lazy */
+}
+
+body {
+  -webkit-overflow-scrolling: auto; /* Stops scrolling immediately */
+}
 </style>
 
 <script>
@@ -38,19 +78,26 @@ function changeNextButton() {
 <body id="mateme">
   <div id="container">
     <div id="content">
-
+ 
       <form>
+        <!--input type="text" name="summary"
+          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildPresentaingComplaints('Presenting complaint');buildOrderButton()"
+          tt_pageStyleClass= "NoControls" helpText="Presenting complaints" optional = "true"/-->
+
         <input type="text" name="summary"
-          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildPresentaingComplaints('Presenting complaint');"
+          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildPresentaingComplaints('Presenting complaint'); build_search_field(); buildOrderButton()"
           tt_pageStyleClass= "NoControls" helpText="Presenting complaints" optional = "true"/>
 
         <!--input type="text" name="summary"
           tt_onLoad="__$('keyboard').style.display = 'none';changeNextButton();buildPresentaingComplaints('Specific presenting complaint');"
           tt_pageStyleClass= "NoControls" helpText="Specific presenting complaints" optional = "true"/-->
 
+
+
       </form>
 
    </div>
  </div>
+ <div  id="page-cover"></div>
 </body>
 
