@@ -54,17 +54,27 @@ function  search_results() {
   for (n=0; n < groups_ls_parent.children.length; n++) {
     groups_ls_parent.children[n].setAttribute('style','display: show');
 
+
+    for (var d=0; d < _concept_set.length; d++) {
+      var _id = _concept_set[d].group;
+      var _bv = document.getElementById(_id);
+      _bv.parentElement.setAttribute('style','display: show');
+      groupClicked(_bv);
+      _found_g_name_id = _bv.getAttribute('id');
+      setVissiableForGroup(_found_g_name_id); 
+    }
+
     //console.log(groups_ls_parent.children[n].children[0]);
 
     //var __selected = groups_ls_parent.children[n].children[0].getAttribute('selected');
 
     //groupClicked(groups_ls_parent.children[0].children[0]);
 
-    if (__selected == 'true') {
-      //groupClicked(groups_ls_parent.children[n].children[0]);
-    } else {
+    // if (__selected == 'true') {
+    //   //groupClicked(groups_ls_parent.children[n].children[0]);
+    // } else {
       
-    }
+    // }
     //complaints-container-column
   }
 
@@ -167,7 +177,6 @@ var _found_g_name_id = null;
 function setVissiableForGroup(group) {
 
   var _group = document.getElementById('list-'+group);
-  console.log("Children: ",_group);
 
   for (g=0; g<_group.children.length; g++) {
 
