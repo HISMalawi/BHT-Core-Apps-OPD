@@ -733,6 +733,8 @@ function getIndicators() {
               var total_ids = '';
 
               for (const [key1, value1] of Object.entries(value)) {
+
+                console.log("MIssion: ",value1);
                      
                       row.children[count_for_clmns].innerHTML = value1.length;
                       total+=value1.length;
