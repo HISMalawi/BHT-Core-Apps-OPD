@@ -714,7 +714,7 @@ function getIndicators() {
         url += '/generate_weekly_idsr_report?start_date=' + start_date;
         url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
         url += '&program_id=' + sessionStorage.programID;
-        url += '?request=true';
+        url += '&request=true';
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -733,8 +733,6 @@ function getIndicators() {
               var total_ids = '';
 
               for (const [key1, value1] of Object.entries(value)) {
-
-                console.log("MIssion: ",value1);
                      
                       row.children[count_for_clmns].innerHTML = value1.length;
                       total+=value1.length;
