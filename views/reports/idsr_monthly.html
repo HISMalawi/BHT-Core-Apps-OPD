@@ -659,8 +659,8 @@ function getIndicators() {
 
    
     var url = apiProtocol + "://" + apiURL + ":" + apiPort;
-        url += '/generate_monthly_idsr_report'
-        url += '?request=true';
+        url += '/generate_monthly_idsr_report?'
+        url += '&request=true';
         url += '&start_date='+ start_date;
         url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
         url += '&program_id=' + sessionStorage.programID;
