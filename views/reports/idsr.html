@@ -57,6 +57,10 @@ body {
   display: none;
 }
 
+#report-cover-2 {
+  display: none;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -287,7 +291,7 @@ td {
     position: absolute;
     top: 150px;
     left: 40%;
-    z-index: 1000;
+    z-index: 1001;
   }
 
 #report-cover {
@@ -298,6 +302,17 @@ td {
     left: 0%;
     top: 0%;
     z-index: 990;
+    opacity: 0.65;
+}
+
+#report-cover-2 {
+    position: absolute;
+    background-color: black;
+    width: 100%;
+    height: 102%;
+    left: 0%;
+    top: 0%;
+    z-index: 1000;
     opacity: 0.65;
 }
 
@@ -434,56 +449,56 @@ function showDisaggregatedReport(){
     <td class="td-text-align-left td-span-width">Total</td>
   </tr>
 
-  <tr id="AEFI">
+  <tr id="_1">
     <td class="td-text-align-right" style="width: 5%;">1</td -->
     <td class="td-text-align-right" style="width: 30%;">AEFI</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right" >0</a></td>
   </tr>
-  <tr id="Poliomyelitis">
+  <tr id="_2">
     <td class="td-text-align-right">2</td>
     <td class="td-text-align-right" style="width: 30%;">AFP (Poliomyelitis***)</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="AHFS">
+  <tr id="_3">
     <td class="td-text-align-right">3</td>
     <td class="td-text-align-right" style="width: 30%;">AHFS</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Anthrax">
+  <tr id="_4">
     <td class="td-text-align-right">4</td>
     <td class="td-text-align-right" style="width: 30%;">Anthrax</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Cholera">
+  <tr id="_5">
     <td class="td-text-align-right">5</td>
     <td class="td-text-align-right" style="width: 30%;">Cholera</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="COVID-19">
+  <tr id="_6">
     <td class="td-text-align-right">6</td>
     <td class="td-text-align-right" style="width: 30%;">Covid-19</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Dengue">
+  <tr id="_7">
     <td class="td-text-align-right">7</td>
     <td class="td-text-align-right" style="width: 30%;">Dengue</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Dysentery">
+  <tr id="_8">
     <td class="td-text-align-right">8</td>
     <td class="td-text-align-right" style="width: 30%;">Diarrhoea with blood (Shigella)</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
@@ -491,56 +506,56 @@ function showDisaggregatedReport(){
     <td id="total" class="td-text-align-right">0</td>
   </tr>
 
-  <tr id="Influenza due to new subtype">
+  <tr id="_9">
     <td class="td-text-align-right">9</td>
     <td class="td-text-align-right" style="width: 30%;">Influenza due to new subtype</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Listeriosis">
+  <tr id="_10">
     <td class="td-text-align-right">10</td>
     <td class="td-text-align-right" style="width: 30%;">Listeriosis</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Malaria">
+  <tr id="_11">
     <td class="td-text-align-right">11</td>
     <td class="td-text-align-right" style="width: 30%;">Malaria</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Maternal death">
+  <tr id="_12">
     <td class="td-text-align-right">12</td>
     <td class="td-text-align-right" style="width: 30%;">Maternal death</td>
     <td id="ls-5yrs" class="td-text-align-right gray-cell"></td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Measles">
+  <tr id="_13">
     <td class="td-text-align-right">13</td>
     <td class="td-text-align-right" style="width: 30%;">Measles</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Meningococcal Meningitis">
+  <tr id="_14">
     <td class="td-text-align-right">14</td>
     <td class="td-text-align-right" style="width: 30%;">Meningococcal Meningitis</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Neonatal tetanus">
+  <tr id="_15">
     <td class="td-text-align-right">15</td>
     <td class="td-text-align-right" style="width: 30%;">Neonatal tetanus</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right gray-cell"></td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="PHEIC">
+  <tr id="_16">
     <td class="td-text-align-right">16</td>
     <td class="td-text-align-right" style="width: 30%;">PHEIC</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
@@ -548,49 +563,49 @@ function showDisaggregatedReport(){
     <td id="total" class="td-text-align-right">0</td>
   </tr>
 
-  <tr id="Plague">
+  <tr id="_17">
     <td class="td-text-align-right">17</td>
     <td class="td-text-align-right" style="width: 30%;">Plague</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Rabies">
+  <tr id="_18">
     <td class="td-text-align-right">18</td>
     <td class="td-text-align-right" style="width: 30%;">Rabies (Human)</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Acute respiratory infection">
+  <tr id="_19">
     <td class="td-text-align-right">19</td>
     <td class="td-text-align-right" style="width: 30%;">SARIs**</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="SARS">
+  <tr id="_20">
     <td class="td-text-align-right">20</td>
     <td class="td-text-align-right" style="width: 30%;">SARS</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Small pox">
+  <tr id="_21">
     <td class="td-text-align-right">21</td>
     <td class="td-text-align-right" style="width: 30%;">Small pox</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Typhoid fever">
+  <tr id="_22">
     <td class="td-text-align-right">22</td>
     <td class="td-text-align-right" style="width: 30%;">Typhoid fever</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
-  <tr id="Yellow fever">
+  <tr id="_23">
     <td class="td-text-align-right">23</td>
     <td class="td-text-align-right" style="width: 30%;">Yellow fever</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
@@ -637,6 +652,7 @@ function showDisaggregatedReport(){
 
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
 <div id="report-cover"></div>
+<div id="report-cover-2"></div>
 
 
 <form id="pdf" method="post" action="/cohort_tool/pdf_printout_cohort.pdf" name="pdf_printout">
@@ -693,27 +709,57 @@ function getIndicators() {
   var responseTracker = 0;
   var trackerSupport = Math.round(idsr_diagnosis.length/2)+2;
 
-  for (var i=0; i<idsr_diagnosis.length; i++) { 
-    var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
-        url += '/idsr?start_date=' + start_date;
+   
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+        url += '/generate_weekly_idsr_report?start_date=' + start_date;
         url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
         url += '&program_id=' + sessionStorage.programID;
-        url += '&diagnosis=' + idsr_diagnosis[i];
+        url += '&request=true';
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
         runningReport = false
         idsrResults = JSON.parse(this.responseText);
-        fillTableRow();
+        var count_for_condition = 1;
+        for (const [key, value] of Object.entries(idsrResults)) {
+              var row = document.getElementById('_'+count_for_condition);
 
-        responseTracker++;
-       
-        if (trackerSupport == responseTracker) {
-            //initializeTable();
+              row.children[1].innerHTML = key;
+
+              count_for_condition++;
+              var count_for_clmns = 2;
+              var total = 0;
+              var total_ids = '';
+
+              for (const [key1, value1] of Object.entries(value)) {
+                     
+                      row.children[count_for_clmns].innerHTML = value1.length;
+                      total+=value1.length;
+                     
+                      var storage_name = key+key1;
+                      var ids ='';
+                      
+                      for(var k=0; k<value1.length; k++) {
+                        ids += '|'+value1[k]; 
+                      }
+
+                      if(value1.length != 0) {
+                        row.children[count_for_clmns].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
+                        sessionStorage.setItem(storage_name, ids);
+                        total_ids += ids;
+                      }
+
+                      count_for_clmns++;
+                    }
+                    if (total > 0) {
+                      row.children[count_for_clmns].innerHTML = total;
+                      row.children[count_for_clmns].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
+                      sessionStorage.setItem(key+'total', total_ids);
+                    }
+            }
             document.getElementById('spinner').style = 'display: none';
             document.getElementById('report-cover').style = 'display: none;';
-          }
         
         if(reload_status == true) 
           location.reload();
@@ -729,7 +775,7 @@ function getIndicators() {
     xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
     xhttp.setRequestHeader('Content-type', "application/json");
     xhttp.send();
-    }
+    
 }
 
 var myVar;
@@ -767,42 +813,6 @@ const idsr_diagnosis = ["Diarrhea",
 "Typhoid fever",
 "Yellow fever"
 ];
-
-function fillTableRow() {
-  var idsrValues = idsrResults;
-  var row;
-
-  
-  for (var diagnosis in idsrResults) {
-      row = document.getElementById(diagnosis);
-
-      if(row != null)
-      for (var i = 2; i < row.children.length; i++) {
-        if (row.children[i].getAttribute('id') == 'ls-5yrs') {
-          if (idsrResults[diagnosis].patientD_LessThanFiveYrs != 0) {
-            row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'ls-5yrs'+'\')">'+idsrResults[diagnosis].less_than_five_yrs+'</a>';
-            //console.log(idsrResults[diagnosis].patientD_LessThanFiveYrs.split(" "));
-            //idsrResults[diagnosis].patientD_LessThanFiveYrs;
-            sessionStorage.setItem(diagnosis+'ls-5yrs', idsrResults[diagnosis].patientD_LessThanFiveYrs); 
-          }
-        }
-        else if (row.children[i].getAttribute('id') == 'grt-5yrs') {
-          if (idsrResults[diagnosis].patientD_GreaterThanFiveYrs != 0) {
-            row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'grt-5yrs'+'\')">'+idsrResults[diagnosis].greater_than_five_years+'</a>';
-            //idsrResults[diagnosis].patientD_GreaterThanFiveYrs;
-            sessionStorage.setItem(diagnosis+'grt-5yrs', idsrResults[diagnosis].patientD_GreaterThanFiveYrs);
-          }
-        }
-        else if (row.children[i].getAttribute('id') == 'total') {
-          row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'total'+'\')">'+(idsrResults[diagnosis].less_than_five_yrs + idsrResults[diagnosis].greater_than_five_years)+'</a>';
-          sessionStorage.setItem(diagnosis+'total', idsrResults[diagnosis].patientD_LessThanFiveYrs+idsrResults[diagnosis].patientD_GreaterThanFiveYrs);
-
-        }
-      }
-  } 
-}
-
-
 
 var start_date = getUrlVars()["start_date"];
 var end_date = getUrlVars()["end_date"];
@@ -860,91 +870,108 @@ function initializeTable_Modal() {
         lookForTag();
     }
 
-    function view_patientD(data)
+    function view_patientD(name)
     {    
          if($('#virtual-keyboard').length)
              hide_keyboard();
 
         $('.keyboard').attr('style','display:none');
-        document.getElementById('spinner').style = 'display: block;';
-        document.getElementById('report-cover').style = 'display: block;';
-        dataTableContentLoader(data);
+        document.getElementById('spinner').style = 'display: block;';  
+        document.getElementById('report-cover-2').style = 'display: block;';
+        dataTableContentLoader(name);
     }
 
-    function dataTableContentLoader(data)
+    function dataTableContentLoader(name)
     {   
         var diagName;
         var period;
-        if (data.indexOf('total') != -1) {
-          diagName = data.replace('total','');
+        if (name.indexOf('total') != -1) {
+          diagName = name.replace('total','');
           period = "Total";
         }
 
-        if (data.indexOf('ls-5yrs') != -1) {
-          diagName = data.replace('ls-5yrs','');
+        if (name.indexOf('<5yrs') != -1) {
+          diagName = name.replace('<5yrs','');
           period = "Less Than Five Years";
         }
 
-        if (data.indexOf('grt-5yrs') != -1) {
-          diagName = data.replace('grt-5yrs','');
+        if (name.indexOf('>=5yrs') != -1) {
+          diagName = name.replace('>=5yrs','');
           period = "Greater Than Five Years";
         }
         
-        patientD = sessionStorage.getItem(data);
+       IDsArray = sessionStorage.getItem(name);
+       IDsArray =IDsArray.split('|');
+
+       var progressTracker = 0;
+
         $('.modal-title').html('<b>Condition:</b> &nbsp;&nbsp; ' + diagName);
         $('.period').html('<b>Age Group:</b>  &nbsp;&nbsp;' + period);
-        // if(period == "")
-        // $('.period').attr('style','display:none')
         document.getElementById('modal').setAttribute('style','display:block');
-        patientD = patientD.substring(2);
-        patientD = patientD.split('|');
-        patientD = patientD.sort();
-     
         $('#patient_details_body').html('');
-        patientD.forEach(value1 => 
-        {
-            var value = value1.split(',');
-                
-            var tr = document.createElement('tr');
-            document.getElementById('patient_details_body').appendChild(tr);
 
-            var td = document.createElement('td');
-            td.setAttribute("class","td-text-align-left");
-            td.innerHTML = value[1];
-            tr.appendChild(td);
 
-            td = document.createElement('td');
-            td.setAttribute("class","td-text-align-left");
-            td.innerHTML = value[0];
-            tr.appendChild(td);
+        for (var n=1; n<IDsArray.length; n++) {
 
-            var td = document.createElement('td');
-            td.setAttribute("class","td-text-align-left");
-            td.innerHTML = value[2];
-            tr.appendChild(td);
+        var patient_id = IDsArray[n];
+        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patient_details_by_id?';
+        url +=   'patient_id='+patient_id;
 
-            td = document.createElement('td');
-            td.setAttribute("class","td-text-align-left");
-            td.innerHTML = value[3];
-            tr.appendChild(td);
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+        if (this.readyState == 4) {
+          if (this.status == 200) {
+              progressTracker++;
+              var results = JSON.parse(this.responseText);
+              var tr = document.createElement('tr');
+              document.getElementById('patient_details_body').appendChild(tr);
 
-            td = document.createElement('td');
-            td.setAttribute("class","td-text-align-left");
-            td.innerHTML = value[4];
-            tr.appendChild(td);
-            
-            td = document.createElement('td');
-            td.innerHTML = value[5];
-            tr.appendChild(td);
+              var td = document.createElement('td');
+              td.setAttribute("class","td-text-align-left");
+              td.innerHTML = results[0].patient_id;
+              tr.appendChild(td);
 
-        });
-        
+              td = document.createElement('td');
+              td.setAttribute("class","td-text-align-left");
+              td.innerHTML = results[0].given_name;
+              tr.appendChild(td);
 
-        document.getElementById('spinner').style = 'display: none;';
-        //add export data buttons
-        initializeTable_Modal();
+              var td = document.createElement('td');
+              td.setAttribute("class","td-text-align-left");
+              td.innerHTML = results[0].family_name;
+              tr.appendChild(td);
 
-        //$("label [aria-controls*='report']").attr('type','text');
+              td = document.createElement('td');
+              td.setAttribute("class","td-text-align-left");
+              td.innerHTML = results[0].gender;
+              tr.appendChild(td);
+
+              td = document.createElement('td');
+              td.setAttribute("class","td-text-align-left");
+              td.innerHTML = results[0].phone_number;
+              tr.appendChild(td);
+              
+              td = document.createElement('td');
+              td.innerHTML = results[0].address;
+              tr.appendChild(td);
+
+            if (progressTracker == IDsArray.length-1) {
+                initializeTable_Modal();
+                $("label [aria-controls*='report']").attr('type','text');
+                document.getElementById('spinner').style = 'display: none;';
+                document.getElementById('report-cover-2').style = 'display: none;';
+                document.getElementById('report-cover').style = 'display: block;';
+            }
+           }
+         }
+        };
+        try {
+          req.open('GET', url, true);
+          req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+          req.send(null);
+        } catch (e) {
+        }   
+        }
     }
 
     function close_modal()
@@ -963,7 +990,6 @@ function initializeTable_Modal() {
         var w = document.getElementsByTagName('body')[0];
         w.removeChild(vl);
     }
-
 </script>
 <!-- Modal -->
 <div class="modal " id="modal" style="display: none;" > 

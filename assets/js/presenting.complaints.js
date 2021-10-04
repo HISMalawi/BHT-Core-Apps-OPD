@@ -1,5 +1,6 @@
 var presentingComplaintsHash = {};
 var presentingComplaintsNameHash = {};
+var _concept_set;
 sessionStorage.setItem('radiology_order_done','false');
 sessionStorage.setItem('lab_order_done','false');
 sessionStorage.setItem('radiology_is_set', 'false');
@@ -12,14 +13,17 @@ function clearSelection(type_of_complaint) {
   messageBar.style.display = "none";
 }
 
-/* function build_search_field()
-{
+function insertAfter(newNode, existingNode) {
+  existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+}
 
+ function build_search_field() {
   var helpText0 = document.getElementById('helpText0');
-  
   var search_content = document.createElement('div');
   search_content.setAttribute('id','search_content');
-  helpText0.appendChild(search_content);
+  //helpText0.appendChild(search_content);
+
+  insertAfter(search_content, helpText0);
 
   var search_text = document.createElement('span');
   search_text.setAttribute('id','search_text');
@@ -27,12 +31,168 @@ function clearSelection(type_of_complaint) {
   search_content.appendChild(search_text);
 
   var search_input = document.createElement('input');
-  search_input.setAttribute('id','search_filed');
+  search_input.setAttribute('id','search_field');
   search_input.setAttribute('style','height:40px;width:400px;');
-  search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
+  //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
+  search_input.setAttribute('onkeyup','search_results()');
   search_content.appendChild(search_input);
   lookForTag();
-} */
+}
+
+
+function  search_results() {
+  var x = document.getElementById("search_field").value;
+
+  var groups_ls_parent = document.getElementById('side-bar-pre-grouped');
+
+  if (x != '')
+  for (n=0; n < groups_ls_parent.children.length; n++) {
+    groups_ls_parent.children[n].setAttribute('style','display: none');
+  } 
+
+  if (x == '')
+  for (n=0; n < groups_ls_parent.children.length; n++) {
+    groups_ls_parent.children[n].setAttribute('style','display: show');
+
+
+    for (var d=0; d < _concept_set.length; d++) {
+      var _id = _concept_set[d].group;
+      var _bv = document.getElementById(_id);
+      _bv.parentElement.setAttribute('style','display: show');
+      groupClicked(_bv);
+      _found_g_name_id = _bv.getAttribute('id');
+      setVissiableForGroup(_found_g_name_id); 
+    }
+
+    //console.log(groups_ls_parent.children[n].children[0]);
+
+    //var __selected = groups_ls_parent.children[n].children[0].getAttribute('selected');
+
+    //groupClicked(groups_ls_parent.children[0].children[0]);
+
+    // if (__selected == 'true') {
+    //   //groupClicked(groups_ls_parent.children[n].children[0]);
+    // } else {
+      
+    // }
+    //complaints-container-column
+  }
+
+  for (var t=0; t < _concept_set.length; t++) {
+    var srch_str = '_'+_concept_set[t].group.toLowerCase();
+     var condition_for_group_name = srch_str.indexOf(x);
+    
+    for (var y=0; y<_concept_set[t].complaints.length;y++) {
+      var _srch_str = '_'+_concept_set[t].complaints[y].name.toLowerCase();
+      var condition_for_complaint = 0;
+
+      var complaint_id = _concept_set[t].complaints[y].concept_id;
+      var _name =  document.getElementById(complaint_id).getAttribute('name');
+      var elementsByName = document.getElementsByName(_name);
+      
+      if (x != '') {
+
+        document.getElementById(complaint_id).setAttribute('style','display: none');
+        if (elementsByName.length > 1) {
+
+          for (var m=0; m<elementsByName.length; m++) {
+            elementsByName[m].setAttribute('style','display: none');
+          }
+        }
+      }
+      
+      if (x == '') {
+        document.getElementById(complaint_id).setAttribute('style','display: show');
+
+        var selected = document.getElementById(complaint_id).getAttribute('selected');
+        if (selected == 'true') {
+          document.getElementById(complaint_id).setAttribute('style','display: show; background-color: lightblue;');
+        }
+
+        if (elementsByName.length > 1) {
+
+          for (var m=0; m<elementsByName.length; m++) {
+            elementsByName[m].setAttribute('style','display: show');
+
+            var _selected = elementsByName[m].getAttribute('selected');
+
+            if (_selected == 'true') {
+              elementsByName[m].setAttribute('style','display: show; background-color: lightblue;');
+            }
+          }
+        }
+      }
+
+
+      condition_for_complaint = _srch_str.indexOf(x);
+
+      if (condition_for_complaint > 0) {
+
+        document.getElementById(complaint_id).setAttribute('style','display: show');
+
+        var selected = document.getElementById(complaint_id).getAttribute('selected');
+
+        if (selected == 'true') {
+          document.getElementById(complaint_id).setAttribute('style','display: show; background-color: lightblue;');
+        }
+
+
+        if (elementsByName.length > 1) {
+
+          for (var m=0; m<elementsByName.length; m++) {
+            elementsByName[m].setAttribute('style','display: show');
+
+            var _selected = elementsByName[m].getAttribute('selected');
+
+            if (_selected == 'true') {
+              elementsByName[m].setAttribute('style','display: show; background-color: lightblue;');
+            }
+          }
+        }
+
+        var id = _concept_set[t].group;
+        var bv = document.getElementById(id);
+  
+        bv.parentElement.setAttribute('style','display: show');
+        groupClicked(bv);
+      }
+    }
+
+     if (condition_for_group_name > 0) {
+
+      var id = _concept_set[t].group;
+      var bv = document.getElementById(id);
+
+      bv.parentElement.setAttribute('style','display: show');
+      groupClicked(bv);
+      _found_g_name_id = bv.getAttribute('id');
+      //setVissiableForGroup(bv.getAttribute('id'))
+     }
+  }
+  setVissiableForGroup(_found_g_name_id);
+}
+
+var _found_g_name_id = null;
+
+function setVissiableForGroup(group) {
+
+  var _group = document.getElementById('list-'+group);
+
+  for (g=0; g<_group.children.length; g++) {
+
+    for (var _g=0; _g<_group.children[g].children.length; _g++) {
+      _group.children[g].children[_g].setAttribute('style','display: show');
+
+      var _selected = _group.children[g].children[_g].getAttribute('selected');
+
+      if (_selected == 'true') {
+        _group.children[g].children[_g].setAttribute('style','display: show; background-color: lightblue;');
+      }
+    }
+  }
+
+}
+
 function buildPresentaingComplaints(type_of_complaint) {
   document.getElementById('buttons').setAttribute('style','width: 100% !important');
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
@@ -151,6 +311,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
               cell.innerHTML = concept_sets[t].complaints[i].name;
               cell.setAttribute('selected', 'false');
               cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
+              cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
               cell.setAttribute('group_concept_id', concept_sets[t].concept_id);
               cell.setAttribute('group_name', concept_sets[t].group);
               cell.setAttribute('complaint-type', type_of_complaint);
@@ -163,9 +324,9 @@ function presentingComplaints(concept_sets, type_of_complaint) {
                 row_count = 1;
   }  
   }
-  var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
-    var other = document.getElementById('Other');
-    sideBarPreGrouped.appendChild(other);
+  // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
+  //   var other = document.getElementById('Other');
+  //   sideBarPreGrouped.appendChild(other);
 }
 
 function autoHighLight(type_of_complaint) {
@@ -187,17 +348,9 @@ function autoHighLight(type_of_complaint) {
 
 function complaintClicked(e) {
   var type_of_complaint = e.getAttribute('complaint-type');
-  
   var groupID = e.parentElement.parentElement.getAttribute('id').split('list-');
-  console.log('groupID: ', groupID[1]);
-  //console.log(getElementById(groupID[1]));
   var groupSelected = document.getElementById(groupID[1]);
   var childNodes = e.parentElement.parentElement.childNodes;
-  
-
-  console.log('type_of_complaint: ', e.parentElement.parentElement.getAttribute('id'));
-
-
   
   if(e.getAttribute('selected') == 'false'){
     if(e.innerHTML.toUpperCase() == 'NONE'){
@@ -211,7 +364,6 @@ function complaintClicked(e) {
     addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
-        //console.log('Child: ', childNodes[i].childNodes[j].getAttribute('selected'));
         if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {
           groupSelected.setAttribute('selected', 'true');
           groupSelected.style = 'background-color: #aaaaf4 !important;';
@@ -332,6 +484,7 @@ function getPresentingComplaints(type_of_complaint) {
     if (this.readyState == 4 && this.status == 200) {
       var objs = JSON.parse(this.responseText);
      presentingComplaints(objs, type_of_complaint);
+     _concept_set = objs;
     }
   };
   xhttp.open("GET", (url + "?id=" + concept_set + "&name="), true);
@@ -404,7 +557,6 @@ function prepareToSaveForOrders() {
 }
 
 function showValidate() {
-  console.log(presentingComplaintsNameHash);
   var message = "Complaints Selected";
   var msg = "Are you sure you want to proced?";
   var td_string = "";
@@ -466,8 +618,10 @@ function nextPage(obs){
     } else {
       odersButton.setAttribute('selected','false');
       //redirectToLabOrders();
-      nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+      //nextEncounter(sessionStorage.patientID, sessionStorage.programID);
       //return;
+      closeOrdersPopupModal();
+      //reset_lab_and_radio_setting();
     }
   }
   nextEncounter(sessionStorage.patientID, sessionStorage.programID);
