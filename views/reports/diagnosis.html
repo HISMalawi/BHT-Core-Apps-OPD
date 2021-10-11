@@ -421,7 +421,7 @@ function showDisaggregatedReport(){
   <tr>
     <td class="td-text-align-left">Period:</td>
     <td class="td-text-align-left">
-      <span id="start-date"></span>&#160;&#160;&#160;
+      <span id="start-date"></span>&#160;&#160;To&#160;&#160;
       <span id="end-date"></span>
     </td>
   </tr>
@@ -859,9 +859,10 @@ function initializeTable_Modal() {
       document.getElementById('spinner').style = 'display: inline;';
       document.getElementById('report-cover').style = 'display: inline;';
         var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+        url += '/programs/' + sessionStorage.programID;
+        url += '/reports'
         url += '/diagnosis_ls?start_date=' + start_date;
         url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-        url += '&program_id=' + sessionStorage.programID;
 
         if (apiProtocol == undefined) {
             setTimeout("getData()", 3000);
@@ -887,7 +888,7 @@ function initializeTable_Modal() {
     function buildRows() {
         table = document.getElementById('diagnosis_table');
         var tbody = table.children[1];
-
+ 
         document.getElementById('spinner').style = 'display: inline;';
         document.getElementById('report-cover').style = 'display: inline;';
 
@@ -940,9 +941,10 @@ function initializeTable_Modal() {
 
     for (var i=0; i<diagnosis_list.length; i++) {
       var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+          url += '/programs/' + sessionStorage.programID;
+          url += '/reports'
           url += '/diagnosis?start_date=' + start_date;
           url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-          url += '&program_id=' + sessionStorage.programID;
           url += '&diagnosis_name=' + diagnosis_list[i];
 
       var xhttp = new XMLHttpRequest();
