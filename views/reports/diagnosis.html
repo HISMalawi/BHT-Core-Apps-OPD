@@ -378,10 +378,6 @@ url = new URL(url);
 var start_date = url.searchParams.get("start_date");
 var end_date = url.searchParams.get("end_date");
 
-//document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
-//document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
-
-
 </script>
 
 <div id="content" style="margin-bottom: 65px;">
@@ -433,9 +429,6 @@ var end_date = url.searchParams.get("end_date");
         <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
             <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
         </button>
-        <!-- <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
-            <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
-        </button> -->
         <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
             <span>&nbsp; Export &nbsp;</span>
         </button>
@@ -445,18 +438,10 @@ var end_date = url.searchParams.get("end_date");
     </div>
 </footer>
 
-<form id="patients" method="post" action="/cohort_tool/list_more_details" name="pat_drilldown">
-  <input id='patient_ids' type='hidden' name = 'patient_ids' />
-  <input id='indicator' type='hidden' name = 'indicator' />
-</form>
 
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
 <div id="report-cover"></div>
 <div id="report-cover-2"></div>
-
-
-<form id="pdf" method="post" action="/cohort_tool/pdf_printout_cohort.pdf" name="pdf_printout">
-</form>
 
 <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
 <script>
@@ -705,9 +690,7 @@ function initializeTable_Modal() {
         xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
         xhttp.setRequestHeader('Content-type', "application/json");
         xhttp.send();
-    }
-
-    
+    } 
 
     function buildRows() {
         table = document.getElementById('diagnosis_table');
