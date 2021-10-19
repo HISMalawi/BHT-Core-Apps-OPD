@@ -115,6 +115,10 @@ td {
   border-style: dotted;
 }
 
+.dataTables_wrapper {
+  padding: 1% !important;
+}
+
 .signatures {
   width: 39.875%;
   text-align: left;
@@ -374,38 +378,6 @@ url = new URL(url);
 var start_date = url.searchParams.get("start_date");
 var end_date = url.searchParams.get("end_date");
 
-//document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
-//document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
-
-var print_pdf_attr = {};
-
-function drillDown(indicator, report_name, quarter) {
-    indicator = indicator.split(",");
-    window.location = "/apps/ART/views/cohort_tool/driller/driller.html?resource_id=" + indicator[0] + "&report_name=" + indicator[1]+ "&quarter=" + Quarter;
-}
-
-
-function showDisaggregatedReport(){
-  var url = window.location.href;
-  url = new URL(url);
-  var quarter = url.searchParams.get("quarter");
-
-  if(quarter == undefined || quarter == null) {
-    var start_date = getUrlVars()["start_date"];
-    var end_date = getUrlVars()["end_date"];
-    quarter = 'Custom';
-    url = 'disaggregated.html?quarter=' + quarter;
-    url += "&start_date=" + start_date; 
-    url += "&end_date=" + end_date; 
-  }else{
-    url = 'disaggregated.html?quarter=' + quarter; 
-  }
-
-  var on_art = document.getElementById('total_alive_and_on_art').innerHTML;
-  url += '&total_alive_and_on_art=' + on_art;
-  location = url;
-}
-
 </script>
 
 <div id="content" style="margin-bottom: 65px;">
@@ -421,7 +393,7 @@ function showDisaggregatedReport(){
   <tr>
     <td class="td-text-align-left">Period:</td>
     <td class="td-text-align-left">
-      <span id="start-date"></span>&#160;&#160;&#160;
+      <span id="start-date"></span>&#160;&#160;To&#160;&#160;
       <span id="end-date"></span>
     </td>
   </tr>
@@ -443,9 +415,6 @@ function showDisaggregatedReport(){
                 <th rowspan="" class="td-text-align-left">&#62; 14 yrs F</th>
                 <th rowspan="" class="td-text-align-left">&#62; 14 yrs M</th>
 
-                <th rowspan="" class="td-text-align-left">Unknown F</th>
-                <th rowspan="" class="td-text-align-left">Unknown M</th>
-
                 <th rowspan="" class="td-text-align-left">Total</th>
             </tr>
         </thead>
@@ -454,48 +423,25 @@ function showDisaggregatedReport(){
   </table>
 </tr>
 </table>
-
 </div>
-<div id="editor"></div>
-
-<!-- Controls -->
-<!-- <div class="row-button-print">
-  <div class="buttons">
-    <button class="button button-finish" onmousedown="javascript:location='/'">Finish</button>
-    <button class="button button-print" onmousedown="javascript:printPDF();">Print</button>
-    <button class="button button-disaggregated" onmousedown="showDisaggregatedReport();">Cohort disaggregated report</button>
-
-  </div>
-</div> -->
 <footer class="footer">
     <div class="container-footer">
         <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
             <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
         </button>
-        <!-- <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
-            <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
-        </button> -->
         <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
             <span>&nbsp; Export &nbsp;</span>
         </button>
         <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
-            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp;&nbsp;</span>
+            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
         </button>
     </div>
 </footer>
 
-<form id="patients" method="post" action="/cohort_tool/list_more_details" name="pat_drilldown">
-  <input id='patient_ids' type='hidden' name = 'patient_ids' />
-  <input id='indicator' type='hidden' name = 'indicator' />
-</form>
 
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
 <div id="report-cover"></div>
 <div id="report-cover-2"></div>
-
-
-<form id="pdf" method="post" action="/cohort_tool/pdf_printout_cohort.pdf" name="pdf_printout">
-</form>
 
 <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
 <script>
@@ -511,39 +457,6 @@ document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/
 
 document.getElementById('facility-name').innerHTML = sessionStorage.currentLocation;
 
-function printPDF() {
-  var pdfForm = document.getElementById('pdf')
-  for (name in print_pdf_attr){
-    var input = document.createElement('input');
-    input.setAttribute('type','hidden');
-    input.setAttribute('name',"cohort_params[" + name + "]");
-    input.setAttribute('value', print_pdf_attr[name]);
-    pdfForm.appendChild(input);
-  }
-
-  var year = Year
-  
-  var cohort_quarter = ': ' + Quarter;
-
-  var input = document.createElement('input');
-  input.setAttribute('type','hidden');
-  input.setAttribute('name',"cohort_year");
-  input.setAttribute('value', year);
-  pdfForm.appendChild(input);
-
-  input = document.createElement('input');
-  input.setAttribute('type','hidden');
-  input.setAttribute('name',"cohort_quarter");
-  input.setAttribute('value', cohort_quarter);
-  pdfForm.appendChild(input);
-
-
-  document.pdf_printout.target = "my_pdf";
-  var w = (window.innerWidth - 80) ; var h = (window.innerHeight - 8);
-  window.open("","my_pdf","width=" + w + ",height=" + h + ",toolbar=0");
-  document.pdf_printout.submit();
-}
-
 function getUrlVars() {
   var vars = {};
   var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -554,39 +467,7 @@ function getUrlVars() {
 
 var diagnosisDetails;
 
-var myVar;
-var runningReport = true;
-var reload_status = false;
-
-function checkIfReportReady() {
-  // myVar = setTimeout(getIndicators, 10000);
-  // if(runningReport == false)
-  //   location.reload()
-
-}
-
-var quarter_val  = getUrlVars()["quarter"];
-
-if(quarter_val == undefined) {
-    var start_date = getUrlVars()["start_date"];
-    var end_date = getUrlVars()["end_date"];
-    var Quarter = 'Custom';
-    var Year = moment(start_date).format("DD/MMM/YYYY"); 
-    Year += " " + moment(end_date).format("DD/MMM/YYYY"); 
-}else{
-    quarter_val  = quarter_val.replace(/%20/," ");
-    var Year    = quarter_val.split(" ")[1];
-    var Quarter = quarter_val.split(" ")[0];
-}
-
-// document.getElementById("display-quarter").innerHTML = "Quarter: " + Quarter;
-// document.getElementById("display-quarter-year").innerHTML = "Year: " + Year;
-
-// document.getElementById('clinic-name').innerHTML = sessionStorage.currentLocation;
-//getIndicators();
 getDiagnosisList();
-
-
 
 function printWindow() {
   var footer = document.getElementsByClassName('footer')[0];
@@ -599,7 +480,6 @@ function initializeTable() {
   table = $('#diagnosis_table').DataTable({
     
             fixedHeader: false,
-            scrollX: 300,
             scrolly: 300,
             Processing: true,
             ServerSide: true,
@@ -633,63 +513,8 @@ function initializeTable_Modal() {
         lookForTag();
     }
 
-    function patient_details_request(patient_id){
-
-    }
-
-    function getPatientDetails(data) {
-      var data = sessionStorage.getItem(data);
-
-      var IDsArray = data.split('|');
-
-      var patients_inf = '';
-      var progressTracker = 0;
-
-      for (var n=1; n<IDsArray.length; n++) {
-
-        var patient_id = IDsArray[n];
-        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patient_details_by_id?';
-        url +=   'patient_id='+patient_id;
-        //url += '&program_id=' + sessionStorage.programID;
-
-       // var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patients/' + patient_id;
-
-        console.log("idddd: ",patient_id);
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function(){
-        if (this.readyState == 4) {
-        if (this.status == 200) {
-          progressTracker++;
-          var results = JSON.parse(this.responseText);
-         // patients_inf +='|'
-         if (progressTracker == IDsArray.length-1)
-          console.log("FINISHED",);
-          // document.getElementById("name").innerHTML = results.person.names[0].given_name + " " + results.person.names[0].family_name;
-          // document.getElementById("gender").innerHTML = results.person.gender;
-          // document.getElementById("birthdate").innerHTML = moment(results.person.birthdate).format("DD/MMM/YYYY");
-          // document.getElementById("district").innerHTML = results.person.addresses[0].neighborhood_cell;
-          // document.getElementById("home-district").innerHTML = results.person.addresses[0].address2;
-          // document.getElementById("current-village").innerHTML = results.person.addresses[0].city_village;
-          // document.getElementById("current-ta").innerHTML = results.person.addresses[0].township_division;
-          // document.getElementById("home-village").innerHTML = results.person.addresses[0].county_district;
-          // document.getElementById("current-district").innerHTML = results.person.addresses[0].state_province;
-          // document.getElementById("malawi-national-id").innerHTML = sessionStorage.national_id;
-        }
-        }
-        };
-        try {
-          req.open('GET', url, true);
-          req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-          req.send(null);
-        } catch (e) {
-        }   
-      }
-    }
-
     function view_patientD(name)
-    {   
-      //getPatientDetails(data);
-      // console.log(sessionStorage.getItem(data));
+    {  
          if($('#virtual-keyboard').length)
              hide_keyboard();
 
@@ -701,8 +526,6 @@ function initializeTable_Modal() {
 
     function dataTableContentLoader(name)
     {   
-        //data = sessionStorage.getItem(data);
-
         var diagName;
         var period;
         if (name.indexOf('total') != -1) {
@@ -729,7 +552,6 @@ function initializeTable_Modal() {
           diagName = name.replace('6_ls_5_m','');
           period = "6 Months To 5 Years, Males";
         }
-        
 
         if (name.indexOf('5_t_14_f') != -1) {
           diagName = name.replace('5_t_14_f','');
@@ -746,23 +568,11 @@ function initializeTable_Modal() {
           period = "Greater Than 14 Years, Females";
         }
 
-
         if (name.indexOf('grt_14_m') != -1) {
           diagName = name.replace('grt_14_m','');
           period = "Greater Than 14 Years, Males";
         }
-
-
-        if (name.indexOf('un_f') != -1) {
-          diagName = name.replace('un_f','');
-          period = "Unknown, Females";
-        }
-
-        if (name.indexOf('un_m') != -1) {
-          diagName = name.replace('un_m','');
-          period = "Unknown, Males";
-        }
-                 
+        
        IDsArray = sessionStorage.getItem(name);
        IDsArray =IDsArray.split('|');
 
@@ -772,7 +582,6 @@ function initializeTable_Modal() {
         $('.period').html('<b>Age Group:</b>  &nbsp;&nbsp;' + period);
         document.getElementById('modal').setAttribute('style','display:block');
         $('#patient_details_body').html('');
-
 
         for (var n=1; n<IDsArray.length; n++) {
 
@@ -859,9 +668,10 @@ function initializeTable_Modal() {
       document.getElementById('spinner').style = 'display: inline;';
       document.getElementById('report-cover').style = 'display: inline;';
         var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+        url += '/programs/' + sessionStorage.programID;
+        url += '/reports'
         url += '/diagnosis_ls?start_date=' + start_date;
         url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-        url += '&program_id=' + sessionStorage.programID;
 
         if (apiProtocol == undefined) {
             setTimeout("getData()", 3000);
@@ -880,28 +690,24 @@ function initializeTable_Modal() {
         xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
         xhttp.setRequestHeader('Content-type', "application/json");
         xhttp.send();
-    }
-
-    
+    } 
 
     function buildRows() {
         table = document.getElementById('diagnosis_table');
         var tbody = table.children[1];
-
+ 
         document.getElementById('spinner').style = 'display: inline;';
         document.getElementById('report-cover').style = 'display: inline;';
 
         const attri_b_ids = [
           'ls_6_f',
-          'ls_6-m',
+          'ls_6_m',
           '6_ls_5_f',
           '6_ls_5_m',
           '5_t_14_f',
           '5_t_14_m',
           'grt_14_f',
           'grt_14_m',
-          'un_f',
-          'un_m',
           'total'
         ]
 
@@ -914,7 +720,7 @@ function initializeTable_Modal() {
             row.setAttribute('id',diagnosis_list[i]);
             row.appendChild(td);
 
-            for (var j=0; j<11; j++) {
+            for (var j=0; j<attri_b_ids.length; j++) {
                 var cell = document.createElement('td');
                 cell.setAttribute('id', attri_b_ids[j]);
                 cell.innerHTML = '0';
@@ -925,10 +731,7 @@ function initializeTable_Modal() {
             tbody.appendChild(row);
         }
         getIndicators();
-        //initializeTable();
-
     }
-
 
     function getIndicators() {
 
@@ -940,9 +743,10 @@ function initializeTable_Modal() {
 
     for (var i=0; i<diagnosis_list.length; i++) {
       var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+          url += '/programs/' + sessionStorage.programID;
+          url += '/reports'
           url += '/diagnosis?start_date=' + start_date;
           url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-          url += '&program_id=' + sessionStorage.programID;
           url += '&diagnosis_name=' + diagnosis_list[i];
 
       var xhttp = new XMLHttpRequest();
@@ -953,9 +757,6 @@ function initializeTable_Modal() {
           fillTableRow();
 
           responseTracker++;
-
-          //console.log('trackerSupport: ',trackerSupport);
-          //console.log("TRACKER: ",responseTracker);
 
           if (trackerSupport == responseTracker) {
             initializeTable();
@@ -998,27 +799,7 @@ function initializeTable_Modal() {
                diagnosisDetails[diagnosis].male_five_yrs_to_fourteen_years +
 
                diagnosisDetails[diagnosis].female_over_fourteen_years +
-               diagnosisDetails[diagnosis].male_over_fourteen_years +
-
-               diagnosisDetails[diagnosis].female_unknowns +
-               diagnosisDetails[diagnosis].male_unknowns;
-
-               console.log('DIAG: ', diagnosis);
-
-               console.log("diagnosisDetails[diagnosis].female_less_than_six_months: ",diagnosisDetails[diagnosis].female_less_than_six_months);
-               console.log("diagnosisDetails[diagnosis].male_less_than_six_months: ",diagnosisDetails[diagnosis].male_less_than_six_months);
-
-               console.log("diagnosisDetails[diagnosis].female_six_months_to_less_than_five_yrs: ",diagnosisDetails[diagnosis].female_six_months_to_less_than_five_yrs);
-               console.log("diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs: ",diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs);
-
-console.log("diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years: ",diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years);
-console.log("diagnosisDetails[diagnosis].male_five_yrs_to_fourteen_years: ",diagnosisDetails[diagnosis].male_five_yrs_to_fourteen_years);
-
-console.log("diagnosisDetails[diagnosis].female_over_fourteen_years: ",diagnosisDetails[diagnosis].female_over_fourteen_years);
-console.log("diagnosisDetails[diagnosis].male_over_fourteen_years: ",diagnosisDetails[diagnosis].male_over_fourteen_years);
-
-console.log("diagnosisDetails[diagnosis].female_unknowns: ",diagnosisDetails[diagnosis].female_unknowns);
-console.log("diagnosisDetails[diagnosis].male_unknowns: ",diagnosisDetails[diagnosis].male_unknowns);
+               diagnosisDetails[diagnosis].male_over_fourteen_years;
 
           if (total != 0)   
           row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'total'+'\')">'+total+'</a>';
@@ -1030,11 +811,7 @@ console.log("diagnosisDetails[diagnosis].male_unknowns: ",diagnosisDetails[diagn
           diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs +
           diagnosisDetails[diagnosis].patientD_M_5yrsTo14yrs +
           diagnosisDetails[diagnosis].patientD_F_Over14Yrs +
-          diagnosisDetails[diagnosis].patientD_M_Over14Yrs +
-          diagnosisDetails[diagnosis].patientD_F_unknowns +
-          diagnosisDetails[diagnosis].patientD_M_unknowns;
-
-          //console.log("Total: ",totalIds);
+          diagnosisDetails[diagnosis].patientD_M_Over14Yrs;
 
           table_row_fixiation(row.children[i],diagnosis,totalIds,'total',total);
 
@@ -1046,38 +823,23 @@ console.log("diagnosisDetails[diagnosis].male_unknowns: ",diagnosisDetails[diagn
           }
           else if (row.children[i].getAttribute('id') == 'ls_6_m') {
             if (diagnosisDetails[diagnosis].male_less_than_six_months != 0) {
-              row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'ls_6_m'+'\')">'+diagnosisDetails[diagnosis].male_less_than_six_months+'</a>';
-              //sessionStorage.setItem(diagnosis+'ls_6_m', diagnosisDetails[diagnosis].patientD_M_LessSixMonths);
+              table_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_M_LessSixMonths,'ls_6_m',diagnosisDetails[diagnosis].male_less_than_six_months);
             }
           }
 
           else if (row.children[i].getAttribute('id') == '6_ls_5_f') {
             if (diagnosisDetails[diagnosis].female_six_months_to_less_than_five_yrs != 0) {
-              row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'6_ls_5_f'+'\')">'+diagnosisDetails[diagnosis].female_six_months_to_less_than_five_yrs+'</a>';
               table_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_F_LessFiveYrs,'6_ls_5_f',diagnosisDetails[diagnosis].female_six_months_to_less_than_five_yrs);
             }
           }
           else if (row.children[i].getAttribute('id') == '6_ls_5_m') {
             if (diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs != 0) {
-             var persons = diagnosisDetails[diagnosis].patientD_M_LessFiveYrs.split('|');
-             if (persons.length > 1) {
-               var perons_id_ls = diagnosis;
-              for (var x=1; x<persons.length; x++) {
-                  perons_id_ls +='|'+persons[x].split(',')[1]
-             }
-             sessionStorage.setItem(diagnosis+'6_ls_5_m', perons_id_ls);
-             row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'6_ls_5_m'+'\')">'+diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs+'</a>';
-             }
+              table_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_M_LessFiveYrs,'6_ls_5_m',diagnosisDetails[diagnosis].male_six_months_to_less_than_five_yrs);
             }
           }
 
-
           else if (row.children[i].getAttribute('id') == '5_t_14_f') {
-            console.log("hello: ",diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years);
             if (diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years != 0) {
-              console.log("hello: ");
-              //row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'5_t_14_f'+'\')">'+diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years+'</a>';
-              //sessionStorage.setItem(diagnosis+'5_t_14_f', diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs);
               table_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs,'5_t_14_f',diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years);
             }
           }
@@ -1089,29 +851,12 @@ console.log("diagnosisDetails[diagnosis].male_unknowns: ",diagnosisDetails[diagn
 
           else if (row.children[i].getAttribute('id') == 'grt_14_f') {
             if (diagnosisDetails[diagnosis].female_over_fourteen_years != 0) {
-              //errortable_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_F_5yrsTo14yrs,'5_t_14_f',diagnosisDetails[diagnosis].female_five_yrs_to_fourteen_years);
-              //row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'grt_14_f'+'\')">'+diagnosisDetails[diagnosis].female_over_fourteen_years+'</a>';
               table_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_F_Over14Yrs,'grt_14_f',diagnosisDetails[diagnosis].female_over_fourteen_years);
             }
           }
           else if (row.children[i].getAttribute('id') == 'grt_14_m') {
             if (diagnosisDetails[diagnosis].male_over_fourteen_years != 0) {
-              //row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'grt_14_m'+'\')">'+diagnosisDetails[diagnosis].male_over_fourteen_years+'</a>';
               table_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_M_Over14Yrs,'grt_14_m',diagnosisDetails[diagnosis].male_over_fourteen_years);
-            }
-          }
-
-          else if (row.children[i].getAttribute('id') == 'un_f') {
-            if (diagnosisDetails[diagnosis].female_unknowns != 0) {
-              row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'un_f'+'\')">'+diagnosisDetails[diagnosis].female_unknowns+'</a>';
-              //sessionStorage.setItem(diagnosis+'un_f', diagnosisDetails[diagnosis].patientD_F_unknowns);
-            }
-          }
-          else if (row.children[i].getAttribute('id') == 'un_m') {
-            if (diagnosisDetails[diagnosis].male_unknowns != 0) {
-              row.children[i].innerHTML = '<a href="#" onclick="view_patientD(\''+diagnosis+'un_m'+'\')">'+diagnosisDetails[diagnosis].male_unknowns+'</a>';
-              //sessionStorage.setItem(diagnosis+'un_f', diagnosisDetails[diagnosis].patientD_M_unknowns);
-              table_row_fixiation(row.children[i],diagnosis,diagnosisDetails[diagnosis].patientD_M_unknowns,'un_m',diagnosisDetails[diagnosis].male_unknowns);
             }
           }
          
