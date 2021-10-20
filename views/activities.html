@@ -25,7 +25,7 @@
 </style>
 
 <script>
-    if(sessionStorage.userRoles.match(/Clinician/i) || sessionStorage.userRoles.match(/Pharmacist/i))
+    if(sessionStorage.userRoles.match(/Clinician/i) || sessionStorage.userRoles.match(/Pharmacist/i) || sessionStorage.userRoles.match(/Registration Clerk/i))
         window.location = "/";
 
     var patientID = sessionStorage.getItem("patientID");
