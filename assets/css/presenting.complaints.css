@@ -22,3 +22,66 @@
   width: 20%;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+.presenting-complaints-table {
+  display: table;
+  width: 100%;
+  height: 77vh;
+}
+
+.presenting-complaints-table-row {
+  display: table-row;
+}
+
+.presenting-complaints-table-cell {
+  display: table-cell;
+  height: 57px;
+}
+
+#presenting-complaints-table-cell-left {
+  width: 20%;
+}
+
+#presenting-complaints-table-cell-right {
+  width: 60%;
+}
+
+.main-complaints {
+  text-align: left;
+}
+
+#presenting-complaints-table-cell-left-data {
+  height: 70vh;
+  overflow: auto;
+  padding: 10px;
+  background-color: transparent;
+}
+
+
+
+
+
+
+
+.complaints-container {
+  display: table;
+  width: 100%;
+  margin: 5px;
+  border-spacing: 10px;
+}
+
+.selected {
+  background-color: lightblue;
+}
