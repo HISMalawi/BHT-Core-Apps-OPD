@@ -262,6 +262,10 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   var main_container = document.createElement('div');
   main_container.setAttribute('id','complaints-container');
 
+  var subMainConatiner = document.createElement('div');
+  subMainConatiner.setAttribute('id','selected_complaints_main_container');
+  main_container.appendChild(subMainConatiner);
+
 
   
 
@@ -308,7 +312,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
       
               cell = document.createElement('div');
               cell.setAttribute('class','complaints-container-cell');
-              cell.innerHTML = concept_sets[t].complaints[i].name;
+              cell.innerHTML = "<span class=\'namespacing\'>"+concept_sets[t].complaints[i].name+"</span>";
               cell.setAttribute('selected', 'false');
               cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
               cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
@@ -322,7 +326,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
               row_count++;
               if(row_count == 4)
                 row_count = 1;
-  }  
+  } 
   }
   // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
   //   var other = document.getElementById('Other');
@@ -346,11 +350,39 @@ function autoHighLight(type_of_complaint) {
   }
 }
 
+
+var row_c;
+var row_c_item_count = 1;
+
+function selectedComplaints(e) {
+  var container = document.getElementById('selected_complaints_main_container');
+  //var subConatiner = document.createElement('div');
+
+  if(row_c_item_count == 1) {
+    row_c = document.createElement('div');
+    row_c.setAttribute('class','complaints-container-row1');
+  }
+ 
+  //row_c.appendChild(subConatiner);
+  //subConatiner.setAttribute('class','temp_comp');
+
+ 
+  row_c.append(e);
+
+
+  container.append(row_c);
+
+  row_c_item_count++;
+  if (row_c_item_count == 2)
+       row_c_item_count = 1;
+}
+
 function complaintClicked(e) {
   var type_of_complaint = e.getAttribute('complaint-type');
   var groupID = e.parentElement.parentElement.getAttribute('id').split('list-');
   var groupSelected = document.getElementById(groupID[1]);
   var childNodes = e.parentElement.parentElement.childNodes;
+
   
   if(e.getAttribute('selected') == 'false'){
     if(e.innerHTML.toUpperCase() == 'NONE'){
@@ -361,6 +393,8 @@ function complaintClicked(e) {
     e.setAttribute('selected', 'true');
     e.style = 'background-color: lightblue;';
     addToHash(type_of_complaint, e.getAttribute('concept_id'));
+    selectedComplaints(e);
+    document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
     addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
@@ -374,7 +408,14 @@ function complaintClicked(e) {
     e.setAttribute('selected', 'false');
     e.style = 'background-color: "";';
     removeFromHash(type_of_complaint, e.getAttribute('concept_id'));
-    removeFromNameHash(e.getAttribute('name'));
+    removeFromNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
+
+    var group_container = document.getElementById('list-'+e.getAttribute('group_name'));
+    group_container.appendChild(e);
+
+    if (presentingComplaintsNameHash.length == 0)
+    document.getElementById('selected_complaints_main_container').setAttribute('class','');
+
     var find_selected = 0;
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
@@ -435,15 +476,15 @@ function addToNameHash(e) {
   }
 }
 
-function removeFromNameHash(e) {
-  var temp = presentingComplaintsNameHash;
-  presentingComplaintsNameHash= [];
+function arrayRemove(arr, value) { 
+    
+  return arr.filter(function(ele){ 
+      return ele != value; 
+  });
+}
 
-  for(var i = 0 ; i < temp.length ; i++){
-    if(temp[i] != e){
-      presentingComplaintsNameHash.push(temp[i])
-    }
-  } 
+function removeFromNameHash(e) {
+  presentingComplaintsNameHash = arrayRemove(presentingComplaintsNameHash, e);
 }
 
 function addToHash(key, concept_id) {
@@ -603,7 +644,6 @@ function saveObs(encounter) {
     encounter_id: encounter["encounter_id"],
     observations: observations
   }; 
-  
   submitParameters(obs, "/observations", "nextPage")  
 }
 
@@ -842,7 +882,7 @@ function tick(e) {
 }
 
 function closeOrdersPopupModal() {
-  let page_cover = document.getElementById("page-cover");
+  var page_cover = document.getElementById("page-cover");
   page_cover.style = "display: none;";
 
   let submit_cover = document.getElementById("page-cover");
