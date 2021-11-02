@@ -6,6 +6,7 @@
   margin-left: calc(45vh);
   border: 1px solid black;
   width: 100%;
+  overflow: scroll;
 }
 
 
@@ -43,6 +44,14 @@
 
 .complaints-container-row {
   display: table-row;
+}
+
+.complaints-container-row1 {
+  display:inline-block;
+}
+
+.namespacing {
+  padding: 10;
 }
 
 .complaints-container-box {
@@ -88,4 +97,15 @@
 .table-st {
   max-height: 300px;
   overflow: scroll;
+}
+
+.selected_complaints_main_container_class {
+  margin: 5px;
+    margin-left: 5px;
+border-spacing: 10px;
+border: 1px solid black;
+}
+
+.temp_comp {
+  float: left;
 }

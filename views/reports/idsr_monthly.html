@@ -142,7 +142,6 @@ td {
   width: 93%;
   margin-left: 4%;
   top: 4%;
-  border: solid 1px;
   z-index: 992;
 }
 
@@ -438,144 +437,145 @@ function showDisaggregatedReport(){
       <td class="td-text-align-left"><span id="wkdates"></span></td>
     </tr>
     <tr>
-      <table>
-    <tr>
-      <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
-      <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
-    </tr>
-    <tr>
-      <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
-      <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
-      <td class="td-text-align-left td-span-width">Total</td>
-    </tr>
+      <table id="idsr_monthly">
+        <thead>
+          <tr>
+           <th></th>
+           <th></th>
+           <th></th>
+          </tr>
+         </thead>
+        <tbody>
+        <tr>
+          <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
+          <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
+        </tr>
+        <tr>
+          <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
+          <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
+          <td class="td-text-align-left td-span-width">Total</td>
+        </tr>
 
-    <tr id="_1">
-      <td class="td-text-align-right">1</td>
-      <td class="td-text-align-right" style="width: 30%;">Diarrhoea SD U/5</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_2">
-      <td class="td-text-align-right" style="width: 5%;">2</td -->
-      <td class="td-text-align-right" style="width: 30%;">Food borne illness</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_3">
-      <td class="td-text-align-right">3</td>
-      <td class="td-text-align-right" style="width: 30%;">HIV/AIDS (New Cases)</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_4">
-      <td class="td-text-align-right">4</td>
-      <td class="td-text-align-right" style="width: 30%;">Injuries (RTA)</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_5">
-      <td class="td-text-align-right">5</td>
-      <td class="td-text-align-right" style="width: 30%;">Lymphatic Filariasis</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_6">
-      <td class="td-text-align-right">6</td>
-      <td class="td-text-align-right" style="width: 30%;">Malaria in pregnancy</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_7">
-      <td class="td-text-align-right">7</td>
-      <td class="td-text-align-right" style="width: 30%;">Malnutrition  U/5</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_8">
-      <td class="td-text-align-right">8</td>
-      <td class="td-text-align-right" style="width: 30%;">Onchocerciasis</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_9">
-      <td class="td-text-align-right">9</td>
-      <td class="td-text-align-right" style="width: 30%;">Perinatal deaths</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-  
-    <tr id="_10">
-      <td class="td-text-align-right">10</td>
-      <td class="td-text-align-right" style="width: 30%;">Schistosomiasis</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_11">
-      <td class="td-text-align-right">11</td>
-      <td class="td-text-align-right" style="width: 30%;">Severe Pneumonia U/5</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_12">
-      <td class="td-text-align-right">12</td>
-      <td class="td-text-align-right" style="width: 30%;">STI</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_13">
-      <td class="td-text-align-right">13</td>
-      <td class="td-text-align-right" style="width: 30%;">Trachoma</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_14">
-      <td class="td-text-align-right">14</td>
-      <td class="td-text-align-right" style="width: 30%;">Trypanosomiasis</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_15">
-      <td class="td-text-align-right">15</td>
-      <td class="td-text-align-right" style="width: 30%;">Underweight Newborns < 2500 g</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
-    <tr id="_16">
-      <td class="td-text-align-right">16</td>
-      <td class="td-text-align-right" style="width: 30%;">Viral Hepatitis</td>
-      <td id="ls-5ys" class="td-text-align-right">0</td>
-      <td id="grt-5yrs" class="td-text-align-right">0</td>
-      <td id="total" class="td-text-align-right">0</td>
-    </tr>
+        <tr id="_1">
+          <td class="td-text-align-right">1</td>
+          <td class="td-text-align-right" style="width: 30%;">Diarrhoea SD U/5</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_2">
+          <td class="td-text-align-right" style="width: 5%;">2</td -->
+          <td class="td-text-align-right" style="width: 30%;">Food borne illness</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_3">
+          <td class="td-text-align-right">3</td>
+          <td class="td-text-align-right" style="width: 30%;">HIV/AIDS (New Cases)</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_4">
+          <td class="td-text-align-right">4</td>
+          <td class="td-text-align-right" style="width: 30%;">Injuries (RTA)</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_5">
+          <td class="td-text-align-right">5</td>
+          <td class="td-text-align-right" style="width: 30%;">Lymphatic Filariasis</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_6">
+          <td class="td-text-align-right">6</td>
+          <td class="td-text-align-right" style="width: 30%;">Malaria in pregnancy</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_7">
+          <td class="td-text-align-right">7</td>
+          <td class="td-text-align-right" style="width: 30%;">Malnutrition  U/5</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_8">
+          <td class="td-text-align-right">8</td>
+          <td class="td-text-align-right" style="width: 30%;">Onchocerciasis</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_9">
+          <td class="td-text-align-right">9</td>
+          <td class="td-text-align-right" style="width: 30%;">Perinatal deaths</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+      
+        <tr id="_10">
+          <td class="td-text-align-right">10</td>
+          <td class="td-text-align-right" style="width: 30%;">Schistosomiasis</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_11">
+          <td class="td-text-align-right">11</td>
+          <td class="td-text-align-right" style="width: 30%;">Severe Pneumonia U/5</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_12">
+          <td class="td-text-align-right">12</td>
+          <td class="td-text-align-right" style="width: 30%;">STI</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_13">
+          <td class="td-text-align-right">13</td>
+          <td class="td-text-align-right" style="width: 30%;">Trachoma</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_14">
+          <td class="td-text-align-right">14</td>
+          <td class="td-text-align-right" style="width: 30%;">Trypanosomiasis</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_15">
+          <td class="td-text-align-right">15</td>
+          <td class="td-text-align-right" style="width: 30%;">Underweight Newborns < 2500 g</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+        <tr id="_16">
+          <td class="td-text-align-right">16</td>
+          <td class="td-text-align-right" style="width: 30%;">Viral Hepatitis</td>
+          <td id="ls-5ys" class="td-text-align-right">0</td>
+          <td id="grt-5yrs" class="td-text-align-right">0</td>
+          <td id="total" class="td-text-align-right">0</td>
+        </tr>
+      </tbody>
     </table>
+    </tr>
+  </table>
 
 </div>
-<div id="editor"></div>
 
-<!-- Controls -->
-<!-- <div class="row-button-print">
-  <div class="buttons">
-    <button class="button button-finish" onmousedown="javascript:location='/'">Finish</button>
-    <button class="button button-print" onmousedown="javascript:printPDF();">Print</button>
-    <button class="button button-disaggregated" onmousedown="showDisaggregatedReport();">Cohort disaggregated report</button>
-
-  </div>
-</div> -->
 <footer class="footer">
     <div class="container-footer">
         <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
@@ -588,7 +588,7 @@ function showDisaggregatedReport(){
             <span>&nbsp; Export &nbsp;</span>
         </button>
         <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
-            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp;&nbsp;</span>
+            <span>&nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp;&nbsp;</span>
         </button>
     </div>
 </footer>
@@ -710,6 +710,7 @@ function getIndicators() {
                       sessionStorage.setItem(key+'total', total_ids);
                     }
             }
+            //initializeTable();
             document.getElementById('spinner').style = 'display: none';
             document.getElementById('report-cover').style = 'display: none;';
         
@@ -787,10 +788,11 @@ function printWindow() {
 }
 
 function initializeTable() {
-  table = $('#idsr_weekly').DataTable({
+  table = $('#idsr_monthly').DataTable({
     
-           
-            scrollY: 300,
+            fixedHeader: false,
+            searching: false,
+            scrollY: 500,
             Processing: true,
             ServerSide: true,
             scroller: {
@@ -798,7 +800,7 @@ function initializeTable() {
             },
             dom: 'Bfrtip',
             buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
+            'copy', 'csv', 'pdf', 'print'
           ]
   });
 }
@@ -816,7 +818,7 @@ function initializeTable_Modal() {
             },
             dom: 'Bfrtip',
             buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
+            'copy', 'csv', 'pdf', 'print'
         ]
         });
         lookForTag();
