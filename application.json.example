@@ -49,6 +49,11 @@
       "available": true,
       "activitiesIcon": "/assets/images/drugs-given.png",
       "url": "/apps/OPD/views/encounters/medication_given.html"
+    },
+    "HIV Status": {
+      "available": true,
+      "activitiesIcon": "/assets/images/aids.png",
+      "url": "/apps/OPD/views/encounters/HIV_status.html"
     }
   },
   "activities": {
