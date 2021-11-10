@@ -923,7 +923,6 @@ function changingApplicationSetting(applications) {
 
 
 function redirectToLos(applicationData, idx) {
-
   if(applicationData.programID == 23)
   {
     sessionStorage.setItem("applicationImage", applicationData.applicationIcon)
