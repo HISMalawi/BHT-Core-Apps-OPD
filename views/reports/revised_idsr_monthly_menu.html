@@ -24,7 +24,7 @@
         if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
           var obj = JSON.parse(this.responseText);
           months = obj;
-          load();
+          load(months);
         }
 
       };
@@ -65,7 +65,7 @@
 
   fetchMonths();
 
-function load() {
+function load(months) {
 
   var sel = document.getElementById('months');
   var opt = document.createElement('option');

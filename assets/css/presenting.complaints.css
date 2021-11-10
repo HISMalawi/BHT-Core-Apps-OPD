@@ -1,25 +1,24 @@
 
 
 #complaints-container {
-  margin: 5px;
+  /* margin: 5px; */
   border-spacing: 10px;
-  margin-left: calc(45vh);
-  border: 1px solid black;
-  width: 100%;
+  /* margin-left: calc(45vh); */
+  border: 1px solid darkgray;
+  width: 68%;
   overflow: scroll;
 }
 
 
 #side-bar-pre-grouped {
-  margin: 5px;
-  border-spacing: 10px;
-  position: fixed;
-  border: 1px solid darkgray;
-  display: table-column-group;
-  width: calc(40vh);
-  background-color: white;
-  height: 575;
-  overflow: scroll;
+  margin-right: 6px;
+border-spacing: 10px;
+border: 1px solid darkgray;
+width: calc(40vh);
+background-color: white;
+overflow: scroll;
+height: 581px;
+
 }
 
 .complaints-list-show {
@@ -100,10 +99,10 @@
 }
 
 .selected_complaints_main_container_class {
-  margin: 5px;
-    margin-left: 5px;
-border-spacing: 10px;
-border: 1px solid black;
+  /* margin: 1.5%;*/
+  margin-bottom: 3px; 
+  border-spacing: 10px;
+  border: 1px solid black;
 }
 
 .temp_comp {
