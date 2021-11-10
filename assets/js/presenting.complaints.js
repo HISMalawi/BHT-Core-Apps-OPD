@@ -934,28 +934,66 @@ function ordersPopupModal() {
   parent.appendChild(main_container);
 }
 
+var apiURL = sessionStorage.getItem("apiURL");
+var apiPort = sessionStorage.getItem("apiPort");
+var apiProtocol = sessionStorage.getItem("apiProtocol");
+
+
+
 function loadLosConfigurations() {
-  $.getJSON('/config/config.json')
-      .done((configurations) => {
+  let setUrl = '/config/config.json';
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        var configurations = JSON.parse(this.responseText);
+        console.log(configurations.apps)
+        try {
           changingApplicationSetting(configurations.apps)
-      })
-      .fail((error) => {
-          console.error(error)
-          showMessage('There was an error bootstrapping the application.')
-      })
+        } catch (error) {
+         
+          alert("not available");
+          
+        }
+      } else if (this.status == 404) {
+        showMessage("config.json missing");
+      }
+
+    } else {
+
+    }
+  };
+  try {
+    req.open('GET', setUrl, true);
+    req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+    req.send(null);
+  } catch (e) { }
+
 }
 
 function changingApplicationSetting(applications) {
   applications.forEach((application, idx) => {
-      const configFilePath = `/apps/${application.applicationFolder.replace('/','')}/application.json`;
-      $.getJSON(configFilePath)
-          .done(() => {
-              redirectToLos(application, idx)
-          })
-          .fail((error) => {
-              //console.error(error)
-          })
-  })
+  const setUrl  = `/apps/${application.applicationFolder.replace('/','')}/application.json`;
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        redirectToLos(application, idx)
+      } else if (this.status == 404) {
+        // showMessage("config.json missing");
+      }
+
+    } else {
+
+    }
+  };
+  try {
+    req.open('GET', setUrl, true);
+    req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+    req.send(null);
+  } catch (e) { }
+})
+
 }
 
 
@@ -1038,19 +1076,10 @@ function labOrdersContainer(arg1,arg2) {
     var selectedHash = JSON.stringify(presentingComplaintsNameHash);
     var encounterHash = JSON.stringify( presentingComplaintsHash);
 
-
-
     sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
     sessionStorage.setItem(' presentingComplaintsHash',encounterHash);
 
-
-    sessionStorage.setItem("applicationImage", "/assets/images/order.png")
-    sessionStorage.setItem("applicationName", "LOS")
-    sessionStorage.setItem("applicationFolder", "LOS")
-    sessionStorage.setItem("programID", "23")
-
-    //loadLosConfigurations();
-    window.location.href = '/apps/LOS/views/order.html';
+    loadLosConfigurations();
   }
 
   // modal_content.appendChild(iframe);
