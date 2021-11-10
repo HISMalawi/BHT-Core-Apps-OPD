@@ -22,6 +22,7 @@
 #tt_page_hiv_status .inputFrameClass,
  #tt_page_patient_pregnant .inputFrameClass,
   #tt_page_type_of_visit .inputFrameClass,
+    #tt_page_national_id_available .inputFrameClass,
      #tt_page_enter_national_id .inputFrameClass,
   #tt_page_hiv_test_year .inputFrameClass,
   #tt_page_hiv_test_month .inputFrameClass ,
@@ -101,8 +102,8 @@ function postNotesObs(encounter) {
 }
 
 function nextPage(obs){
+  //document.location = tt_cancel_destination;
   nextEncounter(sessionStorage.patientID, parseInt(sessionStorage.programID));
-  // document.location = tt_cancel_destination;
 }
 
 function isEmpty(str){
@@ -113,32 +114,6 @@ function isEmpty(str){
   }
 }
 
-
-function setOPDActivities() { 
-        values = sessionStorage.OPD_activities.replace('patient registration,','').replace('patient registration','');
-        sessionStorage.OPD_activities   = values;
-        var parameters = {property: "OPD_activities", property_value: values}
-        submitParameters(parameters, "/user_properties", "nextPage");
-}
-function showPregnantQuestion() {
-
-  if(sessionStorage.patientGender == 'M')
-  {
-    if(sessionStorage.userRoles.match(/Clinician/i) && sessionStorage.gender == 'M' )
-      setOPDActivities();
-
-      return false;
-  }
-
-  var age = parseInt(sessionStorage.patientAge);   
-  if(age >= 9 && age <= 55)
-    return true;
-  else
-  if(sessionStorage.userRoles.match(/Clinician/i))
-  setOPDActivities();
-
-  return false;  
-}
 
 function setAbsoluteMaxYear() {
   var element = document.getElementById('touchscreenInput' + tstCurrentPage);
@@ -381,15 +356,11 @@ function checkForChanges(e) {
   }
 
 }
-var opd_hiv_status;
-var already_on_art;
+
 function submitNeverTest() {
-  if(opd_hiv_status =="Positive on ART")
-    var hiv_status = 'Positive on ART';
-  else
   var hiv_status  = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
   
-  if(isEmpty(hiv_status) && sessionStorage.HIV_question_status != 'false'){
+  if(isEmpty(hiv_status)){
     showMessage('Please select HIV status');
     return;
   }
@@ -411,52 +382,18 @@ function submitNeverTest() {
 
 function createEncounterNeverTested(encounter) { 
   var observations = [];
+  
   /* ........................ HIV status starts ................*/
-  if(already_on_art != 'true' && sessionStorage.HIV_question_status != 'false')
-  {
-    if(opd_hiv_status =="Positive on ART")
-      var hiv_status = 'Positive on ART';
-    else
-    if(hiv_status == 'Never tested') {
-      var hiv_status  = document.getElementById('touchscreenInput' + tstCurrentPage).value;
-    }else{
-      var hiv_status  = document.getElementById('hiv_status').value;
-    }
-    observations.push({concept_id: 3753, value_text: hiv_status});
+  if(hiv_status == 'Never tested') {
+    var hiv_status  = document.getElementById('touchscreenInput' + tstCurrentPage).value;
+  }else{
+    var hiv_status  = document.getElementById('hiv_status').value;
   }
+  observations.push({concept_id: 3753, value_text: hiv_status});
   /* ........................ HIV status ends ................*/
   
-  
-  /* ........................ type of visits ................*/
-  var type_of_visit = document.getElementById('visit_type').value;
-  var types = {}
-  types['New'] = 7572;
-  types['Referral'] = 9675;
-  types['Re-visiting'] = 9674;
 
-  observations.push({concept_id: 6189, value_coded: types[type_of_visit]});
-  /* ........................ type of visits ends ................*/
-
-
-  /* ........................ Patient pregnant starts ................*/
-  if(showPregnantQuestion() == true){
-    var patient_pregnant  = document.getElementById('patient_pregnant').value;
-    var pregnant_ans = {};
-    pregnant_ans['Yes'] = 1065;
-    pregnant_ans['No'] = 1066;
-    pregnant_ans['Unknown'] = 1067;
-    
-    observations.push({concept_id: 1755, value_coded: pregnant_ans[patient_pregnant]});
-  }
-  /* ........................ Patient pregnant ends ................ */
-
-  if(type_of_visit == 'Referral') {
-    var reffering_facility = document.getElementById('referring_facility_name');
-    observations.push({concept_id: 7414, 
-      value_text: reffering_facility.value});
-  }
- 
-  if(hiv_status != 'Never tested' && opd_hiv_status !="Positive on ART" && sessionStorage.HIV_question_status != 'false') {
+  if(hiv_status != 'Never tested') {
     var test_date = moment(set_hiv_date).format('YYYY-MM-DD');
     var estimated = hiv_test_date_estimated == true ? 'Date estimated' : 'Date NOT estimated';
     var test_location = $('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
@@ -470,7 +407,27 @@ function createEncounterNeverTested(encounter) {
     observations: observations
   }; 
 
-  submitParameters(obs, "/observations", "nextPage");
+  submitParameters(obs, "/observations", "createNationalID");
+}
+
+
+function createNationalID(obs) {
+ 
+    nextPage("");
+  
+}
+
+function createNID(nid){
+  var identifier_type = 28;
+
+  var patient_identifier = {
+    identifier: nid,
+    identifier_type: identifier_type,
+    patient_id: sessionStorage.patientID
+  }
+  
+  var pathURL = "/patient_identifiers/";
+  submitParameters(patient_identifier, pathURL, "nextPage");
 }
 
 var npid_available;
@@ -494,9 +451,7 @@ function fetchNID() {
   xhttp.send();
 }
 
-
-var patientID =sessionStorage.patientID;
-var authToken = sessionStorage.authorization;
+var opd_hiv_status;
 function getHIVOPDstatus() {
   
   var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
@@ -511,11 +466,7 @@ function getHIVOPDstatus() {
       fetchNID();
       if(obj.length > 0) 
         opd_hiv_status = obj[0].value_text;
-
-      if(opd_hiv_status == 'Positive on ART')
-        already_on_art = 'true';
-      else
-      checkPatientART();
+    
     }
   };
   xhttp.open("GET", url, true);
@@ -523,74 +474,13 @@ function getHIVOPDstatus() {
   xhttp.setRequestHeader('Content-type', "application/json");
   xhttp.send();
 }
-/** Function which checks whether patient is already
- * on ART or Not
- */
- function checkPatientART()
- {
-    var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
-    url += '/patient_programs?patient_id='+patientID+'&program_id=1';
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () 
-    {
-      if (this.readyState == 4 && this.status == 200) 
-      {
-        var obj = JSON.parse(this.responseText);
-        if(obj.length > 0)
-        opd_hiv_status = 'Positive on ART';
-      }
-          
-    };
-    
-    xhttp.open("GET", url, false);
-    xhttp.setRequestHeader('Authorization', authToken);
-    xhttp.setRequestHeader('Content-type', "application/json");
-    xhttp.send();
-  }
+
 getHIVOPDstatus();
 
-function getHIVActivationStatus() 
-{
-    var radiology_property_url = apiProtocol + "://" + apiURL + ":" + apiPort;
-    radiology_property_url += "/api/v1/global_properties?property=activate.HIV.status.question";
-
-    var xhttp1 = new XMLHttpRequest();
-    xhttp1.onreadystatechange = function () {
-        if (this.readyState == 4 && (this.status == 201 || this.status == 200 || this.status == 404)) {
-            try {
-                var activate_HIV_status_property = JSON.parse(this.responseText);
-
-                if (activate_HIV_status_property["activate.HIV.status.question"] == "true") 
-                {
-                    sessionStorage.setItem("HIV_question_status", 'true');
-                    return true;
-                }
-                else
-                {
-                  sessionStorage.setItem("HIV_question_status", 'false');
-                  return false;
-                }
-                    
-            } catch (e) {
-            }
-        }
-    };
-    xhttp1.open("GET", radiology_property_url, false);
-    xhttp1.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-    xhttp1.setRequestHeader('Content-type', "application/json");
-    xhttp1.send();
-}
 function ARTpatient() {
-  getHIVActivationStatus();
-
-  if(sessionStorage.userRoles.match(/Clinician/i))
-  return true;
-
-  if(sessionStorage.HIV_question_status == 'false')
-  return true
-  else
   if(opd_hiv_status == undefined)
     return false;
+  
   return (opd_hiv_status.match(/on ART/i) ? true : false);
 }
 
@@ -601,118 +491,23 @@ function patientPositiveButNotART() {
   return (opd_hiv_status.match(/not ART/i) ? true : false);
 }
 
-function endEncounter(id) {
-  var nextButton = document.getElementById('nextButton');
-
-  if(id == 'patient_pregnant' && ARTpatient()) {
-    nextButton.innerHTML = '<span>Finish</span>';
-    nextButton.setAttribute("onmousedown","submitNeverTest();");
-  }else if(ARTpatient() && showPregnantQuestion() == false) {
-    nextButton.innerHTML = '<span>Finish</span>';
-    nextButton.setAttribute("onmousedown","patientOnART('');");
-  }
-}
-
-function patientOnART(id) {
-  var pregnant;
-  var national_id;
-  var visit_type;
-
-  if(id == 'patient_pregnant' && ARTpatient()) {
-    pregnant = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
-  }
-
-  var observations = []
-  
-  if((pregnant != undefined || pregnant == null) && showPregnantQuestion() == true) {
-    var pregnant_ans = {};
-    pregnant_ans['Yes'] = 1065;
-    pregnant_ans['No'] = 1066;
-    pregnant_ans['Unknown'] = 1067;
-    
-    if(isEmpty(pregnant)) {
-      showMessage('Please select pregnant status');
-      return;
-    }else{
-      observations.push({concept_id: 1755, value_coded: pregnant_ans[pregnant]});
-    }
-  }
-
-  var type_of_visit = document.getElementById('visit_type');
-  if(type_of_visit == null) {
-    type_of_visit = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('tstvalue');
-  }else{
-    type_of_visit = type_of_visit.value;
-  }
-
-  var types = {}
-  types['New'] = 7572;
-  types['Referral'] = 9675;
-  types['Re-visiting'] = 9674;
-  
-  if(types[type_of_visit] == undefined){
-    showMessage('Please select visit type');
-    return;
-  }else{
-    observations.push({concept_id: 6189, value_coded: types[type_of_visit]});
-  }
-
-  if(type_of_visit == 'Referral') {
-    var reffering_facility = document.getElementById('referring_facility_name');
-    if(reffering_facility == null) {
-      reffering_facility = document.getElementById('touchscreenInput' + tstCurrentPage);
-    }
-   
-    if(isEmpty(reffering_facility.value) == false) { 
-      observations.push({concept_id: 7414, 
-      value_text: reffering_facility.value});
-    }
-  }
-
-  if(observations.length < 1) {
-    showMessage('Information is not complete');
-    return;
-  }
-
-  gloabl_obs = observations;
-  if(national_id != undefined && isEmpty(national_id) == false)
-    global_nid = national_id;
-
-  var currentTime = moment().format(' HH:mm:ss');
-  var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
-  encounter_datetime += currentTime;
-                        	
-  var encounter = {
-    encounter_type_name: 'NOTES',
-    encounter_type_id:  105,
-    patient_id: sessionStorage.patientID,
-    encounter_datetime: encounter_datetime
-  }
-
-  submitParameters(encounter, "/encounters", "createObs");
-}
-
 function createObs(encounter) {
   var obs = {
     encounter_id: encounter["encounter_id"],
     observations: gloabl_obs
   }; 
-  submitParameters(obs, "/observations", "nextPage");
- 
+
+  if(global_nid == undefined) {
+    submitParameters(obs, "/observations", "nextPage");
+  }else{
+    submitParameters(obs, "/observations", "setNID");
+  }
 }
 
-function goToPatientDashboard()
-{
-  document.location = tt_cancel_destination;
+function setNID(obs) {
+  createNID(global_nid);
 }
-function showVisitTypeQuestion()
-{
-  if(sessionStorage.userRoles.match(/Clinician/i))
-  return false;
-  else
-  return true;
 
-}
 var gloabl_obs;
 var global_nid;
 
@@ -721,37 +516,8 @@ var global_nid;
 <body id="mateme">
   <div id="container">
     <div id="content">
-
       <form>
-        <select allowFreeText="false" helpText="Type of visit"
-        condition='showVisitTypeQuestion() == true;'
-           name="outcome" id="visit_type" key="outcome">
-            <option value=""></option>
-            <option value="New">New</option>
-            <option value="Referral">Referral</option>
-            <option value="Re-visiting">Re-visiting</option>
-        </select>
-
-        <select objectType="location" ajaxURL="/locations?name="
-          allowFreeText="true"
-          condition="$('visit_type').value.toLowerCase() == 'referral';"
-          field_type="alpha"
-          helpText="Referred from"
-          id="referring_facility_name"
-          name="referring_facility_name">
-        </select>
- 
-        <select allowFreeText="false" helpText="Patient pregnant"
-           name="outcome" id="patient_pregnant" key="outcome"
-           condition='showPregnantQuestion() == true;'
-           tt_onLoad="endEncounter('patient_pregnant');">
-            <option value=""></option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-            <option value="Unknown">Unknown</option>
-        </select>
-
-        <!-- <select allowFreeText="false" helpText="HIV status"
+        <select allowFreeText="false" helpText="HIV status"
            name="outcome" id="hiv_status" key="outcome"
            tt_onLoad="setupHIVstatus();"
            condition="ARTpatient() == false;">
@@ -762,12 +528,7 @@ var global_nid;
             <option value="New positive">New positive</option>
             <option value="New negative">New negative</option>
             <option value="Never tested">Never tested</option>
-        </select>   -->
-
-        <select allowFreeText="false" name="outcome" key="outcome"
-           tt_onLoad="submitNeverTest();"
-           condition="ARTpatient() == true;">
-        </select>    
+        </select>
 
        <!-- ................. test date ...................... --> 
         <input type="text" name="test_year" id="test_year" helpText="HIV test year"
