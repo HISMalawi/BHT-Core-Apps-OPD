@@ -17,26 +17,35 @@ function insertAfter(newNode, existingNode) {
   existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 }
 
- function build_search_field() {
-  var helpText0 = document.getElementById('helpText0');
-  var search_content = document.createElement('div');
-  search_content.setAttribute('id','search_content');
-  //helpText0.appendChild(search_content);
+function build_search_field() {
 
-  insertAfter(search_content, helpText0);
+  if (sessionStorage.kaya =="false") {
+    sessionStorage.kaya = "";
+    document.getElementById('orderButton').remove();
+    return;
+  }
 
-  var search_text = document.createElement('span');
-  search_text.setAttribute('id','search_text');
-  search_text.innerHTML='Search:';
-  search_content.appendChild(search_text);
-
-  var search_input = document.createElement('input');
-  search_input.setAttribute('id','search_field');
-  search_input.setAttribute('style','height:40px;width:400px;');
-  //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
-  search_input.setAttribute('onkeyup','search_results()');
-  search_content.appendChild(search_input);
-  lookForTag();
+  if (sessionStorage.kaya == "") {
+    var helpText0 = document.getElementById('helpText0');
+    var search_content = document.createElement('div');
+    search_content.setAttribute('id','search_content');
+    //helpText0.appendChild(search_content);
+  
+    insertAfter(search_content, helpText0);
+  
+    var search_text = document.createElement('span');
+    search_text.setAttribute('id','search_text');
+    search_text.innerHTML='Search:';
+    search_content.appendChild(search_text);
+  
+    var search_input = document.createElement('input');
+    search_input.setAttribute('id','search_field');
+    search_input.setAttribute('style','height:40px;width:400px;');
+    //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
+    search_input.setAttribute('onkeyup','search_results()');
+    search_content.appendChild(search_input);
+    lookForTag(); 
+  }
 }
 
 
@@ -194,14 +203,25 @@ function setVissiableForGroup(group) {
 }
 
 function buildPresentaingComplaints(type_of_complaint) {
-  document.getElementById('buttons').setAttribute('style','width: 100% !important');
-  var frame = document.getElementById('inputFrame' + tstCurrentPage);
-  frame.style = 'height: 90%; overflow: auto; display: flex';
-  frame.innerHTML = null;
 
-  getPresentingComplaints(type_of_complaint);
-  var clearButton = document.getElementById('clearButton');
-  clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');"); 
+
+  if (sessionStorage.kaya == "true") {
+    var kaya = document.getElementById('mateme');
+    kaya.innerHTML = localStorage.getItem('page_html');
+    sessionStorage.kaya = "false"
+    localStorage.page_html = "";
+    presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
+    presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
+    //document.getElementById('nextButton').setAttribute('onmousedown','prepareToSave();')
+  } else {
+    document.getElementById('buttons').setAttribute('style','width: 100% !important');
+    var frame = document.getElementById('inputFrame' + tstCurrentPage);
+    frame.style = 'height: 90%; overflow: auto; display: flex';
+    frame.innerHTML = null;
+    getPresentingComplaints(type_of_complaint);
+    var clearButton = document.getElementById('clearButton');
+    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');"); 
+  }
 }
 
 function buildOrderButton() {
@@ -234,8 +254,32 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
   frame.innerHTML = null;
 
+  var subMainConatiner = document.createElement('div');
+  subMainConatiner.setAttribute('id','selected_complaints_main_container');
+  
+
+  var div1 = document.createElement('div');
+  div1.setAttribute('style','display: flex;');
+ 
+
+  var div2 = document.createElement('div');
+ 
+  div2.setAttribute('style','width:100%');
   var side_bar_container = document.createElement('div');
   side_bar_container.setAttribute('id','side-bar-pre-grouped');
+
+  var main_container = document.createElement('div');
+  main_container.setAttribute('id','complaints-container');
+
+  div2.appendChild(subMainConatiner);
+  div1.appendChild(side_bar_container);
+  div1.appendChild(main_container);
+  div2.appendChild(div1);
+
+ 
+
+  frame.appendChild(div2);
+
 
   
 
@@ -257,19 +301,18 @@ function presentingComplaints(concept_sets, type_of_complaint) {
 
   
 
-  frame.appendChild(side_bar_container);
+  //frame.appendChild(side_bar_container);
 
-  var main_container = document.createElement('div');
-  main_container.setAttribute('id','complaints-container');
 
-  var subMainConatiner = document.createElement('div');
-  subMainConatiner.setAttribute('id','selected_complaints_main_container');
-  main_container.appendChild(subMainConatiner);
+
+  // var subMainConatiner = document.createElement('div');
+  // subMainConatiner.setAttribute('id','selected_complaints_main_container');
+  // main_container.appendChild(subMainConatiner);
 
 
   
 
-  frame.appendChild(main_container);
+  //frame.appendChild(main_container);
   //var search_value = document.getElementById('search_filed').value;
  
   var row;
@@ -355,6 +398,8 @@ var row_c;
 var row_c_item_count = 1;
 
 function selectedComplaints(e) {
+
+  var e = e.cloneNode(true)
   var container = document.getElementById('selected_complaints_main_container');
   //var subConatiner = document.createElement('div');
 
@@ -373,7 +418,7 @@ function selectedComplaints(e) {
   container.append(row_c);
 
   row_c_item_count++;
-  if (row_c_item_count == 2)
+  if (row_c_item_count == 8)
        row_c_item_count = 1;
 }
 
@@ -395,6 +440,8 @@ function complaintClicked(e) {
     addToHash(type_of_complaint, e.getAttribute('concept_id'));
     selectedComplaints(e);
     document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
+    e.style = 'background-color: #ccc;';
+    e.setAttribute('onmousedown','');
     addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
@@ -405,13 +452,20 @@ function complaintClicked(e) {
       }
     }   
   }else{
+    var selected_e_id = e.getAttribute('id');
+    e.remove();
+    e = document.getElementById(selected_e_id);
+    e.setAttribute('onmousedown','complaintClicked(this);');
     e.setAttribute('selected', 'false');
     e.style = 'background-color: "";';
     removeFromHash(type_of_complaint, e.getAttribute('concept_id'));
     removeFromNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
 
-    var group_container = document.getElementById('list-'+e.getAttribute('group_name'));
-    group_container.appendChild(e);
+    //var group_container = document.getElementById('list-'+e.getAttribute('group_name'));
+    //group_container.appendChild(e);
+    // var parent = e.parentElement;
+    // console.log(parent); 
+
 
     if (presentingComplaintsNameHash.length == 0)
     document.getElementById('selected_complaints_main_container').setAttribute('class','');
@@ -535,6 +589,7 @@ function getPresentingComplaints(type_of_complaint) {
 }
 
 function prepareToSave() {
+  console.log(presentingComplaintsNameHash);
   if(isHashEmpty(presentingComplaintsHash)) {
     showMessage('No selection made. Please selection one or more complaints');
     return;
@@ -804,67 +859,129 @@ function ordersPopupModal() {
   parent.appendChild(main_container);
 }
 
+function loadLosConfigurations() {
+  $.getJSON('/config/config.json')
+      .done((configurations) => {
+          changingApplicationSetting(configurations.apps)
+      })
+      .fail((error) => {
+          console.error(error)
+          showMessage('There was an error bootstrapping the application.')
+      })
+}
+
+function changingApplicationSetting(applications) {
+  applications.forEach((application, idx) => {
+      const configFilePath = `/apps/${application.applicationFolder.replace('/','')}/application.json`;
+      $.getJSON(configFilePath)
+          .done(() => {
+              redirectToLos(application, idx)
+          })
+          .fail((error) => {
+              //console.error(error)
+          })
+  })
+}
+
+
+function redirectToLos(applicationData, idx) {
+
+  if(applicationData.programID == 23)
+  {
+    sessionStorage.setItem("applicationImage", applicationData.applicationIcon)
+    sessionStorage.setItem("applicationName", applicationData.applicationName)
+    sessionStorage.setItem("applicationFolder", applicationData.applicationFolder)
+    sessionStorage.setItem("programID", applicationData.programID)
+    window.location.href = '/apps/LOS/views/order.html';
+  }
+}
 function labOrdersContainer(arg1,arg2) {
   var radiology_is_set = arg1;
   var lab_is_set = arg2;
 
-  var parent = document.getElementById('mateme');
-  var mainLabOrdersContainer = document.createElement('div');
-  mainLabOrdersContainer.setAttribute('id','mainLabOrdersContainer');
-  parent.setAttribute('class','modal-open');
-  mainLabOrdersContainer.setAttribute('class','modal fade in');
-  mainLabOrdersContainer.setAttribute('id','ordersModal');
-  mainLabOrdersContainer.setAttribute('data-backdrop','static');
-  mainLabOrdersContainer.setAttribute('data-keyboard','false');
-  mainLabOrdersContainer.setAttribute('role','dialog');
-  mainLabOrdersContainer.setAttribute('style','display: block');
+  // var parent = document.getElementById('mateme');
+  // var mainLabOrdersContainer = document.createElement('div');
+  // mainLabOrdersContainer.setAttribute('id','mainLabOrdersContainer');
+  // parent.setAttribute('class','modal-open');
+  // mainLabOrdersContainer.setAttribute('class','modal fade in');
+  // mainLabOrdersContainer.setAttribute('id','ordersModal');
+  // mainLabOrdersContainer.setAttribute('data-backdrop','static');
+  // mainLabOrdersContainer.setAttribute('data-keyboard','false');
+  // mainLabOrdersContainer.setAttribute('role','dialog');
+  // mainLabOrdersContainer.setAttribute('style','display: block');
 
-  var modal_dialog = document.createElement('div');
-  modal_dialog.setAttribute('style','width: 75%; hieght: 75%; top: -3%; height: 100vh;');
-  modal_dialog.setAttribute('class','modal-dialog');
-  //modal_dialog.setAttribute('name','div2');
-  mainLabOrdersContainer.appendChild(modal_dialog);
+  // var modal_dialog = document.createElement('div');
+  // modal_dialog.setAttribute('style','width: 75%; hieght: 75%; top: -3%; height: 100vh;');
+  // modal_dialog.setAttribute('class','modal-dialog');
+  // //modal_dialog.setAttribute('name','div2');
+  // mainLabOrdersContainer.appendChild(modal_dialog);
 
-  var modal_content = document.createElement('div');
-  modal_content.setAttribute('id','modal-content');
-  //modal_content.setAttribute('class','modal-content');
-  modal_content.setAttribute('style','margin-left:-12%; height: vh !important; background-color: white; width: 123vh;');
-  modal_dialog.appendChild(modal_content);
+  // var modal_content = document.createElement('div');
+  // modal_content.setAttribute('id','modal-content');
+  // //modal_content.setAttribute('class','modal-content');
+  // modal_content.setAttribute('style','margin-left:-12%; height: vh !important; background-color: white; width: 123vh;');
+  // modal_dialog.appendChild(modal_content);
 
 
-  var iframe = document.createElement('iframe');
-  iframe.setAttribute('id','labIframe');
-  iframe.setAttribute('style', 'height: 94%');
+  // var iframe = document.createElement('iframe');
+  // iframe.setAttribute('id','labIframe');
+  // iframe.setAttribute('style', 'height: 94%');
 
   if (radiology_is_set == 'true' && lab_is_set == 'true') {
     closeOrdersPopupModal();
-    let submit_cover = document.getElementById("page-cover");
-    submit_cover.style = "display: block;";
-    iframe.setAttribute('src','./radiology/radiology_orders.html');
+    // let submit_cover = document.getElementById("page-cover");
+    // submit_cover.style = "display: block;";
+    //iframe.setAttribute('src','./radiology/radiology_orders.html');
+    window.location.href = './radiology/radiology_orders.html';
   }
   
 
   if (radiology_is_set == 'true' && lab_is_set == 'false') {
     closeOrdersPopupModal();
-    let submit_cover = document.getElementById("page-cover");
-    submit_cover.style = "display: block;";
-    iframe.setAttribute('src','./radiology/radiology_orders.html');
+    // let submit_cover = document.getElementById("page-cover");
+    // submit_cover.style = "display: block;";
+    // iframe.setAttribute('src','./radiology/radiology_orders.html');
+    window.location.href = '/radiology/radiology_orders.html'; 
   }
 
    if (radiology_is_set == 'false' && lab_is_set == 'true') {
 
     if (sessionStorage.getItem('radiology_status') == 'true')
     closeOrdersPopupModal();
-    let submit_cover = document.getElementById("page-cover");
-    submit_cover.style = "display: block;";
-    iframe.setAttribute('src','/../views/patient/labs.html');
+    //let submit_cover = document.getElementById("page-cover");
+    // submit_cover.style = "display: block;";
+    // iframe.setAttribute('src','/../views/patient/labs.html');
+    //var patient_id = sessionStorage.patientID;
+
+   
+
+    sessionStorage.setItem("redirectFromOPD","true");
+    var page = document.getElementById('mateme');
+    localStorage.setItem("page_html", page.outerHTML);
+    sessionStorage.setItem("kaya", "true");
+
+    var selectedHash = JSON.stringify(presentingComplaintsNameHash);
+    var encounterHash = JSON.stringify( presentingComplaintsHash);
+
+
+
+    sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
+    sessionStorage.setItem(' presentingComplaintsHash',encounterHash);
+
+
+    sessionStorage.setItem("applicationImage", "/assets/images/order.png")
+    sessionStorage.setItem("applicationName", "LOS")
+    sessionStorage.setItem("applicationFolder", "LOS")
+    sessionStorage.setItem("programID", "23")
+
+    //loadLosConfigurations();
+    window.location.href = '/apps/LOS/views/order.html';
   }
 
-  modal_content.appendChild(iframe);
+  // modal_content.appendChild(iframe);
 
-  parent.appendChild(mainLabOrdersContainer);
+  // parent.appendChild(mainLabOrdersContainer);
 }
-
 function tick(e) {
   var selected = e.getAttribute('ticked');
   if(selected != 'true') {

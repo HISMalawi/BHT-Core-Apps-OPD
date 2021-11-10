@@ -24,7 +24,7 @@
         if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
           var obj = JSON.parse(this.responseText);
           weeks = obj.reverse();
-          load();
+          load(weeks);
         }
 
       };
@@ -63,7 +63,7 @@
     }
   }
   fetchWeeks();
-function load() {
+  function load(weeks) {
 
   var sel = document.getElementById('weeks');
   var opt = document.createElement('option');
