@@ -18,16 +18,6 @@ function insertAfter(newNode, existingNode) {
 }
 
 function build_search_field() {
-
-  if (sessionStorage.kaya =="false") {
-    sessionStorage.kaya = "";
-    document.getElementById('orderButton').remove();
-    return;
-  }
-
-  console.log(sessionStorage.kaya);
-
-  if (sessionStorage.kaya == "" || typeof(sessionStorage.kaya) == "undefined" ) {
     var helpText0 = document.getElementById('helpText0');
     var search_content = document.createElement('div');
     search_content.setAttribute('id','search_content');
@@ -47,7 +37,6 @@ function build_search_field() {
     search_input.setAttribute('onkeyup','search_results()');
     search_content.appendChild(search_input);
     lookForTag(); 
-  }
 }
 
 
@@ -207,23 +196,17 @@ function setVissiableForGroup(group) {
 function buildPresentaingComplaints(type_of_complaint) {
 
 
-  if (sessionStorage.kaya == "true") {
-    var kaya = document.getElementById('mateme');
-    kaya.innerHTML = localStorage.getItem('page_html');
-    sessionStorage.kaya = "false"
-    localStorage.page_html = "";
-    presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
-    presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
-    //document.getElementById('nextButton').setAttribute('onmousedown','prepareToSave();')
-  } else {
+ 
     document.getElementById('buttons').setAttribute('style','width: 100% !important');
     var frame = document.getElementById('inputFrame' + tstCurrentPage);
     frame.style = 'height: 90%; overflow: auto; display: flex';
     frame.innerHTML = null;
     getPresentingComplaints(type_of_complaint);
     var clearButton = document.getElementById('clearButton');
-    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');"); 
-  }
+    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
+
+   
+  
 }
 
 function buildOrderButton() {
@@ -265,6 +248,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
  
 
   var div2 = document.createElement('div');
+  div2.setAttribute('id','ts');
  
   div2.setAttribute('style','width:100%');
   var side_bar_container = document.createElement('div');
@@ -376,6 +360,18 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
   //   var other = document.getElementById('Other');
   //   sideBarPreGrouped.appendChild(other);
+
+  if (sessionStorage.kaya == "true") {
+
+    sessionStorage.kaya = "false";
+    
+     var kaya = document.getElementById('ts');
+     kaya.innerHTML = localStorage.getItem('page_html');
+     
+     localStorage.page_html = "";
+     presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
+     presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
+  }
 }
 
 function autoHighLight(type_of_complaint) {
@@ -821,7 +817,7 @@ function ordersPopupModal() {
   let submit_cover = document.getElementById("page-cover");
   submit_cover.style = "display: block;";
 
-  var parent = document.getElementById('mateme');
+  var parent = document.getElementById('inputFrame0');
   var main_container = document.createElement('div');
   parent.setAttribute('class','modal-open');
   main_container.setAttribute('class','modal fade in');
@@ -1069,15 +1065,15 @@ function labOrdersContainer(arg1,arg2) {
    
 
     sessionStorage.setItem("redirectFromOPD","true");
-    var page = document.getElementById('mateme');
+    var page = document.getElementById('ts');
     localStorage.setItem("page_html", page.outerHTML);
     sessionStorage.setItem("kaya", "true");
 
     var selectedHash = JSON.stringify(presentingComplaintsNameHash);
-    var encounterHash = JSON.stringify( presentingComplaintsHash);
+    var encounterHash = JSON.stringify(presentingComplaintsHash);
 
     sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
-    sessionStorage.setItem(' presentingComplaintsHash',encounterHash);
+    sessionStorage.setItem('presentingComplaintsHash',encounterHash);
 
     loadLosConfigurations();
   }
