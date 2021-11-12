@@ -361,12 +361,12 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   //   var other = document.getElementById('Other');
   //   sideBarPreGrouped.appendChild(other);
 
-  if (sessionStorage.kaya == "true") {
+  if (sessionStorage.saveState == "true") {
 
-    sessionStorage.kaya = "false";
+    sessionStorage.saveState = "false";
     
-     var kaya = document.getElementById('ts');
-     kaya.innerHTML = localStorage.getItem('page_html');
+     var saveState = document.getElementById('ts');
+     saveState.innerHTML = localStorage.getItem('page_html');
      
      localStorage.page_html = "";
      presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
@@ -1056,7 +1056,7 @@ function labOrdersContainer(arg1,arg2) {
    if (radiology_is_set == 'false' && lab_is_set == 'true') {
 
     if (sessionStorage.getItem('radiology_status') == 'true')
-    closeOrdersPopupModal();
+    //closeOrdersPopupModal();
     //let submit_cover = document.getElementById("page-cover");
     // submit_cover.style = "display: block;";
     // iframe.setAttribute('src','/../views/patient/labs.html');
@@ -1067,7 +1067,7 @@ function labOrdersContainer(arg1,arg2) {
     sessionStorage.setItem("redirectFromOPD","true");
     var page = document.getElementById('ts');
     localStorage.setItem("page_html", page.outerHTML);
-    sessionStorage.setItem("kaya", "true");
+    sessionStorage.setItem("saveState", "true");
 
     var selectedHash = JSON.stringify(presentingComplaintsNameHash);
     var encounterHash = JSON.stringify(presentingComplaintsHash);
@@ -1075,7 +1075,8 @@ function labOrdersContainer(arg1,arg2) {
     sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
     sessionStorage.setItem('presentingComplaintsHash',encounterHash);
 
-    loadLosConfigurations();
+    //loadLosConfigurations();
+    window.location.href = '/views/patient/labs.html';
   }
 
   // modal_content.appendChild(iframe);
