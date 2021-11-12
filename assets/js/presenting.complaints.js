@@ -936,74 +936,75 @@ var apiProtocol = sessionStorage.getItem("apiProtocol");
 
 
 
-function loadLosConfigurations() {
-  let setUrl = '/config/config.json';
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4) {
-      if (this.status == 200) {
-        var configurations = JSON.parse(this.responseText);
-        console.log(configurations.apps)
-        try {
-          changingApplicationSetting(configurations.apps)
-        } catch (error) {
+// function loadLosConfigurations() {
+//   let setUrl = '/config/config.json';
+//   var req = new XMLHttpRequest();
+//   req.onreadystatechange = function () {
+//     if (this.readyState == 4) {
+//       if (this.status == 200) {
+//         var configurations = JSON.parse(this.responseText);
+//         console.log(configurations.apps)
+//         try {
+//           changingApplicationSetting(configurations.apps)
+//         } catch (error) {
          
-          alert("not available");
+//           alert("not available");
           
-        }
-      } else if (this.status == 404) {
-        showMessage("config.json missing");
-      }
+//         }
+//       } else if (this.status == 404) {
+//         showMessage("config.json missing");
+//       }
 
-    } else {
+//     } else {
 
-    }
-  };
-  try {
-    req.open('GET', setUrl, true);
-    req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
-    req.send(null);
-  } catch (e) { }
+//     }
+//   };
+//   try {
+//     req.open('GET', setUrl, true);
+//     req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+//     req.send(null);
+//   } catch (e) { }
 
-}
+// }
 
-function changingApplicationSetting(applications) {
-  applications.forEach((application, idx) => {
-  const setUrl  = `/apps/${application.applicationFolder.replace('/','')}/application.json`;
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4) {
-      if (this.status == 200) {
-        redirectToLos(application, idx)
-      } else if (this.status == 404) {
-        // showMessage("config.json missing");
-      }
+// function changingApplicationSetting(applications) {
+//   applications.forEach((application, idx) => {
+//   const setUrl  = `/apps/${application.applicationFolder.replace('/','')}/application.json`;
+//   var req = new XMLHttpRequest();
+//   req.onreadystatechange = function () {
+//     if (this.readyState == 4) {
+//       if (this.status == 200) {
+//         redirectToLos(application, idx)
+//       } else if (this.status == 404) {
+//         // showMessage("config.json missing");
+//       }
 
-    } else {
+//     } else {
 
-    }
-  };
-  try {
-    req.open('GET', setUrl, true);
-    req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
-    req.send(null);
-  } catch (e) { }
-})
+//     }
+//   };
+//   try {
+//     req.open('GET', setUrl, true);
+//     req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+//     req.send(null);
+//   } catch (e) { }
+// })
 
-}
+// }
 
 
-function redirectToLos(applicationData, idx) {
+// function redirectToLos(applicationData, idx) {
 
-  if(applicationData.programID == 23)
-  {
-    sessionStorage.setItem("applicationImage", applicationData.applicationIcon)
-    sessionStorage.setItem("applicationName", applicationData.applicationName)
-    sessionStorage.setItem("applicationFolder", applicationData.applicationFolder)
-    sessionStorage.setItem("programID", applicationData.programID)
-    window.location.href = '/apps/LOS/views/order.html';
-  }
-}
+//   if(applicationData.programID == 23)
+//   {
+//     sessionStorage.setItem("applicationImage", applicationData.applicationIcon)
+//     sessionStorage.setItem("applicationName", applicationData.applicationName)
+//     sessionStorage.setItem("applicationFolder", applicationData.applicationFolder)
+//     sessionStorage.setItem("programID", applicationData.programID)
+//     window.location.href = '/apps/LOS/views/order.html';
+//   }
+// }
+
 function labOrdersContainer(arg1,arg2) {
   var radiology_is_set = arg1;
   var lab_is_set = arg2;
@@ -1055,16 +1056,10 @@ function labOrdersContainer(arg1,arg2) {
 
    if (radiology_is_set == 'false' && lab_is_set == 'true') {
 
+    console.log('komatu');
+
     if (sessionStorage.getItem('radiology_status') == 'true')
-    //closeOrdersPopupModal();
-    //let submit_cover = document.getElementById("page-cover");
-    // submit_cover.style = "display: block;";
-    // iframe.setAttribute('src','/../views/patient/labs.html');
-    //var patient_id = sessionStorage.patientID;
-
-   
-
-    sessionStorage.setItem("redirectFromOPD","true");
+    closeOrdersPopupModal();
     var page = document.getElementById('ts');
     localStorage.setItem("page_html", page.outerHTML);
     sessionStorage.setItem("saveState", "true");
@@ -1076,6 +1071,7 @@ function labOrdersContainer(arg1,arg2) {
     sessionStorage.setItem('presentingComplaintsHash',encounterHash);
 
     //loadLosConfigurations();
+    sessionStorage.setItem('orderFlowStatus','true');
     window.location.href = '/views/patient/labs.html';
   }
 

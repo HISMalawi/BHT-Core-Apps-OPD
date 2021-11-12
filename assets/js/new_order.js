@@ -321,8 +321,8 @@ function validateInput(){
   showMessage("Please select a validate test");
 }
 
-function redirectPrescription() {
-  window.location.href = '/apps/OPD/views/encounters/presenting_complaints.html';
+function redirectLabs() {
+  window.location.href = '/views/patient/labs.html';
 }
 
 function loadPressedOrder(){
@@ -431,9 +431,10 @@ function createEncounter(nextFunction){
   }
 
   if(sessionStorage.saveState == 'true') {
-    submitParameters(encounter, "/encounters", 'redirectPrescription');
+    submitParameters(encounter, "/encounters", 'redirectLabs');
   } else {
-    submitParameters(encounter, "/encounters", nextFunction);
+    submitParameters(encounter, "/encounters", 'redirectLabs');
+    //submitParameters(encounter, "/encounters", nextFunction);
   }
 }
 
