@@ -199,7 +199,7 @@ function buildPresentaingComplaints(type_of_complaint) {
  
     document.getElementById('buttons').setAttribute('style','width: 100% !important');
     var frame = document.getElementById('inputFrame' + tstCurrentPage);
-    frame.style = 'height: 90%; overflow: auto; display: flex';
+    frame.style = 'height: 90%; display: flex';
     frame.innerHTML = null;
     getPresentingComplaints(type_of_complaint);
     var clearButton = document.getElementById('clearButton');
