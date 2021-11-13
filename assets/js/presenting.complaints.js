@@ -993,7 +993,7 @@ var apiProtocol = sessionStorage.getItem("apiProtocol");
 // }
 
 
-}
+// function redirectToLos(applicationData, idx) {
 
 //   if(applicationData.programID == 23)
 //   {
@@ -1005,7 +1005,6 @@ var apiProtocol = sessionStorage.getItem("apiProtocol");
 //   }
 // }
 
-// function redirectToLos(applicationData, idx) {
 function labOrdersContainer(arg1,arg2) {
   var radiology_is_set = arg1;
   var lab_is_set = arg2;
