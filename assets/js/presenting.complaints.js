@@ -18,16 +18,6 @@ function insertAfter(newNode, existingNode) {
 }
 
 function build_search_field() {
-
-  if (sessionStorage.kaya =="false") {
-    sessionStorage.kaya = "";
-    document.getElementById('orderButton').remove();
-    return;
-  }
-
-  console.log(sessionStorage.kaya);
-
-  if (sessionStorage.kaya == "" || typeof(sessionStorage.kaya) == "undefined" ) {
     var helpText0 = document.getElementById('helpText0');
     var search_content = document.createElement('div');
     search_content.setAttribute('id','search_content');
@@ -47,7 +37,6 @@ function build_search_field() {
     search_input.setAttribute('onkeyup','search_results()');
     search_content.appendChild(search_input);
     lookForTag(); 
-  }
 }
 
 
@@ -207,23 +196,17 @@ function setVissiableForGroup(group) {
 function buildPresentaingComplaints(type_of_complaint) {
 
 
-  if (sessionStorage.kaya == "true") {
-    var kaya = document.getElementById('mateme');
-    kaya.innerHTML = localStorage.getItem('page_html');
-    sessionStorage.kaya = "false"
-    localStorage.page_html = "";
-    presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
-    presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
-    //document.getElementById('nextButton').setAttribute('onmousedown','prepareToSave();')
-  } else {
+ 
     document.getElementById('buttons').setAttribute('style','width: 100% !important');
     var frame = document.getElementById('inputFrame' + tstCurrentPage);
     frame.style = 'height: 90%; overflow: auto; display: flex';
     frame.innerHTML = null;
     getPresentingComplaints(type_of_complaint);
     var clearButton = document.getElementById('clearButton');
-    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');"); 
-  }
+    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
+
+   
+  
 }
 
 function buildOrderButton() {
@@ -265,6 +248,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
  
 
   var div2 = document.createElement('div');
+  div2.setAttribute('id','ts');
  
   div2.setAttribute('style','width:100%');
   var side_bar_container = document.createElement('div');
@@ -376,6 +360,18 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
   //   var other = document.getElementById('Other');
   //   sideBarPreGrouped.appendChild(other);
+
+  if (sessionStorage.saveState == "true") {
+
+    sessionStorage.saveState = "false";
+    
+     var saveState = document.getElementById('ts');
+     saveState.innerHTML = localStorage.getItem('page_html');
+     
+     localStorage.page_html = "";
+     presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
+     presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
+  }
 }
 
 function autoHighLight(type_of_complaint) {
@@ -821,7 +817,7 @@ function ordersPopupModal() {
   let submit_cover = document.getElementById("page-cover");
   submit_cover.style = "display: block;";
 
-  var parent = document.getElementById('mateme');
+  var parent = document.getElementById('inputFrame0');
   var main_container = document.createElement('div');
   parent.setAttribute('class','modal-open');
   main_container.setAttribute('class','modal fade in');
@@ -940,73 +936,76 @@ var apiProtocol = sessionStorage.getItem("apiProtocol");
 
 
 
-function loadLosConfigurations() {
-  let setUrl = '/config/config.json';
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4) {
-      if (this.status == 200) {
-        var configurations = JSON.parse(this.responseText);
-        console.log(configurations.apps)
-        try {
-          changingApplicationSetting(configurations.apps)
-        } catch (error) {
+// function loadLosConfigurations() {
+//   let setUrl = '/config/config.json';
+//   var req = new XMLHttpRequest();
+//   req.onreadystatechange = function () {
+//     if (this.readyState == 4) {
+//       if (this.status == 200) {
+//         var configurations = JSON.parse(this.responseText);
+//         console.log(configurations.apps)
+//         try {
+//           changingApplicationSetting(configurations.apps)
+//         } catch (error) {
          
-          alert("not available");
+//           alert("not available");
           
-        }
-      } else if (this.status == 404) {
-        showMessage("config.json missing");
-      }
+//         }
+//       } else if (this.status == 404) {
+//         showMessage("config.json missing");
+//       }
 
-    } else {
+//     } else {
 
-    }
-  };
-  try {
-    req.open('GET', setUrl, true);
-    req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
-    req.send(null);
-  } catch (e) { }
+//     }
+//   };
+//   try {
+//     req.open('GET', setUrl, true);
+//     req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+//     req.send(null);
+//   } catch (e) { }
+
+// }
+
+// function changingApplicationSetting(applications) {
+//   applications.forEach((application, idx) => {
+//   const setUrl  = `/apps/${application.applicationFolder.replace('/','')}/application.json`;
+//   var req = new XMLHttpRequest();
+//   req.onreadystatechange = function () {
+//     if (this.readyState == 4) {
+//       if (this.status == 200) {
+//         redirectToLos(application, idx)
+//       } else if (this.status == 404) {
+//         // showMessage("config.json missing");
+//       }
+
+//     } else {
+
+//     }
+//   };
+//   try {
+//     req.open('GET', setUrl, true);
+//     req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+//     req.send(null);
+//   } catch (e) { }
+// })
+
+// }
+
 
 }
 
-function changingApplicationSetting(applications) {
-  applications.forEach((application, idx) => {
-  const setUrl  = `/apps/${application.applicationFolder.replace('/','')}/application.json`;
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-    if (this.readyState == 4) {
-      if (this.status == 200) {
-        redirectToLos(application, idx)
-      } else if (this.status == 404) {
-        // showMessage("config.json missing");
-      }
+//   if(applicationData.programID == 23)
+//   {
+//     sessionStorage.setItem("applicationImage", applicationData.applicationIcon)
+//     sessionStorage.setItem("applicationName", applicationData.applicationName)
+//     sessionStorage.setItem("applicationFolder", applicationData.applicationFolder)
+//     sessionStorage.setItem("programID", applicationData.programID)
+//     window.location.href = '/apps/LOS/views/order.html';
+//   }
+// }
 
-    } else {
-
-    }
-  };
-  try {
-    req.open('GET', setUrl, true);
-    req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
-    req.send(null);
-  } catch (e) { }
-})
-
-}
-
-
-function redirectToLos(applicationData, idx) {
-  if(applicationData.programID == 23)
-  {
-    sessionStorage.setItem("applicationImage", applicationData.applicationIcon)
-    sessionStorage.setItem("applicationName", applicationData.applicationName)
-    sessionStorage.setItem("applicationFolder", applicationData.applicationFolder)
-    sessionStorage.setItem("programID", applicationData.programID)
-    window.location.href = '/apps/LOS/views/order.html';
-  }
-}
+// function redirectToLos(applicationData, idx) {
 function labOrdersContainer(arg1,arg2) {
   var radiology_is_set = arg1;
   var lab_is_set = arg2;
@@ -1058,27 +1057,23 @@ function labOrdersContainer(arg1,arg2) {
 
    if (radiology_is_set == 'false' && lab_is_set == 'true') {
 
+    console.log('komatu');
+
     if (sessionStorage.getItem('radiology_status') == 'true')
     closeOrdersPopupModal();
-    //let submit_cover = document.getElementById("page-cover");
-    // submit_cover.style = "display: block;";
-    // iframe.setAttribute('src','/../views/patient/labs.html');
-    //var patient_id = sessionStorage.patientID;
-
-   
-
-    sessionStorage.setItem("redirectFromOPD","true");
-    var page = document.getElementById('mateme');
+    var page = document.getElementById('ts');
     localStorage.setItem("page_html", page.outerHTML);
-    sessionStorage.setItem("kaya", "true");
+    sessionStorage.setItem("saveState", "true");
 
     var selectedHash = JSON.stringify(presentingComplaintsNameHash);
-    var encounterHash = JSON.stringify( presentingComplaintsHash);
+    var encounterHash = JSON.stringify(presentingComplaintsHash);
 
     sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
-    sessionStorage.setItem(' presentingComplaintsHash',encounterHash);
+    sessionStorage.setItem('presentingComplaintsHash',encounterHash);
 
-    loadLosConfigurations();
+    //loadLosConfigurations();
+    sessionStorage.setItem('orderFlowStatus','true');
+    window.location.href = '/views/patient/labs.html';
   }
 
   // modal_content.appendChild(iframe);
