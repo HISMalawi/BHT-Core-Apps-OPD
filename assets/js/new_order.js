@@ -117,7 +117,7 @@ function assignCheckBox(concept_name, concept_id) {
   return `
   <table class = "tests-boxes">
     <tr>
-      <td class="check-boxes"><img src="/assets/images/stop.png" 
+      <td class="check-boxes"><img src="../assets/images/stop.png" 
         class="checkbox-icons" id= "checkbox-${concept_id}" /></td>
       <td class="concept-names">${concept_name}</td>
     </tr>
@@ -130,7 +130,7 @@ function selectTest(e){
   if(e.getAttribute("style").match(/lightblue/i)){
     e.setAttribute("style","background-color: white;");
     let img = $(`checkbox-${e.id}`);
-    img.setAttribute("src","/assets/images/stop.png");
+    img.setAttribute("src","../assets/images/stop.png");
 
     let selected_test_before = selected_tests;
     selected_tests  = {}
@@ -143,7 +143,7 @@ function selectTest(e){
   }else{
     e.setAttribute("style","background-color: lightblue;");
     let img = document.getElementById(`checkbox-${e.id}`);
-    img.setAttribute("src","/assets/images/checkmark.png");
+    img.setAttribute("src","../assets/images/checkmark.png");
     selected_tests[e.id] = e.getAttribute("concept_name");
   }
   
@@ -321,10 +321,6 @@ function validateInput(){
   showMessage("Please select a validate test");
 }
 
-function redirectLabs() {
-  window.location.href = '/views/patient/labs.html';
-}
-
 function loadPressedOrder(){
   var el = document.getElementById("inputFrame"  + tstCurrentPage);
   el.style = "width: 95.5%; overflow: auto;";
@@ -430,16 +426,11 @@ function createEncounter(nextFunction){
       encounter_datetime: encounter_datetime
   }
 
-  if(sessionStorage.saveState == 'true') {
-    submitParameters(encounter, "/encounters", 'redirectLabs');
-  } else {
-    submitParameters(encounter, "/encounters", 'redirectLabs');
-    //submitParameters(encounter, "/encounters", nextFunction);
-  }
+  submitParameters(encounter, "/encounters", nextFunction);
 }
 
 function submitOrder(encounter) {
-  let clinician_name = sessionStorage.user_given_name+' '+sessionStorage.user_family_name;
+  let clinician_name = user_given_name+' '+user_family_name;
   let ordering_loc = sessionStorage.currentLocation;
   let ordering_reason = $("reson_for_test").value;
   let combine_test_in_order = $("combine_test_in_order").value;
@@ -505,7 +496,7 @@ function postOrder(orders){
   req.onreadystatechange = function () {
       if (this.readyState == 4) {
           if (this.status == 201) {
-              window.location = "/views/patient_dashboard.html?patient_id=" + sessionStorage.patientID;
+            window.location.href = '/views/patient/labs.html';
           }
       }
   };

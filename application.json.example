@@ -102,13 +102,7 @@
     {
       "activitiesName": "radiology examination",
       "available": true,
-      "activitiesIcon": "/assets/images/radiology_types.png",
-      "url": "/apps/OPD/views/encounters/radiology/radiology_orders.html"
-    },
-    {
-      "activitiesName": "view radiology results",
-      "available": true,
-      "activitiesIcon": "/assets/images/radioG1.png",
+      "activitiesIcon": "/apps/OPD/assets/images/radiology_types.png",
       "url": "/apps/OPD/views/encounters/radiology/view_radiology_results.html"
     },
     {

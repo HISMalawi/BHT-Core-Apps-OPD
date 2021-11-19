@@ -332,17 +332,17 @@ function submitRadiologyParameters(array_obj)
      sessionStorage.setItem("radiology_orders", radiology_orders_string); 
      sessionStorage.setItem("radiology_accession_number", accession_number); 
      sessionStorage.setItem("date_created", date_created); 
-    //  print_barcode();
-
-     jQuery(".loader").show();
-     submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")
+    
+    document.getElementById('spinner').style = 'display: block;';
+    submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")
 }
 
 
 function print_barcode()
 {
-     var radiology_barcode_url = "/views/print/radiology_barcode.html";
-     window.location =radiology_barcode_url;
+    document.getElementById('spinner').style = 'display: none;';
+    var radiology_barcode_url = "/views/print/radiology_barcode.html";
+    window.location =radiology_barcode_url;
 }
 
 function closeOrdersPopupModal() {
