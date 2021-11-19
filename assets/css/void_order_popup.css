@@ -1,0 +1,73 @@
+#void-confirm-message {
+    background: #ffffff;
+    border-radius: 0.5em;
+    box-shadow: 0 10px 20px rgba(black, 0.2);
+    left: 55%;
+    max-width: 90%;
+    position: absolute;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    width: 30em;
+    text-align: left;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000000;
+    border-color: black;
+    border-style: solid;
+    display: none;
+  }
+
+  #void-confirm-message p {
+    margin: 10px;
+    font-size: 24px;
+  }
+
+  #page-cover {
+    display: none;
+    position: absolute;
+    background-color: black;
+    width: 100%;
+    height: 102%;
+    left: 0%;
+    top: 0%;
+    z-index: 0;
+    opacity: 0.65;
+  }
+
+
+  .modal-title {
+    width: 100%;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+
+  .modal-title h1 {
+    font-size: 20px;
+    margin-left: 10px;
+    color: red;
+  }
+
+  .void-reason {
+    border-style: solid;
+    border-width: 1px;
+    text-align: center;
+    font-size: 24px;
+    padding: 20px;
+  }
+
+  .void-btns {
+    border-style: solid;
+    width: 47%;
+    border-width: 1px;
+    font-size: 30px;
+    color: white;
+  }
+
+  .unselected-cells {
+    background-color: white;
+  }
+
+  .selected-cells {
+    background-color: lightblue;
+  }
