@@ -682,10 +682,17 @@ function getIndicators() {
               var total = 0;
               var total_ids = '';
 
+              let tem_inrec = 0
+                if(count_for_condition == 5) 
+                                tem_inrec = 1
+
               for (const [key1, value1] of Object.entries(value)) {
 
+
+      
+
                       if (value1 != null) {
-                        row.children[count_for_clmns].innerHTML = value1.length;
+                        //row.children[count_for_clmns].innerHTML = value1.length;
                             total+=value1.length;
                           
                             var storage_name = key+key1;
@@ -695,8 +702,12 @@ function getIndicators() {
                               ids += '|'+value1[k]; 
                             }
 
+                            console.log("sum: ",tem_inrec)
+                            if (tem_inrec == 1)
+                            console.log("here: ",row.children[count_for_clmns + tem_inrec])
+
                             if(value1.length != 0) {
-                              row.children[count_for_clmns].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
+                              row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
                               sessionStorage.setItem(storage_name, ids);
                               total_ids += ids;
                             }
@@ -705,8 +716,8 @@ function getIndicators() {
                       }
                     }
                     if (total > 0) {
-                      row.children[count_for_clmns].innerHTML = total;
-                      row.children[count_for_clmns].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
+                      //row.children[count_for_clmns + tem_inrec].innerHTML = total;
+                      row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
                       sessionStorage.setItem(key+'total', total_ids);
                     }
             }

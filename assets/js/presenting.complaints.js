@@ -354,8 +354,8 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   //   sideBarPreGrouped.appendChild(other);
 
   if (sessionStorage.saveState == "true") {
-
-    sessionStorage.saveState = "false";
+     sessionStorage.saveState = "false";
+     sessionStorage.MiniWorkFlow = "false"
     
      var saveState = document.getElementById('ts');
      saveState.innerHTML = localStorage.getItem('page_html');
@@ -905,7 +905,7 @@ function redirection(location) {
   setPageState();
 
   let paths = {
-    'radiology' : './radiology/radiology_orders.html',
+    'radiology' : './radiology/view_radiology_results.html',
     'lab' : '/views/patient/labs.html'
   }
 
@@ -955,8 +955,8 @@ function setOrdersMiniWorkFlow() {
 }
 
 function setMiniWorkFlowAction() {
-  //redirection('radiology');
-  //sessionStorage.setItem('MiniWorkFlow','true');
+  redirection('radiology');
+  sessionStorage.setItem('MiniWorkFlow','true');
 }
 
 function setPageState() {
