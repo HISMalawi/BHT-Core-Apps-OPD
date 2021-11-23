@@ -14,7 +14,6 @@
       var apiProtocol = sessionStorage.apiProtocol;
       var apiURL = sessionStorage.apiURL;
       var apiPort = sessionStorage.apiPort;
-      var weeks;
 
       function fetchWeeks() {
       var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/get_weeks";
@@ -23,8 +22,9 @@
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
           var obj = JSON.parse(this.responseText);
-          weeks = obj.reverse();
-          load(weeks);
+
+
+          load(obj.reverse());
         }
 
       };
@@ -68,18 +68,22 @@
   var sel = document.getElementById('weeks');
   var opt = document.createElement('option');
 
-  for (var i=0; i<weeks.length; i++) {
-    var week = weeks[i];
-    var opt = document.createElement('option');
-    var dates = week[1].split(" ");
-    var txt = week[0].split('W');
-    var weekNumber = txt[1];
-    txt = txt[0] +"/W"+ txt[1] +" - ("+  dates[0] +" to "+ dates[2] +")";
-    opt.innerHTML = txt;
-    var value = dates[0]+ " " +dates[2]+" "+weekNumber+"&";
-    opt.setAttribute('value', value);
-    sel.appendChild(opt);  
-  }
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+        for (var i=0; i<weeks.length; i++) {
+        var week = weeks[i];
+        var opt = document.createElement('option');
+        var dates = week[1].split(" ");
+        var txt = week[0].split('W');
+        var weekNumber = txt[1];
+        txt = txt[0] +"/W"+ txt[1] +" - ("+  dates[0] +" to "+ dates[2] +")";
+        opt.innerHTML = txt;
+        var value = dates[0]+ " " +dates[2]+" "+weekNumber+"&";
+        opt.setAttribute('value', value);
+        sel.appendChild(opt);  
+        }
+    } else {
+       fetchWeeks();
+    }
 }
 
 function OptSubmit(vl) {

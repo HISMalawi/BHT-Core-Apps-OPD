@@ -92,22 +92,9 @@ function addCreateOrderBTN() {
 
 }
 
-
-
 function pressOrder() {
       window.location.href = "radiology_orders.html"
-      // return;
-   
 }
-
-
-
-
-
-/* ............................ */
-
-
-
 
 function fetchOrders() {
     let url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
@@ -125,7 +112,6 @@ function fetchOrders() {
     xhttp.setRequestHeader('Content-type', "application/json");
     xhttp.send();
 }
-
 
 function updateOrderTable(orders) {
     orders_table.clear().draw();
@@ -147,19 +133,5 @@ function updateOrderTable(orders) {
                 </button>
             </a>`
         ]).draw();
-
-     
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

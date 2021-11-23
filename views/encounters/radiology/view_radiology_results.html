@@ -66,7 +66,15 @@
 
   function configFinishBTN(){
     let btn = __$('nextButton');
-      btn.setAttribute("onmousedown",`document.location='/views/patient_dashboard.html?patient_id=${sessionStorage.patientID}'`);
+    if (sessionStorage.MiniWorkFlow == "true") {
+      btn.setAttribute("onmousedown",`document.location='/views/patient/labs.html'`);
+      return
+    }
+    if (sessionStorage.saveState == "true") {
+      btn.setAttribute("onmousedown",`document.location='/apps/OPD/views/encounters/presenting_complaints.html'`);
+      return
+    } 
+    btn.setAttribute("onmousedown",`document.location='/views/patient_dashboard.html?patient_id=${sessionStorage.patientID}'`);
   }
 </script>
 

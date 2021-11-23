@@ -14,7 +14,6 @@
       var apiProtocol = sessionStorage.apiProtocol;
       var apiURL = sessionStorage.apiURL;
       var apiPort = sessionStorage.apiPort;
-      var months;
 
       function fetchMonths() {
       var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/get_months";
@@ -23,8 +22,7 @@
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
           var obj = JSON.parse(this.responseText);
-          months = obj;
-          load(months);
+          load(obj);
         }
 
       };
@@ -66,11 +64,11 @@
   fetchMonths();
 
 function load(months) {
-
   var sel = document.getElementById('months');
   var opt = document.createElement('option');
 
-  for (var i=0; i<months.length; i++) {
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    for (var i=0; i<months.length; i++) {
     var payload = months[i];
     var _payload = payload[1];
     var month_and_year = _payload[0]
@@ -83,15 +81,15 @@ function load(months) {
     opt.setAttribute('value', value);
     sel.appendChild(opt);  
   }
+  } else {
+    fetchMonths();
+  }
 }
 
 function OptSubmit(vl) {
     var selected_val = $("touchscreenInput0");
     var dates = selected_val.getAttribute('tstvalue');
     dates = dates.split(" ");
-
-    console.log("dates: ",dates);
-
     document.location = "idsr_monthly.html?" + 'start_date='+dates[0]+'&end_date='+dates[3]+"&month="+dates[4]+"&";
 }
 </script>

@@ -147,8 +147,21 @@
       width: 93%;
       margin-left: 4%;
       top: 4%;
-      border: solid 1px;
       z-index: 992;
+      height: min-content;
+      max-height: auto;
+    }
+
+    #patient_details_table {
+      width: 100% !important;
+    }
+
+    #patient_details_table_filter {
+      display: none !important;
+    }
+
+    .dataTables_scroll {
+      margin-top: 1% !important;
     }
     
     .dt-button {
@@ -373,6 +386,11 @@
 <style type="text/css" xmlns="http://www.w3.org/1999/html">
 
 </style>
+
+<img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
+<div id="report-cover"></div>
+<div id="report-cover-2"></div>
+
 <div id="content" style="margin-bottom: 65px;">
 
   <table>
@@ -450,9 +468,18 @@ var end_date = url.searchParams.get("end_date");
             'copy', 'csv', 'pdf', 'print'
           ]
   });
-
+  document.getElementById('spinner').style = 'display: block;';
+  document.getElementById('report-cover').style = 'display: block;';
   fetchData();
 }
+
+var start_date = url.searchParams.get("start_date");
+var end_date = url.searchParams.get("end_date");
+
+document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
+document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
+
+document.getElementById('facility-name').innerHTML = sessionStorage.currentLocation;
 
 var table;
 initializeTable();
@@ -563,6 +590,8 @@ function renderDetails(diagnosisDetails){
      
     ]).draw()
   }
+  document.getElementById('spinner').style = 'display: none;';
+  document.getElementById('report-cover').style = 'display: none;';
 }
 
 var drill_down_patients = {}
@@ -594,18 +623,20 @@ function drillDown(diagnosis,age_group,gender,column_number){
   patientDetailsModal();
   initializePatienDetailsTable();
   let patient_ids = drill_down_patients[gender][age_group][column_number][diagnosis];
-  for(patient_id in patient_ids){
+  for(var patient_id of patient_ids){
     getPatientDetails(patient_id)
   }
 }
+
 function initializePatienDetailsTable() {
   patientTable = $('#patient_details_table').DataTable({
     
             fixedHeader: false,
-            scrollX: 300,
-            scrolly: 300,
+            scrollX: 100,
+            scrolly: 100,
             Processing: true,
             ServerSide: true,
+            pageLength: 6,
             scroller: {
                 loadingIndicator: true
             },
@@ -638,7 +669,6 @@ function getPatientDetails(patient_id){
 
 
 function loadPatientDetail(data){
-  
   for(const patients of data){
     let patientDetails = []
     for(const patient in patients){
@@ -646,16 +676,13 @@ function loadPatientDetail(data){
       patientDetails.push(patients[patient])
     }
    patientTable.row.add(patientDetails).draw()
-   console.log(patientDetails.toString())
   }
   
   document.getElementById('spinner').style = 'display: none;';
   document.getElementById('report-cover-2').style = 'display: none;';
   document.getElementById('report-cover').style = 'display: block;';
-  
-  // patientTable.destroy();
-  
 }
+
 function patientDetailsModal()
 {  
     if($('#virtual-keyboard').length)
@@ -668,6 +695,7 @@ function patientDetailsModal()
 }
 function close_modal()
 {
+    patientTable.clear()
     patientTable.destroy();
     document.getElementById('spinner').style = 'display: none;';
     document.getElementById('report-cover').style = 'display: none;';
@@ -712,7 +740,3 @@ function close_modal()
     </div> 
   </div>
   <!-- Modal -->
-
-  <img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
-  <div id="report-cover"></div>
-  <div id="report-cover-2"></div>
