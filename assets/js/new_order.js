@@ -18,6 +18,7 @@ function getName() {
           xhr.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
       },
       success: function (result) {
+        console.log(result)
           user_given_name = result.person.names[0].given_name;
           user_family_name = result.person.names[0].family_name;
 
@@ -451,7 +452,8 @@ function submitOrder(encounter) {
   }
 
   let order_param = createOrderObj(encounter, order_obj, selected_tests_concept_ids, combine_test_in_order);
-  postOrder(order_param);
+  console.log(order_param)
+  submitParameters(order_param, "/lab/orders", "postOrderToLims")
 }
 
 function createOrderObj(encounter, order_obj, tests, combine_tests) {
@@ -489,26 +491,19 @@ function createOrderObj(encounter, order_obj, tests, combine_tests) {
   }
 }
 
-function postOrder(orders){
-  var url = apiProtocol+ '://' + apiURL + ':' + apiPort + '/api/v1/lab/orders';
-
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function () {
-      if (this.readyState == 4) {
-          if (this.status == 201) {
-            window.location.href = '/views/patient/labs.html';
-          }
-      }
-  };
-
-  req.open("POST", url, true);
-  req.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-  req.setRequestHeader('Content-type', "application/json");
-  //req.send(parametersPassed);
-  req.send(JSON.stringify(orders));
+function postOrderToLims(orders){
+ 
+  let lab_details = {lab_details:orders,clinician_id:[]}
+  lab_details.clinician_id.push({requesting_clinician_id: sessionStorage.userID})
+  console.log(lab_details)
+  submitParameters(lab_details, '/emr_lims_interface', 'redirectToLabOrder');
 
 }
 
+
+function redirectToLabOrder(){
+  window.location.href = '/views/patient/labs.html';
+}
 async function submitIncompleteOrder(encounter) {
   const requesting_clinician = sessionStorage.username;
   const target_lab = all_locations[parseInt($("location_name").value)];
