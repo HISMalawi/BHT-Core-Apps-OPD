@@ -502,7 +502,7 @@ function postOrderToLims(orders){
 
 
 function redirectToLabOrder(){
-  window.location.href = '/views/patient/labs.html';
+  window.location.href = '/apps/OPD/views/encounters/labs.html';
 }
 async function submitIncompleteOrder(encounter) {
   const requesting_clinician = sessionStorage.username;
