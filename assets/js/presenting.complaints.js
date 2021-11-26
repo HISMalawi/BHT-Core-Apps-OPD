@@ -908,7 +908,6 @@ function redirection(location) {
     'radiology' : '/apps/OPD/views/encounters/radiology/view_radiology_results.html',
     'lab' : '/apps/OPD/views//encounters/labs.html'
   }
-  http://localhost:5000/apps/OPD/views/encounters/labs.html
 
   if (location == 'radiology') {
     setLocation(paths.radiology);
