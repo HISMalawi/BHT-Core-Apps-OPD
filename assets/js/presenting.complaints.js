@@ -905,9 +905,10 @@ function redirection(location) {
   setPageState();
 
   let paths = {
-    'radiology' : './radiology/view_radiology_results.html',
-    'lab' : '/views/patient/labs.html'
+    'radiology' : '/apps/OPD/views/encounters/radiology/view_radiology_results.html',
+    'lab' : '/apps/OPD/views//encounters/labs.html'
   }
+  http://localhost:5000/apps/OPD/views/encounters/labs.html
 
   if (location == 'radiology') {
     setLocation(paths.radiology);
