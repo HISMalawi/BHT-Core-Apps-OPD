@@ -5,7 +5,6 @@ sessionStorage.setItem('radiology_order_done','false');
 sessionStorage.setItem('lab_order_done','false');
 sessionStorage.setItem('radiology_is_set', 'false');
 
-
 function clearSelection(type_of_complaint) {
   presentingComplaintsHash[type_of_complaint] = [];
   presentingComplaintsNameHash = [];
@@ -21,7 +20,6 @@ function build_search_field() {
     var helpText0 = document.getElementById('helpText0');
     var search_content = document.createElement('div');
     search_content.setAttribute('id','search_content');
-    //helpText0.appendChild(search_content);
   
     insertAfter(search_content, helpText0);
   
@@ -33,16 +31,29 @@ function build_search_field() {
     var search_input = document.createElement('input');
     search_input.setAttribute('id','search_field');
     search_input.setAttribute('style','height:40px;width:400px;');
-    //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
-    search_input.setAttribute('onkeyup','search_results()');
+    search_input.setAttribute('onkeyup','search_results(this)');
+    search_input.setAttribute('onfocusout','refocus(this)');
+    search_input.setAttribute('onmousedown','lookForTag(this)');
     search_content.appendChild(search_input);
     lookForTag(); 
 }
 
+function refocus(e) {
+  var timeOut = setTimeout(function() {
+    e.focus()
+  }, 10);
 
-function  search_results() {
-  var x = document.getElementById("search_field").value;
+  let VK = document.getElementById('virtual-keyboard');
+  if (VK != null) {
+    e.setAttribute('onfocus','lookForTag(this)');
+    search_results(e);
+  } else {
+    clearTimeout(timeOut);
+  }
+}
 
+function  search_results(e) {
+  var x = e.value;
   var groups_ls_parent = document.getElementById('side-bar-pre-grouped');
 
   if (x != '')
@@ -63,19 +74,6 @@ function  search_results() {
       _found_g_name_id = _bv.getAttribute('id');
       setVissiableForGroup(_found_g_name_id); 
     }
-
-    //console.log(groups_ls_parent.children[n].children[0]);
-
-    //var __selected = groups_ls_parent.children[n].children[0].getAttribute('selected');
-
-    //groupClicked(groups_ls_parent.children[0].children[0]);
-
-    // if (__selected == 'true') {
-    //   //groupClicked(groups_ls_parent.children[n].children[0]);
-    // } else {
-      
-    // }
-    //complaints-container-column
   }
 
   for (var t=0; t < _concept_set.length; t++) {
@@ -166,7 +164,6 @@ function  search_results() {
       bv.parentElement.setAttribute('style','display: show');
       groupClicked(bv);
       _found_g_name_id = bv.getAttribute('id');
-      //setVissiableForGroup(bv.getAttribute('id'))
      }
   }
   setVissiableForGroup(_found_g_name_id);
@@ -195,8 +192,6 @@ function setVissiableForGroup(group) {
 
 function buildPresentaingComplaints(type_of_complaint) {
 
-
- 
     document.getElementById('buttons').setAttribute('style','width: 100% !important');
     var frame = document.getElementById('inputFrame' + tstCurrentPage);
     frame.style = 'height: 90%; display: flex';
@@ -205,8 +200,6 @@ function buildPresentaingComplaints(type_of_complaint) {
     var clearButton = document.getElementById('clearButton');
     clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
 
-   
-  
 }
 
 function buildOrderButton() {
@@ -234,15 +227,14 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   var subMainConatiner = document.createElement('div');
   subMainConatiner.setAttribute('id','selected_complaints_main_container');
   
-
   var div1 = document.createElement('div');
   div1.setAttribute('style','display: flex;');
  
 
   var div2 = document.createElement('div');
   div2.setAttribute('id','ts');
- 
-  div2.setAttribute('style','width:100%');
+  
+  div2.setAttribute('style','width:100%; overflow:scroll');
   var side_bar_container = document.createElement('div');
   side_bar_container.setAttribute('id','side-bar-pre-grouped');
 
@@ -253,45 +245,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   div1.appendChild(side_bar_container);
   div1.appendChild(main_container);
   div2.appendChild(div1);
-
- 
-
   frame.appendChild(div2);
-
-
-  
-
-  // for (var i=0; i<5; i++) {
-  //   var column = document.createElement('div');
-  //   column.setAttribute('class','complaints-container-column');
-  //   side_bar_container.appendChild(column);
-
-  //   var box;
-  //   box = document.createElement('div');
-  //   box.setAttribute('class','complaints-container-box');
-  //   box.innerHTML = "dog fight";
-  //   //cell.setAttribute('selected', 'false');
-  //   //cell.setAttribute('concept_id', concept_sets[i].concept_id);
-  //   //cell.setAttribute('complaint-type', type_of_complaint);
-  //   //cell.setAttribute('onmousedown','complaintClicked(this);');
-  //   column.appendChild(box);
-  // }
-
-  
-
-  //frame.appendChild(side_bar_container);
-
-
-
-  // var subMainConatiner = document.createElement('div');
-  // subMainConatiner.setAttribute('id','selected_complaints_main_container');
-  // main_container.appendChild(subMainConatiner);
-
-
-  
-
-  //frame.appendChild(main_container);
-  //var search_value = document.getElementById('search_filed').value;
  
   var row;
   var list;
@@ -349,9 +303,6 @@ function presentingComplaints(concept_sets, type_of_complaint) {
                 row_count = 1;
   } 
   }
-  // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
-  //   var other = document.getElementById('Other');
-  //   sideBarPreGrouped.appendChild(other);
 
   if (sessionStorage.saveState == "true") {
      sessionStorage.saveState = "false";
@@ -391,37 +342,26 @@ function selectedComplaints(e) {
 
   var e = e.cloneNode(true)
   var container = document.getElementById('selected_complaints_main_container');
-  //var subConatiner = document.createElement('div');
 
   if(row_c_item_count == 1) {
     row_c = document.createElement('div');
     row_c.setAttribute('class','complaints-container-row1');
   }
  
-  //row_c.appendChild(subConatiner);
-  //subConatiner.setAttribute('class','temp_comp');
-
- 
   row_c.append(e);
-
-
   container.append(row_c);
 
   row_c_item_count++;
   if (row_c_item_count == 8)
-       row_c_item_count = 1;
+    row_c_item_count = 1;
 }
 
 function complaintClicked(e) {
   var type_of_complaint = e.getAttribute('complaint-type');
-  //var groupID = e.parentElement.parentElement.getAttribute('id').split('list-')[1];
   var group_name = e.getAttribute('group_name');
   var groupSelected = document.getElementById(group_name);
   var childNodes = e.parentElement.parentElement.childNodes;
 
-  //console.log(groupID);
-
-  
   if(e.getAttribute('selected') == 'false'){
     if(e.innerHTML.toUpperCase() == 'NONE'){
       deSelectAll(type_of_complaint);
@@ -447,22 +387,10 @@ function complaintClicked(e) {
   }else{
     var selected_e_id = e.getAttribute('id');
     e.remove();
-
     e = document.getElementById(selected_e_id);
-
     group_name = e.getAttribute('group_name');
-
-
-
-
-    
-
-
-
     e.setAttribute('onmousedown','complaintClicked(this);');
     e.setAttribute('selected', 'false');
-
-
 
     function check_g(group_name) {
 
@@ -484,14 +412,7 @@ function complaintClicked(e) {
             //document.getElementById(group_name).setAttribute('style',' background-color: ;');
           }
         }
-
-        //console.log(cal_t);
-
       }
-
-      
-      console.log("count: ",count);
-      console.log("ls_T",ls_total);
 
       if (count == ls_total) {
         document.getElementById(group_name).setAttribute('style',' background-color: ;');
@@ -500,35 +421,18 @@ function complaintClicked(e) {
       }
 
       function totalCount(cond) {
-
-        //console.log(cond);
-        console.log(count);
         if (cond == 'true') {
           count = count - 1;
         } else if ( cond == 'false') {
           count = count + 1;
         }
-
-        //console.log(count);
-        //return count;
       }
     }
 
-
-
     check_g(group_name);
-
     e.style = 'background-color: "";';
     removeFromHash(type_of_complaint, e.getAttribute('concept_id'));
     removeFromNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
-
-    
-
-    //
-    //group_container.appendChild(e);
-    // var parent = e.parentElement;
-    // console.log(parent); 
-
 
     if (presentingComplaintsNameHash.length == 0)
     document.getElementById('selected_complaints_main_container').setAttribute('class','');
@@ -588,13 +492,11 @@ function addToNameHash(e) {
   try {
     presentingComplaintsNameHash.push(e);
   }catch(e) {
-    //presentingComplaintsNameHash = [];
     presentingComplaintsNameHash.push(e);
   }
 }
 
-function arrayRemove(arr, value) { 
-    
+function arrayRemove(arr, value) {  
   return arr.filter(function(ele){ 
       return ele != value; 
   });
@@ -652,7 +554,6 @@ function getPresentingComplaints(type_of_complaint) {
 }
 
 function prepareToSave() {
-  console.log(presentingComplaintsNameHash);
   if(isHashEmpty(presentingComplaintsHash)) {
     showMessage('No selection made. Please select one or more complaints');
     return;
@@ -688,7 +589,6 @@ function prepareToSave() {
   submitParameters(encounter, "/encounters", "saveObs");
 }
 
-//modified function for when orders/Lab oders button is selected
 function prepareToSaveForOrders() {
   
   if(isHashEmpty(presentingComplaintsHash)) {
@@ -724,8 +624,6 @@ function showValidate() {
     td_string+="<div class=\"td-st\">"+presentingComplaintsNameHash[i]+"</div>";
   }
 
-  //document.getElementById('messageBar').style.width = "700px";
-  //console.log(document.getElementById('messageBar'));
   messageBar.innerHTML = "";
   messageBar.innerHTML += "<p>" + message +
      
