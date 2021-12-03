@@ -660,7 +660,7 @@ function saveObs(encounter) {
     encounter_id: encounter["encounter_id"],
     observations: observations
   }; 
-  // submitParameters(obs, "/observations", "nextPage")  
+  submitParameters(obs, "/observations", "nextPage")  
 }
 
 function nextPage(obs){
