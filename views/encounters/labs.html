@@ -1,0 +1,396 @@
+
+<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+<script type="text/javascript" src="/assets/js/alertifyjs/alertify.js"></script>
+<script type="text/javascript" src="/assets/js/does_connection_exist.js"></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css">
+
+<script type="text/javascript" src="/assets/js/httpUtils.js"></script>
+<script type="text/javascript" src="/assets/js/GlobalProperty.js"></script>
+<link rel="stylesheet" href="/assets/css/lab.min.css" type="text/css">
+<script type="text/javascript" src="/apps/OPD/assets/js/lab.min.js"></script>
+        
+        
+        
+<script type="text/javascript" src="/assets/js/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/dataTables.fixedHeader.min.js"></script>
+<style>
+
+.accession-numbers-col{
+  text-align: left;
+}
+.tests-col{
+  text-align: left;
+}
+.status-col{
+  text-align: center;
+}
+.date-col{
+  text-align: center;
+}
+.results-col {
+  text-align: right;
+}
+
+#cancelButton {
+  display: none;
+}
+#spinner {
+        position: absolute;
+        top: 150px;
+        left: 40%;
+        z-index: 1001;
+        display: none;
+      }
+      #cover {
+        position: absolute;
+        background-color: black;
+        width: 100%;
+        height: 102%;
+        left: 0%;
+        top: 0%;
+        z-index: 1000;
+        opacity: 0.65;
+        display: none;
+    }
+    /* .modal {
+      position: fixed;
+      width: 93%;
+      margin-left: 4%;
+      top: 4%;
+      border: solid 1px;
+    } */
+    .modal {
+    position: fixed;
+    top: 30;
+    right: 30;
+    bottom: 30;
+    left: 30;
+    z-index: 1050;
+    display: none;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+}
+#patient_details_card {
+    overflow: scroll;
+    height: 530;
+}
+</style>
+
+<script type="text/javascript">
+  let test_type ='';
+  let main_row = '';
+  let tbody = '';
+
+  var patient_id = sessionStorage.patientID;
+  var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patient_id;
+
+  function configFinishBTN(){
+    let btn = __$('nextButton');
+    if (sessionStorage.programID == '14')
+      btn.setAttribute('onmousedown', 'redirectOnFinishOrder();');
+    else
+      btn.setAttribute("onmousedown",`document.location='/views/patient_dashboard.html?patient_id=${sessionStorage.patientID}'`);
+  }
+function close_modal()
+{
+   
+    try {
+      let data = document.getElementById('lims_results');
+      data.remove();
+    } catch (error) {
+      
+    }
+    test_type ='';
+    main_row = '';
+    tbody = '';
+    document.getElementById('spinner').style = 'display: none;';
+    document.getElementById('cover').style = 'display: none;';
+    document.getElementById('modal').style = 'display: none;';
+}
+function patientDetailsModal()
+{  
+  document.getElementById('spinner').style = 'display: none;';
+    document.getElementById('modal').style = 'display: block;';
+    
+}
+var limsResults;
+function getLimsResults(id) {
+  document.getElementById('spinner').style = 'display: block;';
+    document.getElementById('cover').style = 'display: block;';
+const user_id = sessionStorage.userID;
+const url = sessionStorage.apiURL;
+const port = sessionStorage.apiPort;
+const protocol = sessionStorage.apiProtocol;
+
+jQuery.getJSON({
+    url: protocol + '://' + url + ':' + port + '/api/v1/emr_lims_interface?id='+id,
+    data: {},
+    type: 'GET',
+    beforeSend: function (xhr) {
+        xhr.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+    },
+    success: function (result) {
+      if(result.length > 0)
+      {
+          console.log(result)
+        loadLimsResults(result)
+        patientDetailsModal()
+      }else
+      {
+        close_modal();
+        showMessage("Lims results are <br />not available")
+      }
+    }
+
+});
+}
+
+function getLimsUser(user_type,id) {
+
+const user_id = sessionStorage.userID;
+const url = sessionStorage.apiURL;
+const port = sessionStorage.apiPort;
+const protocol = sessionStorage.apiProtocol;
+
+jQuery.getJSON({
+    url: protocol + '://' + url + ':' + port + '/get_lims_user?id='+id,
+    data: {},
+    type: 'GET',
+    beforeSend: function (xhr) {
+        xhr.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+    },
+    success: function (user_data) {
+      if(user_type[0].name != undefined){
+        if(user_type == 'received_by')
+          document.getElementById('received_by').innerHTML = user_data[0].name;
+        if(user_type == 'authorised_by')
+          document.getElementById('authorised_by').innerHTML = user_data[0].name;
+      }
+    
+    }
+});
+}
+function change_date_format(date){
+  let datetime = moment(date).format('YYYY-MM-DD HH:mm:ss');
+  return datetime
+}
+      
+function loadLimsResults(all_results){
+ 
+  getLimsUser('received_by',all_results[0].created_by); 
+  getLimsUser('authorised_by',all_results[0].verified_by);
+  
+  document.getElementById('accession_number').innerHTML = all_results[0].accession_number;
+  document.getElementById('requested_by').innerHTML = all_results[0].requested_by;
+  document.getElementById('ward').innerHTML = all_results[0].ward_or_location;
+
+  document.getElementById('specimen_type').innerHTML = all_results[0].specimen_types_name;
+  document.getElementById('date_registered').innerHTML = change_date_format(all_results[0].tests_time_created);
+  document.getElementById('test_type').innerHTML = all_results[0].test_types_name;
+  document.getElementById('lab_sections').innerHTML = all_results[0].test_categories_name;
+  document.getElementById('specimen_status').innerHTML = all_results[0].specimen_statuses_name;
+  document.getElementById('date_authorised').innerHTML = change_date_format(all_results[0].tests_time_verified);
+
+
+  for(let results in all_results ){
+    
+    if(test_type != all_results[results].test_types_name){
+       main_row = document.createElement("tr");
+                  main_row.setAttribute('id','lims_results');
+      let main_col1 = document.createElement("td");
+          main_col1.innerHTML = all_results[results].test_types_name;
+          main_row.appendChild(main_col1)
+      let main_col2 = document.createElement("td");
+          main_row.appendChild(main_col2)
+      let table = document.createElement("table");
+          table.setAttribute('style','margin: 0px;padding:0px;width:100%');
+          table.setAttribute('class','table-bordered table-condensed');
+          main_col2.appendChild(table);
+       tbody = document.createElement("tbody");
+          table.appendChild(tbody);
+    
+      let tr = document.createElement("tr");
+          tbody.appendChild(tr);
+      let td1 = document.createElement("td");
+          tr.appendChild(td1);
+      let b1 = document.createElement("b")
+          b1.innerHTML = "Measure";
+          td1.appendChild(b1)
+      let td2 = document.createElement("td");
+          tr.appendChild(td2);
+      let b2 = document.createElement("b");
+          b2.innerHTML = "Result";
+          td2.appendChild(b2)
+          if(all_results[results].test_types_name != "Malaria Screening"){
+      let td3 = document.createElement("td");
+          td3.setAttribute("style","width: 20%")
+          tr.appendChild(td3)
+            let b3 = document.createElement("b");
+            b3.innerHTML = "Range";
+            td3.appendChild(b3);
+          }
+    }
+
+      let tr1 = document.createElement('tr');
+      tbody.appendChild(tr1);
+      let td_results1 = document.createElement('td');
+          td_results1.innerHTML = all_results[results].measures_name;
+          tr1.appendChild(td_results1);
+      let td_results2 = document.createElement('td');
+          td_results2.innerHTML = all_results[results].test_results_result +" "+
+                                  all_results[results].measures_unit;
+          tr1.appendChild(td_results2); 
+        if(all_results[results].test_types_name != "Malaria Screening"){
+      let td_results3 = document.createElement('td');
+          td_results3.innerHTML = all_results[results].measure_ranges_range_lower+" - "+
+                                  all_results[results].measure_ranges_range_upper;
+          tr1.appendChild(td_results3) ; 
+          }
+
+          if(test_type != all_results[results].test_types_name){
+          let main_col3 = document.createElement("td");
+              main_col3.innerHTML = "N/A";
+              main_row.appendChild(main_col3);
+          let main_col4 = document.createElement("td");
+              main_col4.setAttribute("style","width: 20%;") 
+              main_col4.innerHTML =`${all_results[results].users_name}<br>On ${change_date_format(all_results[results].time_completed)}<br><br><b><i>
+                                    Using:  ${all_results[results].test_results_device_name} </i></b><br><br>`
+          main_row.appendChild(main_col4)
+          }
+          test_type =all_results[results].test_types_name;
+    
+
+      let data = document.getElementById('lab_results_table');
+      data.appendChild(main_row);
+  }
+}
+
+function showMessage(message) {
+   
+        messageBar.innerHTML = "";
+        messageBar.innerHTML += "<p>" + ((message.match(/^Value\s/)) ? (message.replace(/^Value\s/, "The value is ")) : message) +
+            ". Are you sure about this value?</p><div style='display: block;'>" +
+            "<button class='button' style='float: none;' onclick='this.offsetParent.style.display=\"none\"; goToSpo();' onmousedown='this.offsetParent.style.display=\"none\";goToSpo();'" +
+            "><span>Yes</span></button><button class='button' " +
+            "style='float: none; right: 3px;' onmousedown='this.offsetParent.style.display=\"none\"; '>" +
+            "<span>No</span></button>";
+        messageBar.style.display = "block";
+    }
+
+</script>
+
+<body id="mateme">
+  <div id="container">
+    <div id="content">
+
+
+      <form>
+
+        <input type="text" name="summary"
+          tt_onLoad="__$('keyboard').style.display = 'none';buildLabOrderDisplay();configFinishBTN();" 
+          tt_pageStyleClass= "NoControls" helpText="Lab orders" optional = "true"/>
+
+      
+
+      </form>
+
+   </div>
+ </div> 
+
+ <style>
+   .table-bordered {
+    border: 1px solid #ddd;
+}
+.table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+button.navButton {
+    /* float: unset; */
+    margin-top: 5px;
+}
+ </style>
+</body>
+
+<!-- Modal -->
+<div class="modal " id="modal" style="display: none;" > 
+  <div class="modal-content" style="margin-left:0px; ">
+      <div class="modal-header">
+        <div class="panel-heading ">
+          <span class=""></span>
+          <span><strong>Accession No.</strong>&nbsp;:&nbsp;  <strong id="accession_number"> </strong></span>
+          <span class="pull-right">
+            <strong >Requested By </strong><span id="requested_by"></span> &nbsp;:&nbsp;  
+            ( <strong id="ward"> </strong> )
+          </span>
+        </div>
+      </div>
+      <div class="modal-body">
+          <div class="">
+              <div id="modal-div">
+                  <div id="patient_details_card" style="margin-bottom: 10px; border-bottom: 1px solid;" >
+                    <table class="table table-bordered rspecimen" >
+                      <tbody>
+                        <tr>
+                          <td><b>Specimen Type</b></td>
+                          <td id="specimen_type"></td>
+                          <td><b>Date Registered</b></td>
+                          <td id="date_registered"></td>
+                        </tr>
+                        <tr>
+                          <td><b>Test Type(s)</b></td>
+                          <td id="test_type"></td>
+                          <td><b>Lab Sections</b></td>
+                          <td id="lab_sections"></td>
+                        </tr>
+                        <tr>
+                          <td><b>Specimen Status</b></td>
+                          <td id="specimen_status"></td>
+                          <td><b>Received By</b></td>
+                          <td id="received_by"></td>
+                        </tr>
+                        <tr>
+                          <td><b>Authorised By</b></td>
+                          <td id="authorised_by"></td>
+                          <td><b>Date Authorised</b></td>
+                          <td id="date_authorised"></td>
+                        </tr>
+                      </tbody>
+                      </table>
+                      <table class="table table-bordered rspecimen" >
+                        <tbody id="lab_results_table"> 
+                          <tr>
+                            <th colspan="8">Results</th>
+                          </tr>
+                          <tr>
+                            <th>Test Type</th>
+                            <th>Results</th>
+                            <th>Remarks</th>					
+                            <th>Performed By</th>
+                          </tr>
+                          </tbody>
+                     </table>
+                     <!-- <div class="bottom_buttons"> -->
+                    <!-- </div> -->
+                  </div>
+                  <button onclick="close_modal()" style="float: unset;" class='button red navButton'>  <span>Close</span></button>
+              </div>
+
+          </div>
+         
+      </div>
+  </div> 
+</div>
+<!-- Modal -->
+
+<img src="/apps/OPD/assets/images/formloader.gif" id="spinner"  />
+<div id="cover"></div>

@@ -62,7 +62,7 @@
             return [
                 ['MoH', '/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png', 'MoH', 'function'],
                 ["PEPFAR", "/assets/images/login-logos/PEPFAR.png",  '#', 'link'],
-                ["Clinic", "", "Clinic", 'function']
+                ["Facility", "", "Facility", 'function']
             ];
         } else if (group == 'MoH') {
             return [
@@ -71,9 +71,10 @@
                 // ["Malaria report", "", "#", 'link'],
                 // ["IPT", "", "#", 'link']
                    ['Weekly IDSR Report','','/apps/OPD/views/reports/revised_idsr_menu.html', 'link'],
-                   ['Monthly IDSR Report','','/apps/OPD/views/reports/revised_idsr_monthly_menu.html', 'link']
+                   ['Monthly IDSR Report','','/apps/OPD/views/reports/revised_idsr_monthly_menu.html', 'link'],
+                   ['HMIS 15','','reports/report_dates.html?report=hmis15', 'link']
             ];
-        } else if (group == 'Clinic') {
+        } else if (group == 'Facility') {
             return [
                 ['Diagnosis by address', '', 'reports/report_dates.html?report=diagnosis_by_address', 'link'],
                 ["Diagnosis", "", "reports/report_dates.html?report=diagnosis", 'link'],

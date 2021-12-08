@@ -17,26 +17,26 @@ function insertAfter(newNode, existingNode) {
   existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 }
 
- function build_search_field() {
-  var helpText0 = document.getElementById('helpText0');
-  var search_content = document.createElement('div');
-  search_content.setAttribute('id','search_content');
-  //helpText0.appendChild(search_content);
-
-  insertAfter(search_content, helpText0);
-
-  var search_text = document.createElement('span');
-  search_text.setAttribute('id','search_text');
-  search_text.innerHTML='Search:';
-  search_content.appendChild(search_text);
-
-  var search_input = document.createElement('input');
-  search_input.setAttribute('id','search_field');
-  search_input.setAttribute('style','height:40px;width:400px;');
-  //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
-  search_input.setAttribute('onkeyup','search_results()');
-  search_content.appendChild(search_input);
-  lookForTag();
+function build_search_field() {
+    var helpText0 = document.getElementById('helpText0');
+    var search_content = document.createElement('div');
+    search_content.setAttribute('id','search_content');
+    //helpText0.appendChild(search_content);
+  
+    insertAfter(search_content, helpText0);
+  
+    var search_text = document.createElement('span');
+    search_text.setAttribute('id','search_text');
+    search_text.innerHTML='Search:';
+    search_content.appendChild(search_text);
+  
+    var search_input = document.createElement('input');
+    search_input.setAttribute('id','search_field');
+    search_input.setAttribute('style','height:40px;width:400px;');
+    //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
+    search_input.setAttribute('onkeyup','search_results()');
+    search_content.appendChild(search_input);
+    lookForTag(); 
 }
 
 
@@ -194,48 +194,70 @@ function setVissiableForGroup(group) {
 }
 
 function buildPresentaingComplaints(type_of_complaint) {
-  document.getElementById('buttons').setAttribute('style','width: 100% !important');
-  var frame = document.getElementById('inputFrame' + tstCurrentPage);
-  frame.style = 'height: 90%; overflow: auto; display: flex';
-  frame.innerHTML = null;
 
-  getPresentingComplaints(type_of_complaint);
-  var clearButton = document.getElementById('clearButton');
-  clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');"); 
+
+ 
+    document.getElementById('buttons').setAttribute('style','width: 100% !important');
+    var frame = document.getElementById('inputFrame' + tstCurrentPage);
+    frame.style = 'height: 90%; display: flex';
+    frame.innerHTML = null;
+    getPresentingComplaints(type_of_complaint);
+    var clearButton = document.getElementById('clearButton');
+    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
+
+   
+  
 }
 
 function buildOrderButton() {
-  var navButton = document.getElementById('buttons');
-  var orderButton = document.createElement('button');
+  const navButton = document.getElementById('buttons');
+  const orderButton = document.createElement('button');
 
   orderButton.setAttribute('id','orderButton');
   orderButton.setAttribute('class','blue button navButton');
   orderButton.setAttribute('selected','false');
   if(sessionStorage.radiology_status == 'true'){
     orderButton.innerHTML = '<span>Orders</span>';
-  } else  orderButton.innerHTML = '<span>Lab Order</span>';
-  orderButton.setAttribute('onmousedown','nextPageForLabOrders(); changeToSelected(this)');
+    orderButton.setAttribute('onmousedown','ordersPopupModal()');
+  } else {
+    orderButton.innerHTML = '<span>Lab Order</span>';
+    orderButton.setAttribute('onmousedown','redirection(\"lab\")');
+  }
   navButton.appendChild(orderButton);
 }
-
-function changeToSelected(e) {
-  e.setAttribute('selected','true');
-}
-
-function redirectToLabOrders(){
-  sessionStorage.setItem('lab_is_set', 'true');
-  //sessionStorage.orderFlowStatus = true;
-  window.location.href= "./malaria/intermediately_blank_page.html";
-}
-
 
 function presentingComplaints(concept_sets, type_of_complaint) {
 
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
   frame.innerHTML = null;
 
+  var subMainConatiner = document.createElement('div');
+  subMainConatiner.setAttribute('id','selected_complaints_main_container');
+  
+
+  var div1 = document.createElement('div');
+  div1.setAttribute('style','display: flex;');
+ 
+
+  var div2 = document.createElement('div');
+  div2.setAttribute('id','ts');
+ 
+  div2.setAttribute('style','width:100%');
   var side_bar_container = document.createElement('div');
   side_bar_container.setAttribute('id','side-bar-pre-grouped');
+
+  var main_container = document.createElement('div');
+  main_container.setAttribute('id','complaints-container');
+
+  div2.appendChild(subMainConatiner);
+  div1.appendChild(side_bar_container);
+  div1.appendChild(main_container);
+  div2.appendChild(div1);
+
+ 
+
+  frame.appendChild(div2);
+
 
   
 
@@ -257,15 +279,18 @@ function presentingComplaints(concept_sets, type_of_complaint) {
 
   
 
-  frame.appendChild(side_bar_container);
+  //frame.appendChild(side_bar_container);
 
-  var main_container = document.createElement('div');
-  main_container.setAttribute('id','complaints-container');
+
+
+  // var subMainConatiner = document.createElement('div');
+  // subMainConatiner.setAttribute('id','selected_complaints_main_container');
+  // main_container.appendChild(subMainConatiner);
 
 
   
 
-  frame.appendChild(main_container);
+  //frame.appendChild(main_container);
   //var search_value = document.getElementById('search_filed').value;
  
   var row;
@@ -308,7 +333,7 @@ function presentingComplaints(concept_sets, type_of_complaint) {
       
               cell = document.createElement('div');
               cell.setAttribute('class','complaints-container-cell');
-              cell.innerHTML = concept_sets[t].complaints[i].name;
+              cell.innerHTML = "<span class=\'namespacing\'>"+concept_sets[t].complaints[i].name+"</span>";
               cell.setAttribute('selected', 'false');
               cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
               cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
@@ -322,11 +347,23 @@ function presentingComplaints(concept_sets, type_of_complaint) {
               row_count++;
               if(row_count == 4)
                 row_count = 1;
-  }  
+  } 
   }
   // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
   //   var other = document.getElementById('Other');
   //   sideBarPreGrouped.appendChild(other);
+
+  if (sessionStorage.saveState == "true") {
+     sessionStorage.saveState = "false";
+     sessionStorage.MiniWorkFlow = "false"
+    
+     var saveState = document.getElementById('ts');
+     saveState.innerHTML = localStorage.getItem('page_html');
+     
+     localStorage.page_html = "";
+     presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
+     presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
+  }
 }
 
 function autoHighLight(type_of_complaint) {
@@ -346,11 +383,44 @@ function autoHighLight(type_of_complaint) {
   }
 }
 
+
+var row_c;
+var row_c_item_count = 1;
+
+function selectedComplaints(e) {
+
+  var e = e.cloneNode(true)
+  var container = document.getElementById('selected_complaints_main_container');
+  //var subConatiner = document.createElement('div');
+
+  if(row_c_item_count == 1) {
+    row_c = document.createElement('div');
+    row_c.setAttribute('class','complaints-container-row1');
+  }
+ 
+  //row_c.appendChild(subConatiner);
+  //subConatiner.setAttribute('class','temp_comp');
+
+ 
+  row_c.append(e);
+
+
+  container.append(row_c);
+
+  row_c_item_count++;
+  if (row_c_item_count == 8)
+       row_c_item_count = 1;
+}
+
 function complaintClicked(e) {
   var type_of_complaint = e.getAttribute('complaint-type');
-  var groupID = e.parentElement.parentElement.getAttribute('id').split('list-');
-  var groupSelected = document.getElementById(groupID[1]);
+  //var groupID = e.parentElement.parentElement.getAttribute('id').split('list-')[1];
+  var group_name = e.getAttribute('group_name');
+  var groupSelected = document.getElementById(group_name);
   var childNodes = e.parentElement.parentElement.childNodes;
+
+  //console.log(groupID);
+
   
   if(e.getAttribute('selected') == 'false'){
     if(e.innerHTML.toUpperCase() == 'NONE'){
@@ -361,6 +431,10 @@ function complaintClicked(e) {
     e.setAttribute('selected', 'true');
     e.style = 'background-color: lightblue;';
     addToHash(type_of_complaint, e.getAttribute('concept_id'));
+    selectedComplaints(e);
+    document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
+    e.style = 'background-color: #ccc;';
+    e.setAttribute('onmousedown','');
     addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
@@ -371,10 +445,94 @@ function complaintClicked(e) {
       }
     }   
   }else{
+    var selected_e_id = e.getAttribute('id');
+    e.remove();
+
+    e = document.getElementById(selected_e_id);
+
+    group_name = e.getAttribute('group_name');
+
+
+
+
+    
+
+
+
+    e.setAttribute('onmousedown','complaintClicked(this);');
     e.setAttribute('selected', 'false');
+
+
+
+    function check_g(group_name) {
+
+      var _group = document.getElementById('list-'+group_name);
+
+      var cal_t = 0;
+      var count = 0;
+      var ls_total = 0;
+    
+      for (g=0; g<_group.children.length; g++) {
+        for (var _g=0; _g<_group.children[g].children.length; _g++) {
+          var _selected = _group.children[g].children[_g].getAttribute('selected');
+          ls_total++;
+          if (_selected == 'true') {
+            //_group.children[g].children[_g].setAttribute('style','display: show; background-color: lightblue;');
+           cal_t += totalCount('true');
+          } else if(_selected == 'false') {
+           cal_t += totalCount('false');
+            //document.getElementById(group_name).setAttribute('style',' background-color: ;');
+          }
+        }
+
+        //console.log(cal_t);
+
+      }
+
+      
+      console.log("count: ",count);
+      console.log("ls_T",ls_total);
+
+      if (count == ls_total) {
+        document.getElementById(group_name).setAttribute('style',' background-color: ;');
+      }  else if (groupSelected.getAttribute('selected') == 'true') {
+        groupSelected.style = 'background-color: #aaaaf4 !important;';
+      }
+
+      function totalCount(cond) {
+
+        //console.log(cond);
+        console.log(count);
+        if (cond == 'true') {
+          count = count - 1;
+        } else if ( cond == 'false') {
+          count = count + 1;
+        }
+
+        //console.log(count);
+        //return count;
+      }
+    }
+
+
+
+    check_g(group_name);
+
     e.style = 'background-color: "";';
     removeFromHash(type_of_complaint, e.getAttribute('concept_id'));
-    removeFromNameHash(e.getAttribute('name'));
+    removeFromNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
+
+    
+
+    //
+    //group_container.appendChild(e);
+    // var parent = e.parentElement;
+    // console.log(parent); 
+
+
+    if (presentingComplaintsNameHash.length == 0)
+    document.getElementById('selected_complaints_main_container').setAttribute('class','');
+
     var find_selected = 0;
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
@@ -435,15 +593,15 @@ function addToNameHash(e) {
   }
 }
 
-function removeFromNameHash(e) {
-  var temp = presentingComplaintsNameHash;
-  presentingComplaintsNameHash= [];
+function arrayRemove(arr, value) { 
+    
+  return arr.filter(function(ele){ 
+      return ele != value; 
+  });
+}
 
-  for(var i = 0 ; i < temp.length ; i++){
-    if(temp[i] != e){
-      presentingComplaintsNameHash.push(temp[i])
-    }
-  } 
+function removeFromNameHash(e) {
+  presentingComplaintsNameHash = arrayRemove(presentingComplaintsNameHash, e);
 }
 
 function addToHash(key, concept_id) {
@@ -494,8 +652,9 @@ function getPresentingComplaints(type_of_complaint) {
 }
 
 function prepareToSave() {
+  console.log(presentingComplaintsNameHash);
   if(isHashEmpty(presentingComplaintsHash)) {
-    showMessage('No selection made. Please selection one or more complaints');
+    showMessage('No selection made. Please select one or more complaints');
     return;
   }
 
@@ -603,59 +762,22 @@ function saveObs(encounter) {
     encounter_id: encounter["encounter_id"],
     observations: observations
   }; 
-  
   submitParameters(obs, "/observations", "nextPage")  
 }
 
 function nextPage(obs){
-  var odersButton = document.getElementById('orderButton');
-  var selected = odersButton.getAttribute('selected');
-  if(selected == 'true') {
-    if(sessionStorage.getItem('radiology_status') == 'true') {
-      ordersPopupModal();
-      odersButton.setAttribute('selected','false');
-      return;
-    } else {
-      odersButton.setAttribute('selected','false');
-      //redirectToLabOrders();
-      //nextEncounter(sessionStorage.patientID, sessionStorage.programID);
-      //return;
-      closeOrdersPopupModal();
-      //reset_lab_and_radio_setting();
-    }
-  }
   nextEncounter(sessionStorage.patientID, sessionStorage.programID);
-}
-
-//overriden function for placing lab orders
-function nextPageForLabOrders(){
-  var odersButton = document.getElementById('orderButton');
-  //var selected = odersButton.getAttribute('selected');
-
-    if(sessionStorage.getItem('radiology_status') == 'true') {
-      ordersPopupModal();
-      odersButton.setAttribute('selected','false');
-      return;
-    } else {
-      odersButton.setAttribute('selected','false');
-      sessionStorage.setItem('lab_is_set', 'true');
-      sessionStorage.orderFlowStatus = true;
-      labOrdersContainer('false','true');
-      //redirectToLabOrders();
-      return;
-    }
-  
 }
 
 function ordersPopupModal() {
   let submit_cover = document.getElementById("page-cover");
   submit_cover.style = "display: block;";
 
-  var parent = document.getElementById('mateme');
+  var parent = document.getElementById('content');
   var main_container = document.createElement('div');
   parent.setAttribute('class','modal-open');
-  main_container.setAttribute('class','modal fade in');
   main_container.setAttribute('id','ordersModal');
+  main_container.setAttribute('class','modal fade in');
   main_container.setAttribute('data-backdrop','static');
   main_container.setAttribute('data-keyboard','false');
   main_container.setAttribute('role','dialog');
@@ -744,7 +866,7 @@ function ordersPopupModal() {
 
   var button = document.createElement('button');
   button.setAttribute('class','red button navButton');
-  button.innerHTML = "<span>Close</span>";
+  button.innerHTML = "<span>Cancel</span>";
   button.setAttribute('data-dismiss','modal');
   button.setAttribute('style','position: absolute; bottom: 2%; margin-left: 1.4%');
   button.setAttribute('onmousedown','closeOrdersPopupModal()');
@@ -753,77 +875,15 @@ function ordersPopupModal() {
   nextButton.setAttribute('class','green button navButton');
   nextButton.innerHTML = "<span>Next</span>";
   nextButton.setAttribute('style','position: absolute; bottom: 2%; right: 2%');
-  nextButton.setAttribute('onmousedown','nextActivity()');
-  //nextButton.setAttribute('onmousedown','labOrdersContainer()');
-
+  nextButton.setAttribute('onmousedown','setOrdersMiniWorkFlow()');
   bottom.appendChild(nextButton);
   bottom.appendChild(button);
-
-  //bottom.appendChild(labOrdersContainer());
-
   parent.appendChild(main_container);
 }
 
-function labOrdersContainer(arg1,arg2) {
-  var radiology_is_set = arg1;
-  var lab_is_set = arg2;
-
-  var parent = document.getElementById('mateme');
-  var mainLabOrdersContainer = document.createElement('div');
-  mainLabOrdersContainer.setAttribute('id','mainLabOrdersContainer');
-  parent.setAttribute('class','modal-open');
-  mainLabOrdersContainer.setAttribute('class','modal fade in');
-  mainLabOrdersContainer.setAttribute('id','ordersModal');
-  mainLabOrdersContainer.setAttribute('data-backdrop','static');
-  mainLabOrdersContainer.setAttribute('data-keyboard','false');
-  mainLabOrdersContainer.setAttribute('role','dialog');
-  mainLabOrdersContainer.setAttribute('style','display: block');
-
-  var modal_dialog = document.createElement('div');
-  modal_dialog.setAttribute('style','width: 75%; hieght: 75%; top: -3%; height: 100vh;');
-  modal_dialog.setAttribute('class','modal-dialog');
-  //modal_dialog.setAttribute('name','div2');
-  mainLabOrdersContainer.appendChild(modal_dialog);
-
-  var modal_content = document.createElement('div');
-  modal_content.setAttribute('id','modal-content');
-  //modal_content.setAttribute('class','modal-content');
-  modal_content.setAttribute('style','margin-left:-12%; height: vh !important; background-color: white; width: 123vh;');
-  modal_dialog.appendChild(modal_content);
-
-
-  var iframe = document.createElement('iframe');
-  iframe.setAttribute('id','labIframe');
-  iframe.setAttribute('style', 'height: 94%');
-
-  if (radiology_is_set == 'true' && lab_is_set == 'true') {
-    closeOrdersPopupModal();
-    let submit_cover = document.getElementById("page-cover");
-    submit_cover.style = "display: block;";
-    iframe.setAttribute('src','./radiology/radiology_orders.html');
-  }
-  
-
-  if (radiology_is_set == 'true' && lab_is_set == 'false') {
-    closeOrdersPopupModal();
-    let submit_cover = document.getElementById("page-cover");
-    submit_cover.style = "display: block;";
-    iframe.setAttribute('src','./radiology/radiology_orders.html');
-  }
-
-   if (radiology_is_set == 'false' && lab_is_set == 'true') {
-
-    if (sessionStorage.getItem('radiology_status') == 'true')
-    closeOrdersPopupModal();
-    let submit_cover = document.getElementById("page-cover");
-    submit_cover.style = "display: block;";
-    iframe.setAttribute('src','/../views/patient/labs.html');
-  }
-
-  modal_content.appendChild(iframe);
-
-  parent.appendChild(mainLabOrdersContainer);
-}
+var apiURL = sessionStorage.getItem("apiURL");
+var apiPort = sessionStorage.getItem("apiPort");
+var apiProtocol = sessionStorage.getItem("apiProtocol");
 
 function tick(e) {
   var selected = e.getAttribute('ticked');
@@ -841,62 +901,81 @@ function tick(e) {
   }
 }
 
+function redirection(location) {
+  setPageState();
+
+  let paths = {
+    'radiology' : './radiology/view_radiology_results.html',
+    'lab' : '/views/patient/labs.html'
+  }
+
+  if (location == 'radiology') {
+    setLocation(paths.radiology);
+  }
+
+  if (location == 'lab') {
+    setLocation(paths.lab);
+  }
+
+  function setLocation(path) {
+    window.location.href = path;
+  }
+}
+
+function checkOdersSelected() {
+  let radiology = document.getElementById('radiology').getAttribute('ticked');
+  let lab = document.getElementById('lab').getAttribute('ticked');
+
+  return {
+    'radiology' : radiology,
+    'lab': lab
+  }
+}
+
+function setOrdersMiniWorkFlow() {
+  let _selected = checkOdersSelected();
+
+  if( _selected.radiology == 'false' && _selected.lab == 'false') {
+    messageBar.setAttribute('style','display: block; z-index: 10001;');
+    showMessage('No selection made. Please select one or more');
+    return;
+  }
+
+  if( _selected.radiology == 'true' && _selected.lab == 'false') {
+    redirection('radiology');
+  }
+
+  if( _selected.radiology == 'false' && _selected.lab == 'true') {
+    redirection('lab');
+  }
+
+  if ( _selected.radiology == 'true' && _selected.lab == 'true') {
+    setMiniWorkFlowAction();
+  }
+}
+
+function setMiniWorkFlowAction() {
+  redirection('radiology');
+  sessionStorage.setItem('MiniWorkFlow','true');
+}
+
+function setPageState() {
+  let page = document.getElementById('ts');
+  localStorage.setItem("page_html", page.outerHTML);
+  sessionStorage.setItem("saveState", "true");
+
+  let selectedHash = JSON.stringify(presentingComplaintsNameHash);
+  let encounterHash = JSON.stringify(presentingComplaintsHash);
+
+  sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
+  sessionStorage.setItem('presentingComplaintsHash',encounterHash);
+}
+
 function closeOrdersPopupModal() {
-  let page_cover = document.getElementById("page-cover");
+  var page_cover = document.getElementById("page-cover");
   page_cover.style = "display: none;";
 
-  let submit_cover = document.getElementById("page-cover");
-  submit_cover.style = "display: none;";
-
-  var parent = document.getElementById('mateme');
-  parent.setAttribute('class','');
-
-  var main_container = document.getElementsByTagName('body')[0].lastElementChild;
-  main_container.setAttribute('class','modal fade');
+  var main_container = document.getElementById('ordersModal');
   main_container.setAttribute('style','display: none');
-  document.getElementsByTagName('body')[0].removeChild(main_container);
-  //nextEncounter(sessionStorage.patientID, sessionStorage.programID);
-  document.getElementById('orderButton').setAttribute('selected','false');
+  main_container.remove();
 }
-
-function nextActivity() {
-  var radiology = document.getElementById('radiology');
-  var lab = document.getElementById('lab');
-  var option_one_selected = radiology.getAttribute('ticked');
-  var option_two_selected = lab.getAttribute('ticked');
-
-  if (option_one_selected == 'true' && option_two_selected == 'true') {
-    sessionStorage.orderFlowStatus = true;
-    sessionStorage.setItem('radiology_is_set', 'true');
-    sessionStorage.setItem('lab_is_set', 'true');
-    //window.location.href = './radiology/radiology_orders.html';
-    labOrdersContainer('true','true');
-  }
-
-  if(option_one_selected == 'true' && option_two_selected == 'false') {
-    sessionStorage.orderFlowStatus = true;
-    sessionStorage.setItem('radiology_is_set', 'true');
-    //window.location.href = './radiology/radiology_orders.html';
-    labOrdersContainer('true','false');
-  }
-
-  if(option_one_selected == 'false' && option_two_selected == 'true') {
-    //redirectToLabOrders();
-    sessionStorage.setItem('lab_is_set', 'true');
-    sessionStorage.orderFlowStatus = true;
-    labOrdersContainer('false','true');
-  }
-}
-
-var timer = setInterval("autoReomvePopup();", 500);
-window.timer;
-
-function autoReomvePopup(){
-  if(sessionStorage.getItem('radiology_order_done') == 'true' || sessionStorage.getItem('lab_order_done') == 'true'){
-    sessionStorage.setItem('radiology_order_done','false');
-    sessionStorage.setItem('lab_order_done','false');
-    //closeOrdersPopupModal();
-    //window.clearTimeout(window.timer);
-  }
-}
-

@@ -46,43 +46,6 @@
 </style>
 
 <script>
-function getWeeklyIDSR() {
-  
-  var url = apiProtocol+'://'+apiURL+':'+apiPort+'/api/v1/generate_weekly_idsr_report';
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var objs = JSON.parse(this.responseText);
-    //  RadiologyOrders(objs, 'Radiology orders');
-    alert(JSON.stringify(objs));
-    }
-  };
-  // 2021-06-21 2021-06-27 25&
-  xhttp.open("GET", (url + "?request=true&start_date= 2021-06-21&end_date=2021-06-27"), true);
-  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-  xhttp.setRequestHeader('Content-type', "application/json");
-  xhttp.send();
-}
-function getMonthlylyIDSR() {
-  
-  var url = apiProtocol+'://'+apiURL+':'+apiPort+'/api/v1/generate_monthly_idsr_report';
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var objs = JSON.parse(this.responseText);
-    //  RadiologyOrders(objs, 'Radiology orders');
-    alert(JSON.stringify(objs));
-    }
-  };
-  xhttp.open("GET", (url + "?request=true&start_date= 2021-06-21&end_date=2021-06-27"), true);
-  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-  xhttp.setRequestHeader('Content-type', "application/json");
-  xhttp.send();
-}
-getWeeklyIDSR();
-getMonthlylyIDSR(); 
 function reportGrouping(group) {
   if(group == 'main'){
     return [

@@ -332,17 +332,17 @@ function submitRadiologyParameters(array_obj)
      sessionStorage.setItem("radiology_orders", radiology_orders_string); 
      sessionStorage.setItem("radiology_accession_number", accession_number); 
      sessionStorage.setItem("date_created", date_created); 
-    //  print_barcode();
-
-     jQuery(".loader").show();
-     submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")
+    
+    document.getElementById('spinner').style = 'display: block;';
+    submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")
 }
 
 
 function print_barcode()
 {
-     var radiology_barcode_url = "/views/print/radiology_barcode.html";
-     window.location =radiology_barcode_url;
+    document.getElementById('spinner').style = 'display: none;';
+    var radiology_barcode_url = "/views/print/radiology_barcode.html";
+    window.location =radiology_barcode_url;
 }
 
 function closeOrdersPopupModal() {
@@ -351,18 +351,5 @@ function closeOrdersPopupModal() {
   let page_cover = window.parent.document.getElementById("page-cover");
   page_cover.style = "display: none;";
 
-  let submit_cover = window.parent.document.getElementById("page-cover");
-  submit_cover.style = "display: none;";
-
-  var parent = window.parent.document.getElementById('mateme');
-  parent.setAttribute('class','');
-  
-  //var main_container = window.parent.document.getElementsByTagName('body')[0].lastElementChild;
-  var main_container = window.parent.document.getElementById('ordersModal');
-  main_container.setAttribute('class','modal fade');
-  main_container.setAttribute('style','display: none');
-  window.parent.document.getElementsByTagName('body')[0].removeChild(main_container);
-
-  var someIframe = window.parent.document.getElementById('labIframe');
-  someIframe.parentNode.removeChild(someIframe);
+  window.location.href = '/apps/OPD/views/encounters/presenting_complaints.html';
 }

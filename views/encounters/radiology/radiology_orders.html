@@ -3,7 +3,6 @@
 <!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
-<link rel="stylesheet" href="/assets/css/void_order_popup.css" type="text/css">
 
 <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
 <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
@@ -20,7 +19,13 @@
 <script type="text/javascript" src="/apps/OPD/assets/js/radiology_orders.js"></script>
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 <style>
-
+#spinner {
+  position: absolute;
+  top: 15%;
+  left: 40%;
+  z-index: 100;
+  display: none;
+}
 .inputFrameClass {
   width: 96% !important;
 }
@@ -61,13 +66,14 @@ function changeNextButton() {
  
       <form>
         <input type="text" name="summary"
-          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildRadiologyOrders('Presenting complaint');"
+          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildRadiologyOrders();"
           tt_pageStyleClass= "NoControls" helpText="Radiology Orders" optional = "true"/>
 
       </form>
 
    </div>
  </div>
+ <img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
  <div  id="page-cover"></div>
 </body>
 
