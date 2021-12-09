@@ -285,6 +285,7 @@ function postRadiologyOrders(encounter) {
 }
 function submitRadiologyParameters(array_obj) 
 {
+  if(sessionStorage.radiology_status == 'true'){
      var patient_name = sessionStorage.getItem("family_name")+" "+sessionStorage.getItem("given_name");
      var accession_number = array_obj[0].children[0].accession_number;
      var date_created = array_obj[0].date_created;
@@ -335,6 +336,10 @@ function submitRadiologyParameters(array_obj)
     
     document.getElementById('spinner').style = 'display: block;';
     submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")
+  }
+  else{
+    print_barcode();
+  }
 }
 
 

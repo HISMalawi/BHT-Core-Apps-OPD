@@ -118,7 +118,7 @@ function assignCheckBox(concept_name, concept_id) {
   return `
   <table class = "tests-boxes">
     <tr>
-      <td class="check-boxes"><img src="../assets/images/stop.png" 
+      <td class="check-boxes"><img src="/apps/OPD/assets/images/stop.png" 
         class="checkbox-icons" id= "checkbox-${concept_id}" /></td>
       <td class="concept-names">${concept_name}</td>
     </tr>
@@ -131,7 +131,7 @@ function selectTest(e){
   if(e.getAttribute("style").match(/lightblue/i)){
     e.setAttribute("style","background-color: white;");
     let img = $(`checkbox-${e.id}`);
-    img.setAttribute("src","../assets/images/stop.png");
+    img.setAttribute("src","/apps/OPD/assets/images/stop.png");
 
     let selected_test_before = selected_tests;
     selected_tests  = {}
@@ -144,7 +144,7 @@ function selectTest(e){
   }else{
     e.setAttribute("style","background-color: lightblue;");
     let img = document.getElementById(`checkbox-${e.id}`);
-    img.setAttribute("src","../assets/images/checkmark.png");
+    img.setAttribute("src","/apps/OPD/assets/images/checkmark.png");
     selected_tests[e.id] = e.getAttribute("concept_name");
   }
   

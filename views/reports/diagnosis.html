@@ -69,6 +69,7 @@
     td {
       border-style: solid;
       border-width: 1px;
+      text-align: center !important;
     }
     
     #version {
@@ -156,6 +157,10 @@
       width: 100% !important;
     }
 
+    #diagnosis_table {
+      width: 100% !important;
+    }
+
     #patient_details_table_filter {
       display: none !important;
     }
@@ -234,7 +239,7 @@
       z-index: 993 !important;
       text-align: center;
       left: 170px !important;
-      top: 320px !important;
+      top: 399px !important;
       height: auto !important;
     }
     
@@ -471,6 +476,7 @@ var end_date = url.searchParams.get("end_date");
   document.getElementById('spinner').style = 'display: block;';
   document.getElementById('report-cover').style = 'display: block;';
   fetchData();
+  lookForTag();
 }
 
 var start_date = url.searchParams.get("start_date");
@@ -662,13 +668,16 @@ function getPatientDetails(patient_id){
   try {
     req.open('GET', url, true);
     req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-    req.send(null);
+    req.send();
   } catch (e) {
   } 
 }
 
 
 function loadPatientDetail(data){
+  var one_person = data[0]
+  data = []
+  data.push(one_person)
   for(const patients of data){
     let patientDetails = []
     for(const patient in patients){

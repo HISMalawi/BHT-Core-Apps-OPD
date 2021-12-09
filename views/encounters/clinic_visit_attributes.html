@@ -114,18 +114,11 @@ function isEmpty(str){
 }
 
 
-function setOPDActivities() { 
-        values = sessionStorage.OPD_activities.replace('patient registration,','').replace('patient registration','');
-        sessionStorage.OPD_activities   = values;
-        var parameters = {property: "OPD_activities", property_value: values}
-        submitParameters(parameters, "/user_properties", "nextPage");
-}
+
 function showPregnantQuestion() {
 
   if(sessionStorage.patientGender == 'M')
   {
-    if(sessionStorage.userRoles.match(/Clinician/i) && sessionStorage.gender == 'M' )
-      setOPDActivities();
 
       return false;
   }
@@ -133,9 +126,6 @@ function showPregnantQuestion() {
   var age = parseInt(sessionStorage.patientAge);   
   if(age >= 9 && age <= 55)
     return true;
-  else
-  if(sessionStorage.userRoles.match(/Clinician/i))
-  setOPDActivities();
 
   return false;  
 }
@@ -583,8 +573,6 @@ function getHIVActivationStatus()
 function ARTpatient() {
   getHIVActivationStatus();
 
-  if(sessionStorage.userRoles.match(/Clinician/i))
-  return true;
 
   if(sessionStorage.HIV_question_status == 'false')
   return true
@@ -705,14 +693,7 @@ function goToPatientDashboard()
 {
   document.location = tt_cancel_destination;
 }
-function showVisitTypeQuestion()
-{
-  if(sessionStorage.userRoles.match(/Clinician/i))
-  return false;
-  else
-  return true;
 
-}
 var gloabl_obs;
 var global_nid;
 
@@ -724,7 +705,6 @@ var global_nid;
 
       <form>
         <select allowFreeText="false" helpText="Type of visit"
-        condition='showVisitTypeQuestion() == true;'
            name="outcome" id="visit_type" key="outcome">
             <option value=""></option>
             <option value="New">New</option>
