@@ -974,12 +974,12 @@ function selectComplaintsFromPrevious(_ids = []) {
             }
             e.setAttribute('selected', 'true');
             e.style = 'background-color: lightblue;';
-            addToHash(type_of_complaint, e.getAttribute('concept_id'));
+            //addToHash(type_of_complaint, e.getAttribute('concept_id'));
             selectedComplaints(e);
             document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
             e.style = 'background-color: #ccc;';
             e.setAttribute('onmousedown','');
-            addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
+            //addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
             for (var i =0; i < childNodes.length; i++ ) {
               for (var j=0; j < childNodes[i].childNodes.length; j++) {
                 if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {
