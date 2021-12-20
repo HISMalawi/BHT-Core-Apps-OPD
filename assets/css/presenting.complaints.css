@@ -83,6 +83,8 @@ height: 581px;
 
 .modal-body {
   position: initial;
+  max-height: 550px;
+  overflow: scroll;
 }
 
 .td-st {

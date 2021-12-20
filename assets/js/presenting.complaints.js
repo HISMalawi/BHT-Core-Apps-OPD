@@ -545,6 +545,8 @@ function getPresentingComplaints(type_of_complaint) {
       var objs = JSON.parse(this.responseText);
      presentingComplaints(objs, type_of_complaint);
      _concept_set = objs;
+
+     checkFor()
     }
   };
   xhttp.open("GET", (url + "?id=" + concept_set + "&name="), true);
@@ -876,4 +878,172 @@ function closeOrdersPopupModal() {
   var main_container = document.getElementById('ordersModal');
   main_container.setAttribute('style','display: none');
   main_container.remove();
+}
+
+
+
+function checkFor() {
+
+  let id = sessionStorage.patientID;
+  let value = sessionStorage.sessionDate;
+  var url = sessionStorage.apiProtocol + '://' + apiURL + ':' + apiPort + '/api/v1/encounters?paginate=false&patient_id=' + id + '&date=' + value+'&program_id='+sessionStorage.programID;
+  var req = new XMLHttpRequest();;
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      var results = JSON.parse(this.responseText);
+      for(encounter of results) {
+        if (encounter.encounter_type == '122') {
+            let __complaints = []
+            for (observations of encounter.observations) {
+              if (observations.concept_id == '8578') {
+                __complaints.push({
+                  "concept_id": observations.concept_id,
+                  "group_name": observations.value_text
+                })
+              } else {
+                __complaints.push({
+                  "concept_id": observations.concept_id,
+                  "complaint_name": observations.value_text
+                })
+              }
+            }
+            getIdByMapping(groupPushedComplaints(__complaints))
+        }
+      }
+    }
+  };
+  try {
+      req.open('GET', url, true);
+      req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+      req.send(null);
+  } catch (e) {
+  }
+}
+
+function getIdByMapping(_groupPushedComplaints) {
+  //console.log(_groupPushedComplaints);
+  let ids = []
+  for (group of _groupPushedComplaints.entries()) {
+    for(_complaint of group) {
+      if (typeof(_complaint.complaints_name) != "undefined") {
+        let names = []
+        for (group_names of _complaint.complaints_name) {
+          names.push(group_names.complaint_name)
+         }
+        for(_group of _concept_set) {
+          if(_group.group == _complaint.group_name) {
+            console.log('group: ', _group.group)
+            for (__complaints of _group.complaints) {
+              for (_name of names) {
+                if (__complaints.name == _name) {
+
+                  ids.push({
+                    'group_name' : _group.group,
+                    'complaint_id' : __complaints.concept_id
+                  })
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  selectComplaintsFromPrevious(ids)
+}
+
+function selectComplaintsFromPrevious(_ids = []) {
+  for (id of _ids) {
+
+    let groupSelected = document.getElementById('list-'+id.group_name);
+    let groupSelectedToHighlight = document.getElementById(id.group_name);
+
+    for (g=0; g<groupSelected.children.length; g++) {
+      for (var _g=0; _g<groupSelected.children[g].children.length; _g++) {
+        if (id.complaint_id == groupSelected.children[g].children[_g].getAttribute('id')) {
+          let e = groupSelected.children[g].children[_g]
+          let type_of_complaint = e.getAttribute('complaint-type');
+          let childNodes = e.parentElement.parentElement.childNodes;
+
+          if(e.getAttribute('selected') == 'false'){
+            if(e.innerHTML.toUpperCase() == 'NONE'){
+              deSelectAll(type_of_complaint);
+            }else{
+              deSelectNone(type_of_complaint)
+            }
+            e.setAttribute('selected', 'true');
+            e.style = 'background-color: lightblue;';
+            addToHash(type_of_complaint, e.getAttribute('concept_id'));
+            selectedComplaints(e);
+            document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
+            e.style = 'background-color: #ccc;';
+            e.setAttribute('onmousedown','');
+            addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
+            for (var i =0; i < childNodes.length; i++ ) {
+              for (var j=0; j < childNodes[i].childNodes.length; j++) {
+                if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {
+                  groupSelectedToHighlight.setAttribute('selected', 'true');
+                  groupSelectedToHighlight.style = 'background-color: #aaaaf4 !important;';
+                }
+              }
+            }   
+          }
+        }
+      }
+    }
+  }
+}
+
+function groupPushedComplaints(pushedComplaints) {
+  //temporaly holder for group name (previous value checking)
+  let temp_group_name = null;
+  let group_concept_id;
+  let groupedComplaints = [];
+  let complaint_names = [];
+  let _last_group_ame;
+
+  for ([count, __complaint] of pushedComplaints.entries()) {
+    if (temp_group_name == null) {
+      //initial group_name
+      temp_group_name = __complaint.group_name;
+      group_concept_id = __complaint.concept_id
+    }
+
+    //setting last group name
+    if (typeof(__complaint.group_name) != "undefined") {
+      _last_group_ame = __complaint.group_name;
+    }
+
+    if (typeof(__complaint.group_name) != "undefined") {
+      if (temp_group_name != __complaint.group_name) {
+        groupedComplaints.push({
+          "group_name": temp_group_name,
+          "concept_id": group_concept_id,
+          "complaints_name": complaint_names
+        });
+
+        complaint_names = [];
+        temp_group_name = __complaint.group_name;
+      }
+    }
+
+    //grouping complaints names
+    if(typeof(__complaint.complaint_name) != "undefined")
+    complaint_names.push({
+      "complaint_name": __complaint.complaint_name,
+      "concept_id": __complaint.concept_id,
+    })
+
+    //pushing the last group item
+    if (count == pushedComplaints.length - 1) {
+      groupedComplaints.push({
+        "group_name": _last_group_ame,
+        "concept_id": group_concept_id,
+        "complaints_name": complaint_names
+      });
+    }
+  }
+
+  return groupedComplaints;
 }
