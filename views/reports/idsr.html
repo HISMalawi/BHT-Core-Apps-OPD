@@ -917,8 +917,8 @@ function initializeTable_Modal() {
         for (var n=1; n<IDsArray.length; n++) {
 
         var patient_id = IDsArray[n];
-        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patient_details_by_id?';
-        url +=   'patient_id='+patient_id;
+        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patients/';
+        url +=   patient_id;
 
         var req = new XMLHttpRequest();
         req.onreadystatechange = function(){
@@ -926,36 +926,40 @@ function initializeTable_Modal() {
           if (this.status == 200) {
               progressTracker++;
               var results = JSON.parse(this.responseText);
+              var one_person = results.person
+              let addresses_obj = one_person.addresses[0]
+              let address = addresses_obj.state_province +", "+ addresses_obj.city_village +", "+ addresses_obj.address1
+
               var tr = document.createElement('tr');
               document.getElementById('patient_details_body').appendChild(tr);
 
               var td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].patient_id;
+              td.innerHTML = one_person.person_id;
               tr.appendChild(td);
 
               td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].given_name;
+              td.innerHTML = one_person.names[0].given_name;
               tr.appendChild(td);
 
               var td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].family_name;
+              td.innerHTML = one_person.names[0].family_name;
               tr.appendChild(td);
 
               td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].gender;
+              td.innerHTML = one_person.gender;
               tr.appendChild(td);
 
               td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].phone_number;
+              td.innerHTML = one_person.person_attributes[1].value;
               tr.appendChild(td);
               
               td = document.createElement('td');
-              td.innerHTML = results[0].address;
+              td.innerHTML = address;
               tr.appendChild(td);
 
             if (progressTracker == IDsArray.length-1) {
