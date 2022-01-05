@@ -1,7 +1,7 @@
 <html>
   <meta charset="utf-8"/>
 
-<title>IDSR Weekly Report</title>
+<title>New Cases (OPD plus inpatient)</title>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
 
@@ -64,6 +64,10 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
+}
+
+#hmis_15 {
+  margin-bottom: 100px;
 }
 
 td {
@@ -433,7 +437,7 @@ function showDisaggregatedReport(){
     <td class="td-text-align-left"><span id="wkdates"></span></td>
   </tr>
   <tr>
-  <table id="idsr_weekly">
+  <table id="hmis_15">
     <tr>
       <td  colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
       <td class="td-text-align-right" style="width: 5%;">#</td -->
@@ -554,26 +558,22 @@ function showDisaggregatedReport(){
     <td class="td-text-align-right" style="width: 30%;">Oral conditions</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
   </tr>
-  <tr id="_23">
-    <td class="td-text-align-right">23</td>
+  <tr id="_24">
+    <td class="td-text-align-right">24</td>
     <td class="td-text-align-right" style="width: 30%;">Schistosomiasis - new cases</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
   </tr>
-  <tr id="_23">
-    <td class="td-text-align-right">23</td>
+  <tr id="_25">
+    <td class="td-text-align-right">25</td>
     <td class="td-text-align-right" style="width: 30%;">Leprosy - new cases</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
   </tr>
-  <tr id="_23">
-    <td class="td-text-align-right">23</td>
+  <tr id="_26">
+    <td class="td-text-align-right">26</td>
     <td class="td-text-align-right" style="width: 30%;">Common injuries and woulds (except RTA)</td>
     <td id="ls-5yrs" class="td-text-align-right">0</td>
   </tr>
-  <tr id="_23">
-    <td class="td-text-align-right">23</td>
-    <td class="td-text-align-right" style="width: 30%;">Number of road traffic accidents</td>
-    <td id="ls-5yrs" class="td-text-align-right">0</td>
-  </tr>
+
   </table>
 </tr>
 </table>
@@ -664,67 +664,45 @@ function getUrlVars() {
   return vars;
 }
 
-var idsrResults;
-
 function getIndicators() {
-
-  var responseTracker = 0;
-  var trackerSupport = Math.round(idsr_diagnosis.length/2)+2;
-
-  console.log("Ch: ", trackerSupport);
-
-   
-    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
-        url += '/generate_weekly_idsr_report?start_date=' + start_date;
-        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-        url += '&program_id=' + sessionStorage.programID;
-        url += '&request=true';
+  url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
+    url += '/programs/' + sessionStorage.programID;
+    url += '/reports'
+    url += '/hmis15?start_date=' + start_date;
+    url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
         runningReport = false
-        idsrResults = JSON.parse(this.responseText);
         var count_for_condition = 1;
-        for (const [key, value] of Object.entries(idsrResults)) {
-              var row = document.getElementById('_'+count_for_condition);
+        for (const [key, value] of Object.entries(JSON.parse(this.responseText))) {
+            var row = document.getElementById('_'+count_for_condition);
 
+            if(row != null) {
               row.children[1].innerHTML = key;
-
               count_for_condition++;
-              var count_for_clmns = 1;
-              var total = 0;
-              var total_ids = '';
+              
+              for (const [key1, value1] of Object.entries(value)) {
 
-              // for (const [key1, value1] of Object.entries(value)) {
-                     
-              //         row.children[count_for_clmns].innerHTML = value1.length;
-              //         total+=value1.length;
-                     
-              //         var storage_name = key+key1;
-              //         var ids ='';
-                      
-              //         for(var k=0; k<value1.length; k++) {
-              //           ids += '|'+value1[k]; 
-              //         }
+                var storage_name = key+key1;
+                var ids ='';
+                  
+                row.children[2].innerHTML = value1.length;
+                
+                if(value1.length != 0) {
+                  for(var k=0; k<value1.length; k++) {
+                   ids += '|'+value1[k]; 
+                  }
 
-              //         if(value1.length != 0) {
-              //           // row.children[count_for_clmns].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
-              //           // sessionStorage.setItem(storage_name, ids);
-              //           total_ids += ids;
-              //         }
-
-              //         count_for_clmns++;
-              //       }
-
-                    if (total > 0) {
-                      // row.children[count_for_clmns].innerHTML = total;
-                      // row.children[count_for_clmns].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
-                      // sessionStorage.setItem(key+'total', total_ids);
-                    }
+                  row.children[2].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
+                  sessionStorage.setItem(storage_name, ids);
+                }
+              }
             }
-            document.getElementById('spinner').style = 'display: none';
-            document.getElementById('report-cover').style = 'display: none;';
+        }
+        document.getElementById('spinner').style = 'display: none';
+        document.getElementById('report-cover').style = 'display: none;';
         
         if(reload_status == true) 
           location.reload();
@@ -754,30 +732,8 @@ function checkIfReportReady() {
 
 }
 
-const idsr_diagnosis = ["Diarrhea",
-"Poliomyelitis",
-"AHFS",
-"Anthrax",
-"Cholera",
-"Covid-19",
-"Dengue",
-"Dysentery",
-"Influenza due to new subtype",
-"Listeriosis",
-"Malaria",
-"Maternal death",
-"Measles",
-"Meningococcal Meningitis",
-"Neonatal tetanus",
-"PHEIC",
-"Plague",
-"Rabies",
-"Acute respiratory infection",
-"SARS",
-"Small pox",
-"Typhoid fever",
-"Yellow fever"
-];
+
+
 
 var start_date = getUrlVars()["start_date"];
 var end_date = getUrlVars()["end_date"];
@@ -800,7 +756,7 @@ function printWindow() {
 }
 
 function initializeTable() {
-  table = $('#idsr_weekly').DataTable({
+  table = $('#hmis_15').DataTable({
     
            
             scrollY: 300,
@@ -848,30 +804,29 @@ function initializeTable_Modal() {
 
     function dataTableContentLoader(name)
     {   
-        var diagName;
+        
         var period;
-        if (name.indexOf('total') != -1) {
-          diagName = name.replace('total','');
-          period = "Total";
-        }
+        // if (name.indexOf('total') != -1) {
+        //   diagName = name.replace('total','');
+        //   period = "Total";
+        // }
 
-        if (name.indexOf('<5yrs') != -1) {
-          diagName = name.replace('<5yrs','');
-          period = "Less Than Five Years";
-        }
+        // if (name.indexOf('<5yrs') != -1) {
+        //   diagName = name.replace('<5yrs','');
+        //   period = "Less Than Five Years";
+        // }
 
-        if (name.indexOf('>=5yrs') != -1) {
-          diagName = name.replace('>=5yrs','');
-          period = "Greater Than Five Years";
-        }
+        // if (name.indexOf('>=5yrs') != -1) {
+        //   diagName = name.replace('>=5yrs','');
+        //   period = "Greater Than Five Years";
+        // }
         
        IDsArray = sessionStorage.getItem(name);
        IDsArray =IDsArray.split('|');
 
        var progressTracker = 0;
 
-        $('.modal-title').html('<b>Condition:</b> &nbsp;&nbsp; ' + diagName);
-        $('.period').html('<b>Age Group:</b>  &nbsp;&nbsp;' + period);
+        $('.modal-title').html('<b>Condition:</b> &nbsp;&nbsp; ' + name);
         document.getElementById('modal').setAttribute('style','display:block');
         $('#patient_details_body').html('');
 

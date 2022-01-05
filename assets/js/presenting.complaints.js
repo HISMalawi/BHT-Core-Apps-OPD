@@ -1,5 +1,5 @@
-var presentingComplaintsHash = {};
-var presentingComplaintsNameHash = {};
+var presentingComplaintsHash = [];
+var presentingComplaintsNameHash = [];
 var _concept_set;
 sessionStorage.setItem('radiology_order_done','false');
 sessionStorage.setItem('lab_order_done','false');
@@ -65,7 +65,6 @@ function  search_results(e) {
   for (n=0; n < groups_ls_parent.children.length; n++) {
     groups_ls_parent.children[n].setAttribute('style','display: show');
 
-
     for (var d=0; d < _concept_set.length; d++) {
       var _id = _concept_set[d].group;
       var _bv = document.getElementById(_id);
@@ -120,7 +119,6 @@ function  search_results(e) {
           }
         }
       }
-
 
       condition_for_complaint = _srch_str.indexOf(x);
 
@@ -333,7 +331,6 @@ function autoHighLight(type_of_complaint) {
     }
   }
 }
-
 
 var row_c;
 var row_c_item_count = 1;
@@ -657,7 +654,6 @@ function saveObs(encounter) {
       })
     }
   
-  
   var obs = {
     encounter_id: encounter["encounter_id"],
     observations: observations
@@ -666,7 +662,8 @@ function saveObs(encounter) {
 }
 
 function nextPage(obs){
-  nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+  sessionStorage.setItem("presenting_complaints_re_encountered", "true")
+  nextEncounter(sessionStorage.patientID, sessionStorage.programID)
 }
 
 function ordersPopupModal() {
@@ -880,10 +877,7 @@ function closeOrdersPopupModal() {
   main_container.remove();
 }
 
-
-
 function checkFor() {
-
   let id = sessionStorage.patientID;
   let value = sessionStorage.sessionDate;
   var url = sessionStorage.apiProtocol + '://' + apiURL + ':' + apiPort + '/api/v1/encounters?paginate=false&patient_id=' + id + '&date=' + value+'&program_id='+sessionStorage.programID;
@@ -921,7 +915,6 @@ function checkFor() {
 }
 
 function getIdByMapping(_groupPushedComplaints) {
-  //console.log(_groupPushedComplaints);
   let ids = []
   for (group of _groupPushedComplaints.entries()) {
     for(_complaint of group) {
@@ -974,12 +967,12 @@ function selectComplaintsFromPrevious(_ids = []) {
             }
             e.setAttribute('selected', 'true');
             e.style = 'background-color: lightblue;';
-            //addToHash(type_of_complaint, e.getAttribute('concept_id'));
+            addToHash(type_of_complaint, e.getAttribute('concept_id'));
             selectedComplaints(e);
             document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
             e.style = 'background-color: #ccc;';
             e.setAttribute('onmousedown','');
-            //addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
+            addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
             for (var i =0; i < childNodes.length; i++ ) {
               for (var j=0; j < childNodes[i].childNodes.length; j++) {
                 if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {

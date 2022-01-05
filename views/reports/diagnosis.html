@@ -663,7 +663,8 @@ function drillDown(diagnosis,age_group,gender,column_number){
   initializePatienDetailsTable()
   let patient_ids = drill_down_patients[gender][age_group][column_number][diagnosis];
   for(var patient_id of patient_ids){
-    getPatientDetails(patient_id)
+    //getPatientDetails(patient_id)
+    getClientbyID(patient_id)
   }
 }
 
@@ -707,21 +708,20 @@ function getPatientDetails(patient_id){
 
 
 function loadPatientDetail(data){
-  var one_person = data[0]
-  data = []
-  data.push(one_person)
-  for(const patients of data){
-    let patientDetails = []
-    for(const patient in patients){
-      if(patient != null)
-      patientDetails.push(patients[patient])
-    }
-   patientTable.row.add(patientDetails).draw()
-  }
-  
+  var one_person = data.person
+  patientDetails = []
+  patientDetails.push(one_person.person_id)
+  patientDetails.push(one_person.names[0].given_name)
+  patientDetails.push(one_person.names[0].family_name)
+  patientDetails.push(one_person.gender)
+  patientDetails.push(one_person.person_attributes[1].value)
+  let addresses_obj = one_person.addresses[0]
+  let address = addresses_obj.state_province +", "+ addresses_obj.city_village +", "+ addresses_obj.address1
+  patientDetails.push(address)
+  patientTable.row.add(patientDetails).draw()
   document.getElementById('spinner').style = 'display: none;';
   document.getElementById('report-cover-2').style = 'display: none;';
-  document.getElementById('report-cover').style = 'display: block;';
+  document.getElementById('report-cover').style = 'display: block;'; 
 }
 
 function patientDetailsModal()
@@ -742,7 +742,43 @@ function close_modal()
     document.getElementById('report-cover').style = 'display: none;';
     document.getElementById('modal').style = 'display: none;';
 }
+
+function getClientbyID(person_id) {
+    var url =
+    sessionStorage.apiProtocol +
+      "://" +
+      sessionStorage.apiURL +
+      ":" +
+      sessionStorage.apiPort +
+      "/api/v1/patients/" +
+      person_id
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+        
+
+        let results = JSON.parse(this.responseText);
+        loadPatientDetail(results);
+      
+        
+      } else if (this.status == 204) {
+        
+      }else if (this.status == 422) {
+
+      }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader(
+      "Authorization",
+      sessionStorage.getItem("authorization")
+    );
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+}
 </script>
+
+
 
 
 
