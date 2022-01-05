@@ -63,13 +63,13 @@
     }
   }
   fetchWeeks();
-  function load(weeks) {
 
-  var sel = document.getElementById('weeks');
-  var opt = document.createElement('option');
+function load(weeks) {
+  let promise = new Promise((resolve, reject) => {
+    var selection = document.getElementById('weeks')
 
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-        for (var i=0; i<weeks.length; i++) {
+    if(typeof(selection) != undefined) {
+      for (var i=0; i<weeks.length; i++) {
         var week = weeks[i];
         var opt = document.createElement('option');
         var dates = week[1].split(" ");
@@ -79,11 +79,20 @@
         opt.innerHTML = txt;
         var value = dates[0]+ " " +dates[2]+" "+weekNumber+"&";
         opt.setAttribute('value', value);
-        sel.appendChild(opt);  
+        selection.appendChild(opt);  
         }
+      resolve("success")
+      //hack to promise
+      console.log(selection)
     } else {
-       load(weeks)
+      reject("failed")
     }
+  })
+  promise.then((message) => {
+    console.log(message)
+  }).catch((message) => {
+    console.log(message)
+  })
 }
 
 function OptSubmit(vl) {

@@ -706,10 +706,6 @@ function getIndicators() {
                               ids += '|'+value1[k]; 
                             }
 
-                            console.log("sum: ",tem_inrec)
-                            if (tem_inrec == 1)
-                            console.log("here: ",row.children[count_for_clmns + tem_inrec])
-
                             if(value1.length != 0) {
                               row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
                               sessionStorage.setItem(storage_name, ids);

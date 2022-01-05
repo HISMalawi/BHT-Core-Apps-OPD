@@ -64,26 +64,35 @@
   fetchMonths();
 
 function load(months) {
-  var sel = document.getElementById('months');
-  var opt = document.createElement('option');
+  let promise = new Promise((resolve, reject) => {
+    var selection = document.getElementById('months')
 
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    for (var i=0; i<months.length; i++) {
-    var payload = months[i];
-    var _payload = payload[1];
-    var month_and_year = _payload[0]
-    var start_and_end_months = _payload[1];
-    var opt = document.createElement('option');
-    var dates = start_and_end_months.split("to");
-    var month = month_and_year.split('-')[0];
-    opt.innerHTML = month_and_year;
-    var value = dates[0]+ " " +dates[1] +" "+ month;
-    opt.setAttribute('value', value);
-    sel.appendChild(opt);  
-  }
-  } else {
-    load(months);
-  }
+    if(typeof(selection) != undefined) {
+      for (var i=0; i<months.length; i++) {
+      var payload = months[i];
+      var _payload = payload[1];
+      var month_and_year = _payload[0]
+      var start_and_end_months = _payload[1];
+      var opt = document.createElement('option');
+      var dates = start_and_end_months.split("to");
+      var month = month_and_year.split('-')[0];
+      opt.innerHTML = month_and_year;
+      var value = dates[0]+ " " +dates[1] +" "+ month;
+      opt.setAttribute('value', value);
+      selection.appendChild(opt);  
+    }
+      resolve("success")
+      //hack to promise
+      console.log(selection)
+    } else {
+      reject("failed")
+    }
+  })
+  promise.then((message) => {
+    console.log(message)
+  }).catch((message) => {
+    console.log(message)
+  })
 }
 
 function OptSubmit(vl) {
