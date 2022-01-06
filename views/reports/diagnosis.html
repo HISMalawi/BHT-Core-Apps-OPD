@@ -220,11 +220,10 @@
 
     function getData() {
 
-        var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
-        url += '/diagnosis?start_date=' + start_date;
+        var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/programs/"+sessionStorage.programID;
+        url += '/reports/diagnosis?start_date=' + start_date;
         url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
         url += '&program_id=' + sessionStorage.programID;
-
         if (apiProtocol == undefined) {
             setTimeout("getData()", 3000);
             return;
