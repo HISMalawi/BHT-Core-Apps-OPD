@@ -663,6 +663,7 @@ function saveObs(encounter) {
 
 function nextPage(obs){
   sessionStorage.setItem("presenting_complaints_re_encountered", "true")
+  sessionStorage.setItem("patientID_re_encountered", sessionStorage.patientID)
   nextEncounter(sessionStorage.patientID, sessionStorage.programID)
 }
 
