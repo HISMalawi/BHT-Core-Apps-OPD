@@ -553,8 +553,6 @@ function getPresentingComplaints(type_of_complaint) {
   xhttp.send();
 }
 
-
-
 function prepareToSave() {
 
   if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
@@ -577,7 +575,7 @@ function prepareToSave() {
       observations.push({concept_id: concept_id, value_coded: temp[i]})
     }
   }
-  
+
   if(observations.length < 1) {
     showMessage('No selection made. Please selection one or more complaints');
     return;
