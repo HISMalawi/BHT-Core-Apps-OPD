@@ -1,22 +1,331 @@
-<link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
+<html>
+  <meta charset="utf-8"/>
+
+<title>Diagnosis Report</title>
+<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
+
+<link rel="stylesheet" href="/assets/css/custom.css">
+
 
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
 
+
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
 
-<script type="text/javascript" src="/assets/js/moment.js"></script>
+
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
+
+
+
+<script src="/assets/js/moment.js"></script>
+
 
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 
-<style>
-    #spinner {
-        position: absolute;
-        top: 15%;
-        left: 40%;
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
+
+    #tasks {
+      visibility: hidden;
+      margin-right: 10px;
+    }
+    
+    @page {
+      size: auto;   /* auto is the current printer page size */
+      margin: 0mm;  /* this affects the margin in the printer settings */
+      font-size: 12px;
+    }
+    
+    body {
+      background-color:#FFFFFF; 
+      border: solid 1px black ;
+      margin: 0px;  /* the margin on the content before printing */
+    }
+    
+    #spinner{
+      display: none;
+    }
+    
+    #report-cover {
+      display: none;
+    }
+    
+    #report-cover-2 {
+      display: none;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    td {
+      border-style: solid;
+      border-width: 1px;
+      text-align: center !important;
+    }
+    
+    #version {
+      text-align: right;
+      padding-right: 5px;
+      font-size: 10px;
+    }
+    
+    .numbers {
+      width: 2.5%;
+      text-align: center;
+      border-width: 0px 1px 0px 0px;
+      border-style: dotted;
+    }
+    
+    .td-clear-left {
+     border-left-style: none;
+    }
+    
+    .td-clear-right {
+     border-right-style: none;
+    }
+    
+    .td-text-align-left {
+      text-align: left;
+      padding-left: 10px;
+      width: ;
+    }
+    
+    .td-text-align-right {
+      text-align: center;
+      padding-right: 0px;
+    
+    }
+    
+    .td-span-width {
+     
+    }
+    
+    .row-title {
+      width: 17.75%;
+      text-align: left;
+      padding-left: 5px;
+      border-style: dotted;
+    }
+    
+    .dataTables_wrapper {
+      padding: 1% !important;
+    }
+    
+    .signatures {
+      width: 39.875%;
+      text-align: left;
+      padding-left: 5px;
+      border-style: dotted;
+    }
+    
+    .row-name {
+      width: 39.875%;
+      text-align: left;
+      padding-left: 5px;
+      border-style: dotted;
+      border-left-style: solid;
+    }
+    
+    .no-borders {
+      border-width: 0px;
+    }
+    
+    #version-row td {
+      height: 30px;
+    }
+    
+    .modal {
+      position: fixed;
+      width: 93%;
+      margin-left: 4%;
+      top: 4%;
+      z-index: 992;
+      height: min-content;
+      max-height: auto;
     }
 
+    #patient_details_table {
+      width: 100% !important;
+    }
+
+    #diagnosis_table {
+      width: 100% !important;
+    }
+
+    #patient_details_table_filter {
+      display: none !important;
+    }
+
+    .dataTables_scroll {
+      margin-top: 1% !important;
+    }
+    
+    .dt-button {
+      border: 1px solid #7eb9d0;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        font-size: 28px;
+        font-family: arial, helvetica, sans-serif;
+        padding: 10px 10px 10px 10px;
+        text-decoration: none;
+        display: inline-block;
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+        color: #FFFFFF;
+        background-color: #a7cfdf;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
+        background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
+        background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
+        background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
+        background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
+        background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
+        filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
+    }
+    
+    .keyboardButton {
+      border: 1px solid #7eb9d0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 5px !important;
+    font-size: 25px !important;
+    font-family: arial, helvetica, sans-serif;
+    padding: 10px 10px 10px 10px;
+    text-decoration: none;
+    display: inline-block;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+    color: #fff;
+    background-color: #a7cfdf;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
+    background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
+    background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
+    min-width: 70px;
+    min-height: 55px;
+    cursor: pointer;
+    width: ;
+    height: 35px;
+    text-align: center;
+    margin: 3.3px;
+    }
+    
+    a {
+      background-color: #eaeaea;
+    border: solid 8px #eaeaea;
+    border-right: solid 30px #eaeaea;
+    border-left: solid 30px #eaeaea;
+    font-size: large;
+    }
+    
+    a:focus, a:hover {
+        color: #23527c;
+        text-decoration: none;
+    }
+    
+    #virtual-keyboard{
+      z-index: 993 !important;
+      text-align: center;
+      left: 170px !important;
+      top: 399px !important;
+      height: auto !important;
+    }
+    
+    .keyboardButton {
+        font-size: 35px;
+        font-family: arial, helvetica, sans-serif;
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+        margin-top: 1%;
+    }
+    
+    .modal-header {
+      font-size: 16px !important;
+    }
+    
+    .gray-cell {
+      background-color: grey;
+    }
+    
+    .dt-buttons {
+      margin-left: 1.4%;
+    }
+    
+    
+    
+    
+    /* .......... second section starts here ------- */
+    table {
+      width: 97%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-left: 15px;
+    }
+    
+    tr {
+      height: 45px;
+    }
+    
+    .vertical-separator {
+      border-width: 0px;
+    }
+    
+    td {
+      border-style: solid;
+      border-width: 1px;
+    }
+    
+    th {
+      border-style: solid;
+      border-width: 1px;
+    }
+    
+    .section-description td {
+      border-width: 0px;
+    }
+    
+    .horisonatl-separator td {
+      border-width: 0px;
+    }
+    
+    .numbers {
+      width: 2.5%;
+      text-align: center;
+      border-width: 0px 1px 0px 0px;
+      border-style: dotted;
+    }
+    
+    .sum-arrows {
+      width: 75px;
+      height: 55px;
+    }
+    
+    .postfixes {
+      font-size: x-small;
+      font-weight: bold;
+      position: relative;
+      top: -15px;
+      left: -40px;
+    }
+    
+    #spinner {
+        position: absolute;
+        top: 150px;
+        left: 40%;
+        z-index: 1001;
+      }
+    
     #report-cover {
         position: absolute;
         background-color: black;
@@ -27,296 +336,416 @@
         z-index: 990;
         opacity: 0.65;
     }
-
-    .min-tables {
+    
+    #report-cover-2 {
+        position: absolute;
+        background-color: black;
         width: 100%;
-        text-align: right;
+        height: 102%;
+        left: 0%;
+        top: 0%;
+        z-index: 1000;
+        opacity: 0.65;
     }
-
-    .title-table {
-        display: table;
-        width: 100%;
+    
+    td {
+      padding-right: 15px;
+      text-align: right;
     }
-
-    .title-row {
-        display: table-row;
+    
+    #consistency_check div{
+      color: red;
+      padding-left: 20px;
     }
-
-    .title-cell {
-        display: table-cell;
-        height: 30px;
-        vertical-align: top;
-        border-style: solid;
-        border-width: 0px 0px 1px 0px;
+    
+    #incosistence_title {
+      text-align: center;
     }
-
-    #title-cell-left {
-        vertical-align: middle;
-        width: 100px;
+    
+    .granules {
+      width: 100%;
+      height: 32px;
+      margin: 10px;
+      display: table;
     }
-
-    #title-cell-left img {
-        height: 95px;
-        width: 95px;
-        margin: 5px;
+    
+    .granules-row {
+      display: table-row;
     }
-
-    #title-cell-right {
-        margin-left: 5px;
+    
+    .granules-cell {
+      display: table-cell;
+      text-align: center;
     }
-
-    #data-cell {
-        display: table-cell;
-        width: 100%;
+    
+    .granules span{
+      font-size: 10px;
     }
-
-    #report {
-        width: 100%;
+    
+    .granules-right-td {
+      border-right-style: dotted !important;
+      border-right-width: 1px;
     }
+    
+    </style>
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
 
 </style>
 
-<div class="title-table">
-    <div class='title-row'>
-        <div class='title-cell' id='title-cell-left'>
-            <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png"/>
-        </div>
-        <div class='title-cell' id='title-cell-right'>
-            <table style="width: 100%; text-align: left; margin-left: 10px;">
-                <tr>
-                    <th>Title:</th>
-                    <td colspan="2" id="report-title">OPD Diagnosis
-                    <td>
-                </tr>
-                <tr>
-                    <th>Period:</th>
-                    <td id="start-date">
-                    <td>
-                    <td id="end-date">
-                    <td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="title-table">
-    <div class='title-row'>
-        <div id='data-cell'>
-            <table id="report" class="display" style="width:100%">
-                <thead>
-                <tr>
-                    <th>Diagnosis</th>
-                    <th>
-                        <table class='min-tables'>
-                            <tr>
-                                <td colspan=2>&#60;6 months</td>
-                            </tr>
-                            <tr>
-                                <td>F</td>
-                                <td>M</td>
-                            </tr>
-                        </table>
-                    </th>
-                    <th>
-                        <table class='min-tables'>
-                            <tr>
-                                <td colspan=2>6 months &#60; 5 yrs</td>
-                            </tr>
-                            <tr>
-                                <td>F</td>
-                                <td>M</td>
-                            </tr>
-                        </table>
-                    </th>
-                    <th>
-                        <table class='min-tables'>
-                            <tr>
-                                <td colspan=2>5 months to 14 yrs</td>
-                            </tr>
-                            <tr>
-                                <td>F</td>
-                                <td>M</td>
-                            </tr>
-                        </table>
-                    </th>
-                    <th>
-                        <table class='min-tables'>
-                            <tr>
-                                <td colspan=2>&#62; 14 yrs</td>
-                            </tr>
-                            <tr>
-                                <td>F</td>
-                                <td>M</td>
-                            </tr>
-                        </table>
-                    </th>
-                    <th>
-                        <table class='min-tables'>
-                            <tr>
-                                <td colspan=2>Unknown</td>
-                            </tr>
-                            <tr>
-                                <td>F</td>
-                                <td>M</td>
-                            </tr>
-                        </table>
-                    </th>
-                    <th>
-                        Total
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-
-<div id="buttons" class="buttonsDiv">
-    <button class="button green navButton" onmousedown="location='/'"><span>Finish</span></button>
-</div>
-
-<img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
+<img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
 <div id="report-cover"></div>
+<div id="report-cover-2"></div>
+
+<div id="content" style="margin-bottom: 65px;">
+
+  <table>
+  <tr id="">
+    <td colspan="2" id="" style="border-right-style: solid; font-weight: bold; text-align: center;">OPD Diagnosis</td>
+  </tr>
+  <tr>
+    <td class="td-text-align-left">Health Zone:</td>
+    <td class="td-text-align-left" id="facility-name"></td>
+  </tr>
+  <tr>
+    <td class="td-text-align-left">Period:</td>
+    <td class="td-text-align-left">
+      <span id="start-date"></span>&#160;&#160;To&#160;&#160;
+      <span id="end-date"></span>
+    </td>
+  </tr>
+</table>
+
+    <table id="diagnosis_table">
+        <thead>
+            <tr>
+                <th  >Diagnosis</th>
+                <th  >&#60;6 months F</th>
+                <th  >&#60;6 months M</th>
+                <th  >6 months &#60; 5 yrs F</th>
+                <th  >6 months &#60; 5 yrs M</th>
+                <th  >5 months to 14 yrs F</th>
+                <th  >5 months to 14 yrs M</th>
+                <th  >&#62; 14 yrs F</th>
+                <th  >&#62; 14 yrs M</th>
+
+                <th  >Total</th>
+            </tr>
+        </thead>
+       
+  </table>
+
+</div>
+<footer class="footer">
+    <div class="container-footer">
+        <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
+            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
+        </button>
+        <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
+            <span>&nbsp; Export &nbsp;</span>
+        </button>
+        <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
+            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+        </button>
+    </div>
+</footer>
 
 <script>
-
     var url = window.location.href;
-    url = new URL(url);
-    var report_type = url.searchParams.get("type");
-    var start_date = url.searchParams.get("start_date");
-    var end_date = url.searchParams.get("end_date");
+url = new URL(url);
 
-    document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
-    document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
-
-    function buildReportingTable() {
-        initializeTable();
-        getData();
-    }
-
-    var table_columns = [];
-
-    var data_table;
+var start_date = url.searchParams.get("start_date");
+var end_date = url.searchParams.get("end_date");
 
     function initializeTable() {
-        data_table = $('#report').DataTable({
-            fixedHeader: true,
-            searching: true,
-            paging: false,
-            scrollY: 400,
+  table = $('#diagnosis_table').DataTable({
+    
+
+            fixedHeader: false,
+            scrollX: 300,
+            scrolly: 300,
             Processing: true,
             ServerSide: true,
             scroller: {
                 loadingIndicator: true
-            }
-        });
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'pdf', 'print'
+          ]
+  });
+  document.getElementById('spinner').style = 'display: block;';
+  document.getElementById('report-cover').style = 'display: block;';
+  fetchData();
+  lookForTag();
+}
 
-        lookForTag();
-    }
+var start_date = url.searchParams.get("start_date");
+var end_date = url.searchParams.get("end_date");
 
-    function getData() {
+document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
+document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
 
-        var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/programs/"+sessionStorage.programID;
-        url += '/reports/diagnosis?start_date=' + start_date;
-        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-        url += '&program_id=' + sessionStorage.programID;
-        if (apiProtocol == undefined) {
-            setTimeout("getData()", 3000);
-            return;
-        }
+document.getElementById('facility-name').innerHTML = sessionStorage.currentLocation;
 
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-                document.getElementById('spinner').style = 'display: none;';
-                document.getElementById('report-cover').style = 'display: none;';
-                var obj = JSON.parse(this.responseText);
-                loadData(obj);
-            }
-        };
-        xhttp.open("GET", url, true);
-        xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-        xhttp.setRequestHeader('Content-type', "application/json");
-        xhttp.send();
-    }
+var table;
+initializeTable();
 
-    function loadData(data) {
-        var count = 0;
 
-        for (var diagnosis in data) {
-            col_one_female = data[diagnosis].female_less_than_six_months;
-            col_one_male = data[diagnosis].male_less_than_six_months;
-            col_two_female = data[diagnosis].female_six_months_to_less_than_five_yrs;
-            col_two_male = data[diagnosis].male_six_months_to_less_than_five_yrs;
-            col_three_female = data[diagnosis].female_five_yrs_to_fourteen_years;
-            col_three_male = data[diagnosis].male_five_yrs_to_fourteen_years;
-            col_four_female = data[diagnosis].female_over_fourteen_years;
-            col_four_male = data[diagnosis].male_over_fourteen_years;
-            col_five_female = data[diagnosis].female_unknowns;
-            col_five_male = data[diagnosis].male_unknowns;
 
-            var total_diagnosis = 0;
-            total_diagnosis = col_five_male + col_five_female;
-            total_diagnosis += col_four_male + col_four_female;
-            total_diagnosis += col_three_male + col_three_female;
-            total_diagnosis += col_two_male + col_two_female;
-            total_diagnosis += col_one_male + col_one_female;
+function fetchData()
+{
 
-            data_table.row.add([diagnosis, buildMinStat(col_one_female, col_one_male),
-                buildMinStat(col_two_female, col_two_male),
-                buildMinStat(col_three_female, col_three_male),
-                buildMinStat(col_four_female, col_four_male),
-                buildMinStat(col_five_female, col_five_male),
-                buildTotal(total_diagnosis)]);
-            data_table.draw();
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+          url += '/programs/' + sessionStorage.programID;
+          url += '/reports'
+          url += '/diagnosis?start_date=' + start_date;
+          url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+          
 
-            count++;
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+          
+            diagnosisDetails = JSON.parse(this.responseText);
+            
+            renderDetails(diagnosisDetails);
+            
 
-            if (count == 99) {
-                count = 0;
-                sleep(3000);
-            }
+        } else if (this.readyState === 4) {
+
+        } else if (this.status == 500) {
 
         }
+      };
+
+      xhttp.open("GET", url, true);
+      xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+      xhttp.setRequestHeader('Content-type', "application/json");
+      xhttp.send();
+
+
+}
+
+function renderDetails(diagnosisDetails){
+  for(const diagnosis in diagnosisDetails){
+      let sex = diagnosisDetails[diagnosis];
+      let row = [diagnosis,[],[],[],[],[],[],[],[],[]];
+      let dynamic_age_group;
+      for(const g in sex){
+          const age_group = diagnosisDetails[diagnosis][g];
+          for(const patient in age_group){
+            const patient_ids = diagnosisDetails[diagnosis][g][patient]
+            for(const patient_id of patient_ids){
+                if(g == "F" && patient == "0-5 months"){
+                    row[1].push(patient_id)
+                    dynamic_age_group =patient;
+                } else if(g == "M" && patient == "0-5 months"){
+                    row[2].push(patient_id)
+                    dynamic_age_group =patient;
+                }
+                else if(g == "F" && patient.match(/6-11 months|12-23 months|2-4 years/) ){
+                    row[3].push(patient_id)
+                    dynamic_age_group = "6 months to < 5 years";
+
+                }
+                else if(g == "M" && patient.match(/6-11 months|12-23 months|2-4 years/)){
+                    row[4].push(patient_id)
+                    dynamic_age_group = "6 months to < 5 years";
+                }
+                else if(g == "F" && patient.match(/5-9 years|10-14 years/)){
+                    row[5].push(patient_id)
+                    dynamic_age_group = "5 years to < 14 years";
+                }
+
+                else if(g == "M" && patient.match(/5-9 years|10-14 years/)){
+                    row[6].push(patient_id)
+                    dynamic_age_group = "5 years to < 14 years";
+                }
+                else if(g == "F" && !patient.match(/Unknown/i)){
+                    row[7].push(patient_id)
+                    dynamic_age_group = ">= 14 years";
+                }
+                else if(g == "M" && !patient.match(/Unknown/i)){
+                    row[8].push(patient_id)
+                    dynamic_age_group = ">= 14 years";
+                }
+                row[9] = [
+                    ...row[1],
+                    ...row[2],
+                    ...row[3],
+                    ...row[4],
+                    ...row[5],
+                    ...row[6],
+                    ...row[7],
+                    ...row[8]];
+                    // console.log(patient)
+            }
+
+          }
+      }
+      table.row.add([row[0],
+      buildLink(diagnosis,row[1],dynamic_age_group,"F",1),
+      buildLink(diagnosis,row[2],dynamic_age_group,"M",2),
+      buildLink(diagnosis,row[3],dynamic_age_group,"F",3),
+      buildLink(diagnosis,row[4],dynamic_age_group,"M",4),
+      buildLink(diagnosis,row[5],dynamic_age_group,"F",5),
+      buildLink(diagnosis,row[6],dynamic_age_group,"M",6),
+      buildLink(diagnosis,row[7],dynamic_age_group,"F",7),
+      buildLink(diagnosis,row[8],dynamic_age_group,"M",8),
+      buildLink(diagnosis,row[9],dynamic_age_group,"Total",9)
+     
+    ]).draw()
+  }
+  document.getElementById('spinner').style = 'display: none;';
+  document.getElementById('report-cover').style = 'display: none;';
+}
+
+var drill_down_patients = {}
+function buildLink(diagnosis, patient_ids,age_group,gender,column_number){
+   if(drill_down_patients[gender] == undefined)
+    drill_down_patients[gender] = {};
+
+    if(drill_down_patients[gender][age_group] == undefined)
+    drill_down_patients[gender][age_group] = {}
+
+    if(drill_down_patients[gender][age_group][column_number] == undefined)
+    drill_down_patients[gender][age_group][column_number] = {};
+
+    if(drill_down_patients[gender][age_group][column_number][diagnosis] == undefined)
+    drill_down_patients[gender][age_group][column_number][diagnosis] = [];
+
+
+    for(const patient_id of patient_ids){
+        drill_down_patients[gender][age_group][column_number][diagnosis].push(patient_id);
     }
+    if(patient_ids.length < 1)
+    return 0
+    
+    return `<a href="javascript:drillDown('${diagnosis}','${age_group}','${gender}',${column_number})" >${patient_ids.length}</a>`
+}
 
-    function buildMinStat(male, female) {
-        var sp = document.createElement('span');
-        var table = document.createElement('table');
-        table.setAttribute('class', 'min-tables');
-        var tr = document.createElement('tr');
-        table.appendChild(tr);
+var patientTable;
+function drillDown(diagnosis,age_group,gender,column_number){
+  patientDetailsModal();
+  initializePatienDetailsTable();
+  let patient_ids = drill_down_patients[gender][age_group][column_number][diagnosis];
+  for(var patient_id of patient_ids){
+    getPatientDetails(patient_id)
+  }
+}
 
-        var td = document.createElement('td');
-        td.innerHTML = female;
-        tr.appendChild(td);
+function initializePatienDetailsTable() {
+  patientTable = $('#patient_details_table').DataTable({
+    
+            fixedHeader: false,
+            scrollX: 100,
+            scrolly: 100,
+            Processing: true,
+            ServerSide: true,
+            pageLength: 6,
+            scroller: {
+                loadingIndicator: true
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'pdf', 'print'
+          ]
+  });
 
-        td = document.createElement('td');
-        td.innerHTML = male;
-        tr.appendChild(td);
-
-        sp.appendChild(table);
-        return sp.innerHTML;
+}
+function getPatientDetails(patient_id){
+  let url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patient_details_by_id?';
+  url +=   'patient_id='+patient_id;
+  let req = new XMLHttpRequest();
+  req.onreadystatechange = function(){
+  if (this.readyState == 4) {
+    if (this.status == 200) {
+        let results = JSON.parse(this.responseText);
+        loadPatientDetail(results);
+      }
     }
+  };
+  try {
+    req.open('GET', url, true);
+    req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+    req.send();
+  } catch (e) {
+  } 
+}
 
-    function buildTotal(total) {
-        var sp = document.createElement('span');
-        var table = document.createElement('table');
-        table.setAttribute('class', 'min-tables');
-        var tr = document.createElement('tr');
-        table.appendChild(tr);
 
-        var td = document.createElement('td');
-        td.innerHTML = total;
-        tr.appendChild(td);
-        sp.appendChild(table);
-        return sp.innerHTML;
+function loadPatientDetail(data){
+  var one_person = data[0]
+  data = []
+  data.push(one_person)
+  for(const patients of data){
+    let patientDetails = []
+    for(const patient in patients){
+      if(patient != null)
+      patientDetails.push(patients[patient])
     }
+   patientTable.row.add(patientDetails).draw()
+  }
+  
+  document.getElementById('spinner').style = 'display: none;';
+  document.getElementById('report-cover-2').style = 'display: none;';
+  document.getElementById('report-cover').style = 'display: block;';
+}
 
-    buildReportingTable();
+function patientDetailsModal()
+{  
+    if($('#virtual-keyboard').length)
+      hide_keyboard();
+
+    $('.keyboard').attr('style','display:none');
+    document.getElementById('modal').style = 'display: block;';
+    document.getElementById('spinner').style = 'display: block;';
+    document.getElementById('report-cover-2').style = 'display: block;';
+}
+function close_modal()
+{
+    patientTable.clear()
+    patientTable.destroy();
+    document.getElementById('spinner').style = 'display: none;';
+    document.getElementById('report-cover').style = 'display: none;';
+    document.getElementById('modal').style = 'display: none;';
+}
 </script>
 
+
+
+<!-- Modal -->
+<div class="modal " id="modal" style="display: none;" > 
+    <div class="modal-content" style="margin-left:0px; ">
+        <div class="modal-header">
+            <div class="modal-title _title" ></div>
+            <div class="period _title" ></div>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <div class="row" id="modal-div">
+                    <div id="patient_details_card" style="margin-bottom: 10px; border-bottom: 1px solid; width: 95%;" >
+                        <table id="patient_details_table" class="display " >
+                            <thead>
+                            <tr>
+                                <th class="sorting_patient" >Patient ID</th>
+                                <th class="sorting_patient">Firstname</th>
+                                <th class="sorting_patient">Surname</th>
+                                <th class="sorting_patient">Gender</th>
+                                <th class="sorting_patient">Phone Number</th>
+                                <th class="sorting_patient">Address</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom_buttons">
+            <button class="red"  onclick="close_modal()" style="margin-left: 2%;
+            margin-top: -1%;
+            margin-bottom: 2%;">Close</button>
+        </div>
+    </div> 
+  </div>
+  <!-- Modal -->
