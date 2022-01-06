@@ -1,5 +1,6 @@
 var presentingComplaintsHash = [];
 var presentingComplaintsNameHash = [];
+var ReEncounter = 'false'
 var _concept_set;
 sessionStorage.setItem('radiology_order_done','false');
 sessionStorage.setItem('lab_order_done','false');
@@ -552,7 +553,15 @@ function getPresentingComplaints(type_of_complaint) {
   xhttp.send();
 }
 
+
+
 function prepareToSave() {
+
+  if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
+    nextPage()
+    return
+  }
+
   if(isHashEmpty(presentingComplaintsHash)) {
     showMessage('No selection made. Please select one or more complaints');
     return;
@@ -661,10 +670,14 @@ function saveObs(encounter) {
   submitParameters(obs, "/observations", "nextPage")  
 }
 
-function nextPage(obs){
+function nextPage(){
+  setEncounter()
+  nextEncounter(sessionStorage.patientID, sessionStorage.programID)
+}
+
+function setEncounter() {
   sessionStorage.setItem("presenting_complaints_re_encountered", "true")
   sessionStorage.setItem("patientID_re_encountered", sessionStorage.patientID)
-  nextEncounter(sessionStorage.patientID, sessionStorage.programID)
 }
 
 function ordersPopupModal() {
@@ -888,21 +901,22 @@ function checkFor() {
       var results = JSON.parse(this.responseText);
       for(encounter of results) {
         if (encounter.encounter_type == '122') {
-            let __complaints = []
-            for (observations of encounter.observations) {
-              if (observations.concept_id == '8578') {
-                __complaints.push({
-                  "concept_id": observations.concept_id,
-                  "group_name": observations.value_text
-                })
-              } else {
-                __complaints.push({
-                  "concept_id": observations.concept_id,
-                  "complaint_name": observations.value_text
-                })
-              }
+          ReEncounter = 'true'
+          let __complaints = []
+          for (observations of encounter.observations) {
+            if (observations.concept_id == '8578') {
+              __complaints.push({
+                "concept_id": observations.concept_id,
+                "group_name": observations.value_text
+              })
+            } else {
+              __complaints.push({
+                "concept_id": observations.concept_id,
+                "complaint_name": observations.value_text
+              })
             }
-            getIdByMapping(groupPushedComplaints(__complaints))
+          }
+          getIdByMapping(groupPushedComplaints(__complaints))
         }
       }
     }
@@ -968,12 +982,12 @@ function selectComplaintsFromPrevious(_ids = []) {
             }
             e.setAttribute('selected', 'true');
             e.style = 'background-color: lightblue;';
-            addToHash(type_of_complaint, e.getAttribute('concept_id'));
+            //addToHash(type_of_complaint, e.getAttribute('concept_id'));
             selectedComplaints(e);
             document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
             e.style = 'background-color: #ccc;';
             e.setAttribute('onmousedown','');
-            addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
+            //addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
             for (var i =0; i < childNodes.length; i++ ) {
               for (var j=0; j < childNodes[i].childNodes.length; j++) {
                 if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {
