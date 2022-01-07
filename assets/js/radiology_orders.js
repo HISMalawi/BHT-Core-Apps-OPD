@@ -346,7 +346,7 @@ function submitRadiologyParameters(array_obj)
 function print_barcode()
 {
     document.getElementById('spinner').style = 'display: none;';
-    var radiology_barcode_url = "/views/print/radiology_barcode.html";
+    var radiology_barcode_url = "/views/encounters/radiology/radiology_barcode.html";
     window.location =radiology_barcode_url;
 }
 

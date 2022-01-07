@@ -1,0 +1,133 @@
+<style>
+    * {
+        -webkit-touch-callout: none;
+        /* iOS Safari */
+        -webkit-user-select: none;
+        /* Safari */
+        -khtml-user-select: none;
+        /* Konqueror HTML */
+        -moz-user-select: none;
+        /* Firefox */
+        -ms-user-select: none;
+        /* Internet Explorer/Edge */
+        user-select: none;
+        /* Non-prefixed version, currently
+                                      supported by Chrome and Opera */
+    }
+
+    .print-table {
+        display: table;
+        width: 99%;
+        height: 99%;
+    }
+
+    .print-table-row {
+        display: table-row;
+    }
+
+    .print-table-cell {
+        display: table-cell;
+        text-align: center;
+    }
+
+    .barcode {
+        top: 12%;
+    }
+
+    .print-table-cell p {
+        font-size: 50px;
+    }
+</style>
+
+
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/core.js"></script>
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+
+<div class="print-table">
+    <div class="print-table-row">
+
+        <div class="print-table-cell">
+            <img src="/assets/images/zebra-label-printer.jpeg" class="barcode"/>
+            <p>Printing barcode label.</p>
+            <p>Please wait
+                <blink>....</blink>
+            <p>
+        </div>
+
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    var radiology_orders =sessionStorage.getItem("radiology_orders");
+    var apiURL = sessionStorage.getItem("apiURL");
+    var apiPort = sessionStorage.getItem("apiPort");
+    var apiProtocol = sessionStorage.getItem("apiProtocol");
+    var url = new URL(location.href);
+
+
+    var accession_number = sessionStorage.getItem("radiology_accession_number");
+    var patient_national_id = sessionStorage.getItem("national_id");
+    var patient_name = sessionStorage.getItem("given_name")+" "+sessionStorage.getItem("family_name");
+    var date_created = sessionStorage.getItem("date_created");
+
+    radiology_orders = radiology_orders.split(',');
+    var counter = 0;
+
+    function send_barcode_data()
+    {
+        var radiology_barcode_url = apiProtocol + "://" + apiURL + ":" + apiPort;
+            radiology_barcode_url += "/api/v1/radiology/barcode";
+            radiology_barcode_url += "?accession_number=" + accession_number;
+            radiology_barcode_url += "?patient_national_id=" + patient_national_id;
+            radiology_barcode_url += "?patient_name=" + patient_name;
+            radiology_barcode_url += "?radio_order=" + radiology_orders[counter];
+            radiology_barcode_url += "?date_created=" + date_created;
+            document.location = radiology_barcode_url;
+           
+            if(counter++ < radiology_orders.length -1)
+            setTimeout(send_barcode_data, 3000);
+    }
+    send_barcode_data();
+    function red() {
+        let data_value = sessionStorage.getItem('lab_is_set');
+        let data_value_two = sessionStorage.getItem('radiology_is_set');
+        var patientID = sessionStorage.getItem("patientID");
+        if(data_value == 'true') {
+            sessionStorage.setItem('radiology_is_set', 'false');
+            sessionStorage.setItem('radiology_order_done', 'true');
+            window.location= "/../views/patient/labs.html";;
+        }
+        else if (data_value_two == 'true'){
+             sessionStorage.setItem('radiology_is_set', 'false');
+             sessionStorage.setItem('radiology_order_done', 'true');
+             closeOrdersPopupModal();
+        }
+        else
+        finishRedirect("/views/patient_dashboard.html?patient_id=" + patientID);
+        //nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+    }
+
+    function closeOrdersPopupModal() {
+    let page_cover = window.parent.document.getElementById("page-cover");
+    page_cover.style = "display: none;";
+  
+    let submit_cover = window.parent.document.getElementById("page-cover");
+    submit_cover.style = "display: none;";
+  
+    var parent = window.parent.document.getElementById('mateme');
+    parent.setAttribute('class','');
+    
+    //var main_container = window.parent.document.getElementsByTagName('body')[0].lastElementChild;
+    var main_container = window.parent.document.getElementById('ordersModal');
+    main_container.setAttribute('class','modal fade');
+    main_container.setAttribute('style','display: none');
+    window.parent.document.getElementsByTagName('body')[0].removeChild(main_container);
+  
+    var someIframe = window.parent.document.getElementById('labIframe');
+    someIframe.parentNode.removeChild(someIframe);
+    }
+
+    setTimeout('red()', radiology_orders.length * 3000);
+</script>
