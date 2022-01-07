@@ -61,32 +61,31 @@
     }
   }
 
-  fetchMonths();
 
 function load(months) {
   let promise = new Promise((resolve, reject) => {
-    var selection = document.getElementById('months')
-    //hack to promise
-    console.log(selection)
-
-    if(typeof(selection) != undefined) {
-      for (var i=0; i<months.length; i++) {
+  var ul = document.getElementById("tt_currentUnorderedListOptions");
+  if(ul != null) {
+    for (var i=0; i<months.length; i++) {
       var payload = months[i];
       var _payload = payload[1];
       var month_and_year = _payload[0]
       var start_and_end_months = _payload[1];
-      var opt = document.createElement('option');
       var dates = start_and_end_months.split("to");
       var month = month_and_year.split('-')[0];
-      opt.innerHTML = month_and_year;
       var value = dates[0]+ " " +dates[1] +" "+ month;
-      opt.setAttribute('value', value);
-      selection.appendChild(opt);  
+      var li = document.createElement("li");
+      li.setAttribute("tstvalue", value);
+      li.setAttribute("onmousedown", "null; updateTouchscreenInputForSelect(this); ");
+      li.setAttribute("style", "");
+      li.setAttribute("class", "even");
+      li.innerHTML = month_and_year;
+      ul.appendChild(li);
     }
-      resolve("success")
-    } else {
-      reject("failed")
-    }
+    resolve("success")
+  } else {
+    reject("failed")
+  }
   })
   promise.then((message) => {
     console.log(message)
@@ -95,12 +94,18 @@ function load(months) {
   })
 }
 
-function OptSubmit(vl) {
+function OptSubmit() {
     var selected_val = $("touchscreenInput0");
     var dates = selected_val.getAttribute('tstvalue');
     dates = dates.split(" ");
     document.location = "idsr_monthly.html?" + 'start_date='+dates[0]+'&end_date='+dates[3]+"&month="+dates[4]+"&";
 }
+
+function changeNextBTN() {
+  var nextBTN = document.getElementById("nextButton");
+  nextButton.setAttribute("onmousedown", "OptSubmit();");
+}
+
 </script>
 
 <style>
@@ -122,9 +127,9 @@ function OptSubmit(vl) {
 <body id="mateme" onload="">
   <div id="container">
     <div id="content">
-      <form id='month' action="javascript:OptSubmit(this);">
+      <form id='month' action="post">
         <select helpText="Select Month" id="months" 
-          name="month" tt_onLoad="__$('keyboard').style.display = 'none';" 
+          name="month" tt_onLoad="__$('keyboard').style.display = 'none';fetchMonths();changeNextBTN()" 
           tt_onUnLoad="__checkSelected();">
         </select>
 
