@@ -309,7 +309,9 @@ function presentingComplaints(concept_sets, type_of_complaint) {
      
      localStorage.page_html = "";
      presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
-     presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
+     let tmp = []
+     tmp["Presenting complaint"] = JSON.parse(sessionStorage.presentingComplaintsHash);
+     presentingComplaintsHash = tmp
   }
 }
 
@@ -552,10 +554,10 @@ function getPresentingComplaints(type_of_complaint) {
 
 function prepareToSave() {
 
-  if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
-    nextPage()
-    return
-  }
+  // if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
+  //   nextPage()
+  //   return
+  // }
 
   if(isHashEmpty(presentingComplaintsHash)) {
     showMessage('No selection made. Please select one or more complaints');
@@ -871,7 +873,7 @@ function setPageState() {
   sessionStorage.setItem("saveState", "true");
 
   let selectedHash = JSON.stringify(presentingComplaintsNameHash);
-  let encounterHash = JSON.stringify(presentingComplaintsHash);
+  let encounterHash = JSON.stringify(presentingComplaintsHash['Presenting complaint']);
 
   sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
   sessionStorage.setItem('presentingComplaintsHash',encounterHash);
