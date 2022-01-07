@@ -208,13 +208,10 @@ function buildOrderButton() {
   orderButton.setAttribute('id','orderButton');
   orderButton.setAttribute('class','blue button navButton');
   orderButton.setAttribute('selected','false');
-  if(sessionStorage.radiology_status == 'true'){
-    orderButton.innerHTML = '<span>Orders</span>';
-    orderButton.setAttribute('onmousedown','ordersPopupModal()');
-  } else {
-    orderButton.innerHTML = '<span>Lab Order</span>';
-    orderButton.setAttribute('onmousedown','redirection(\"lab\")');
-  }
+  
+  orderButton.innerHTML = '<span>Orders</span>';
+  orderButton.setAttribute('onmousedown','ordersPopupModal()');
+
   navButton.appendChild(orderButton);
 }
 
