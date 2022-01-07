@@ -554,10 +554,10 @@ function getPresentingComplaints(type_of_complaint) {
 
 function prepareToSave() {
 
-  // if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
-  //   nextPage()
-  //   return
-  // }
+  if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
+    nextPage()
+    return
+  }
 
   if(isHashEmpty(presentingComplaintsHash)) {
     showMessage('No selection made. Please select one or more complaints');
