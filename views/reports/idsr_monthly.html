@@ -657,88 +657,73 @@ function getUrlVars() {
 var idsrResults;
 
 function getIndicators() {
+  var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+      url += '/generate_monthly_idsr_report?'
+      url += '&request=true';
+      url += '&start_date='+ start_date;
+      url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+      url += '&program_id=' + sessionStorage.programID;
+  
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      runningReport = false
+      idsrResults = JSON.parse(this.responseText);
+      var count_for_condition = 1;
+      for (const [key, value] of Object.entries(idsrResults)) {
+        var row = document.getElementById('_'+count_for_condition);
+        row.children[1].innerHTML = key;
+        count_for_condition++;
+        var count_for_clmns = 2;
+        var total = 0;
+        var total_ids = '';
+        let tem_inrec = 0
+        if(count_for_condition == 5) 
+          tem_inrec = 1
 
-  var responseTracker = 0;
-  var trackerSupport = Math.round(idsr_diagnosis.length/2)+2;
-
-   
-    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
-        url += '/generate_monthly_idsr_report?'
-        url += '&request=true';
-        url += '&start_date='+ start_date;
-        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-        url += '&program_id=' + sessionStorage.programID;
-        
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-        runningReport = false
-        idsrResults = JSON.parse(this.responseText);
-        var count_for_condition = 1;
-        for (const [key, value] of Object.entries(idsrResults)) {
-              var row = document.getElementById('_'+count_for_condition);
-
-              row.children[1].innerHTML = key;
-
-              count_for_condition++;
-              var count_for_clmns = 2;
-              var total = 0;
-              var total_ids = '';
-
-              let tem_inrec = 0
-                if(count_for_condition == 5) 
-                                tem_inrec = 1
-
-              for (const [key1, value1] of Object.entries(value)) {
-
-
-      
-
-                      if (value1 != null) {
-                        //row.children[count_for_clmns].innerHTML = value1.length;
-                            total+=value1.length;
-                          
-                            var storage_name = key+key1;
-                            var ids ='';
-                            
-                            for(var k=0; k<value1.length; k++) {
-                              ids += '|'+value1[k]; 
-                            }
-
-                            if(value1.length != 0) {
-                              row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
-                              sessionStorage.setItem(storage_name, ids);
-                              total_ids += ids;
-                            }
-
-                            count_for_clmns++;
-                      }
-                    }
-                    if (total > 0) {
-                      //row.children[count_for_clmns + tem_inrec].innerHTML = total;
-                      row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
-                      sessionStorage.setItem(key+'total', total_ids);
-                    }
+        for (const [key1, value1] of Object.entries(value)) {
+          if (value1 != null) {
+            //row.children[count_for_clmns].innerHTML = value1.length;
+            
+            var storage_name = key+key1;
+            var ids ='';
+            
+            for(var k=0; k<value1.length; k++) {
+              ids += '|'+value1[k]; 
             }
-            //initializeTable();
-            document.getElementById('spinner').style = 'display: none';
-            document.getElementById('report-cover').style = 'display: none;';
-        
-        if(reload_status == true) 
-          location.reload();
 
-      } else if (this.readyState === 4) {
-        runningReport = true;
-        //setTimeout(getIndicators, 10000);
-      } else if (this.status == 500) {
-          //trackerSupport--;
+            if(value1.length != 0) {
+              total+=value1.length;
+              sessionStorage.setItem(storage_name, ids);
+              total_ids += ids;
+              row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
+            }
+
+            count_for_clmns++;
+          }
         }
-    };
-    xhttp.open("GET", url, true);
-    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-    xhttp.setRequestHeader('Content-type', "application/json");
-    xhttp.send();
+        if (total > 0) {
+          //row.children[count_for_clmns + tem_inrec].innerHTML = total;
+          row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
+          sessionStorage.setItem(key+'total', total_ids);
+        }
+      }
+      //initializeTable();
+      document.getElementById('spinner').style = 'display: none';
+      document.getElementById('report-cover').style = 'display: none;';
+      
+      if(reload_status == true) 
+        location.reload();
+
+    } else if (this.readyState === 4) {
+      runningReport = true;
+      //setTimeout(getIndicators, 10000);
+    } else if (this.status == 500) {}
+  };
+  xhttp.open("GET", url, true);
+  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+  xhttp.setRequestHeader('Content-type', "application/json");
+  xhttp.send();
     
 }
 

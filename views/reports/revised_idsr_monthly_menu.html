@@ -66,6 +66,8 @@
 function load(months) {
   let promise = new Promise((resolve, reject) => {
     var selection = document.getElementById('months')
+    //hack to promise
+    console.log(selection)
 
     if(typeof(selection) != undefined) {
       for (var i=0; i<months.length; i++) {
@@ -82,8 +84,6 @@ function load(months) {
       selection.appendChild(opt);  
     }
       resolve("success")
-      //hack to promise
-      console.log(selection)
     } else {
       reject("failed")
     }
