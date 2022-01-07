@@ -325,6 +325,7 @@ function submitRadiologyParameters(array_obj)
     submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")
   }
   else{
+    patient_data = {  radiology_orders: []};
     radiologyOrderString(array_obj);
     sessionStorage.setItem("radiology_orders", radiology_orders_string); 
     print_barcode();
@@ -332,7 +333,6 @@ function submitRadiologyParameters(array_obj)
 }
 
 function radiologyOrderString(array_obj){
-  patient_data = {  radiology_orders: []};
   for(var key in array_obj)
   {
       var obj = array_obj[key];
