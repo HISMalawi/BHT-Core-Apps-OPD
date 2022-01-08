@@ -63,7 +63,6 @@
 
 
 function load(months) {
-  let promise = new Promise((resolve, reject) => {
   var ul = document.getElementById("tt_currentUnorderedListOptions");
   if(ul != null) {
     for (var i=0; i<months.length; i++) {
@@ -82,17 +81,9 @@ function load(months) {
       li.innerHTML = month_and_year;
       ul.appendChild(li);
     }
-    resolve("success")
-  } else {
-    reject("failed")
-  }
-  })
-  promise.then((message) => {
-    console.log(message)
-  }).catch((message) => {
-    console.log(message)
-  })
+   }
 }
+
 
 function OptSubmit() {
     var selected_val = $("touchscreenInput0");
