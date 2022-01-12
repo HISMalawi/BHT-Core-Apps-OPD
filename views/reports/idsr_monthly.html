@@ -671,6 +671,12 @@ function getIndicators() {
       idsrResults = JSON.parse(this.responseText);
       var count_for_condition = 1;
       for (const [key, value] of Object.entries(idsrResults)) {
+        var underFIve = [
+          "Diarrhoea In Under 5",
+          "Malnutrition In Under 5",
+          "Underweight Newborns < 2500g in Under 5 Cases",
+          "Severe Pneumonia in under 5 cases"
+        ]
         var row = document.getElementById('_'+count_for_condition);
         row.children[1].innerHTML = key;
         count_for_condition++;
@@ -683,7 +689,6 @@ function getIndicators() {
 
         for (const [key1, value1] of Object.entries(value)) {
           if (value1 != null) {
-            //row.children[count_for_clmns].innerHTML = value1.length;
             
             var storage_name = key+key1;
             var ids ='';
@@ -696,18 +701,56 @@ function getIndicators() {
               total+=value1.length;
               sessionStorage.setItem(storage_name, ids);
               total_ids += ids;
-              row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
+              
+              let ls_fv
+              let grt_fv
+
+              for (var el of row.children) {
+                if (el.getAttribute('id') == 'ls-5ys') {
+                  ls_fv = el
+                }
+
+                if (el.getAttribute('id') == 'grt-5yrs') {
+                  grt_fv = el
+                }
+              }
+
+              console.log("ls_fv: ", ls_fv)
+
+              if (key1 == '<5yrs') {
+               ls_fv.innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+              }
+              if (key1 == '>=5yrs') {
+                grt_fv.innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+              }
             }
 
             count_for_clmns++;
           }
         }
+
+
+        for (let under_five_condition of underFIve) {
+          if (key == under_five_condition) {
+            for (var el of row.children) {
+              if (el.getAttribute('id') == 'grt-5yrs') {
+                el.innerHTML = ""
+                el.style.backgroundColor = "gray"
+              }
+            } 
+          }
+      }
+
         if (total > 0) {
-          //row.children[count_for_clmns + tem_inrec].innerHTML = total;
-          row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
+          for (var el of row.children) {
+                if (el.getAttribute('id') == 'total') {
+                  el.innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
+                }
+              }
           sessionStorage.setItem(key+'total', total_ids);
         }
       }
+
       //initializeTable();
       document.getElementById('spinner').style = 'display: none';
       document.getElementById('report-cover').style = 'display: none;';
