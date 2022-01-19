@@ -437,6 +437,10 @@ function showDisaggregatedReport(){
     <td class="td-text-align-left"><span id="wkdates"></span></td>
   </tr>
   <tr>
+    <td class="td-text-align-left">Visits (Total): </td>
+    <td class="td-text-align-left"><span id="total_visits"></span></td>
+  </tr>
+  <tr>
   <table id="hmis_15">
     <tr>
       <td  colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
@@ -720,6 +724,38 @@ function getIndicators() {
     
 }
 
+function getRegistration() {
+var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+url += '/registration?start_date=' + start_date;
+url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+url += '&program_id=' + sessionStorage.programID;
+
+if(apiProtocol == undefined) {
+  setTimeout("getData()", 3000);
+  return;
+}
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+    document.getElementById('spinner').style = 'display: none;';
+    document.getElementById('report-cover').style = 'display: none;';
+    var obj = JSON.parse(this.responseText);
+    setVisitsValue(obj);
+  }
+};
+xhttp.open("GET", url, true);
+xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+xhttp.setRequestHeader('Content-type', "application/json");
+xhttp.send();
+}
+
+function setVisitsValue(data) {
+  var count = data.length
+  var e = document.getElementById('total_visits')
+  e.innerHTML = count
+}
+
 var myVar;
 var runningReport = true;
 var reload_status = false;
@@ -744,6 +780,7 @@ document.getElementById('wkdates').innerHTML = start_date +"&nbsp;&nbsp;&nbsp;to
 document.getElementById('spinner').style = 'display: inline;';
 document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
+getRegistration();
 
 
 
