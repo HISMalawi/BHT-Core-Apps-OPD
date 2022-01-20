@@ -18,25 +18,25 @@ function insertAfter(newNode, existingNode) {
 }
 
 function build_search_field() {
-    var helpText0 = document.getElementById('helpText0');
-    var search_content = document.createElement('div');
-    search_content.setAttribute('id','search_content');
-  
-    insertAfter(search_content, helpText0);
-  
-    var search_text = document.createElement('span');
-    search_text.setAttribute('id','search_text');
-    search_text.innerHTML='Search:';
-    search_content.appendChild(search_text);
-  
-    var search_input = document.createElement('input');
-    search_input.setAttribute('id','search_field');
-    search_input.setAttribute('style','height:40px;width:400px;');
-    search_input.setAttribute('onkeyup','search_results(this)');
-    search_input.setAttribute('onfocusout','refocus(this)');
-    search_input.setAttribute('onmousedown','lookForTag(this)');
-    search_content.appendChild(search_input);
-    lookForTag(); 
+  var helpText0 = document.getElementById('helpText0');
+  var search_content = document.createElement('div');
+  search_content.setAttribute('id','search_content');
+
+  insertAfter(search_content, helpText0);
+
+  var search_text = document.createElement('span');
+  search_text.setAttribute('id','search_text');
+  search_text.innerHTML='Search:';
+  search_content.appendChild(search_text);
+
+  var search_input = document.createElement('input');
+  search_input.setAttribute('id','search_field');
+  search_input.setAttribute('style','height:40px;width:400px;');
+  search_input.setAttribute('onkeyup','search_results(this)');
+  search_input.setAttribute('onfocusout','refocus(this)');
+  search_input.setAttribute('onmousedown','lookForTag(this)');
+  search_content.appendChild(search_input);
+  lookForTag(); 
 }
 
 function refocus(e) {
@@ -190,15 +190,13 @@ function setVissiableForGroup(group) {
 }
 
 function buildPresentaingComplaints(type_of_complaint) {
-
-    document.getElementById('buttons').setAttribute('style','width: 100% !important');
-    var frame = document.getElementById('inputFrame' + tstCurrentPage);
-    frame.style = 'height: 90%; display: flex';
-    frame.innerHTML = null;
-    getPresentingComplaints(type_of_complaint);
-    var clearButton = document.getElementById('clearButton');
-    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
-
+  document.getElementById('buttons').setAttribute('style','width: 100% !important');
+  var frame = document.getElementById('inputFrame' + tstCurrentPage);
+  frame.style = 'height: 90%; display: flex';
+  frame.innerHTML = null;
+  getPresentingComplaints(type_of_complaint);
+  var clearButton = document.getElementById('clearButton');
+  clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
 }
 
 function buildOrderButton() {
@@ -216,7 +214,6 @@ function buildOrderButton() {
 }
 
 function presentingComplaints(concept_sets, type_of_complaint) {
-
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
   frame.innerHTML = null;
 
@@ -226,7 +223,6 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   var div1 = document.createElement('div');
   div1.setAttribute('style','display: flex;');
  
-
   var div2 = document.createElement('div');
   div2.setAttribute('id','ts');
   
@@ -248,56 +244,54 @@ function presentingComplaints(concept_sets, type_of_complaint) {
 
   concept_names = []
   for(var t = 0 ; t < concept_sets.length; t++) {
-  var row_count = 1;
-    
-      var column = document.createElement('div');
-      column.setAttribute('class','complaints-container-column');
-      side_bar_container.appendChild(column);
-  
-      var box;
-      box = document.createElement('div');
-      box.setAttribute('class','complaints-container-box');
-      box.setAttribute('id',concept_sets[t].group);
-      box.innerHTML = concept_sets[t].group;
-      box.setAttribute('selected', 'false');
-      box.setAttribute('onmousedown','groupClicked(this);');
-      if (t == 0)
-      box.setAttribute('style','background-color: #aaaaf4 !important');
-      column.appendChild(box);
-    
-      list = document.createElement('div');
-      list.setAttribute('id','list-'+concept_sets[t].group);
-      if(t == 0)
-      list.setAttribute('class','complaints-list-show');
-      else
-      list.setAttribute('class','complaints-list-hide');
-      main_container.appendChild(list);
-    
+    var row_count = 1;
+    var column = document.createElement('div');
+    column.setAttribute('class','complaints-container-column');
+    side_bar_container.appendChild(column);
 
+    var box;
+    box = document.createElement('div');
+    box.setAttribute('class','complaints-container-box');
+    box.setAttribute('id',concept_sets[t].group);
+    box.innerHTML = concept_sets[t].group;
+    box.setAttribute('selected', 'false');
+    box.setAttribute('onmousedown','groupClicked(this);');
+    if (t == 0)
+    box.setAttribute('style','background-color: #aaaaf4 !important');
+    column.appendChild(box);
+  
+    list = document.createElement('div');
+    list.setAttribute('id','list-'+concept_sets[t].group);
+    if(t == 0)
+    list.setAttribute('class','complaints-list-show');
+    else
+    list.setAttribute('class','complaints-list-hide');
+    main_container.appendChild(list);
+    
     for(var i = 0 ; i < concept_sets[t].complaints.length; i++) {
       if(row_count == 1){
-                row = document.createElement('div');
-                row.setAttribute('class','complaints-container-row');
-                list.appendChild(row);
-              }
+        row = document.createElement('div');
+        row.setAttribute('class','complaints-container-row');
+        list.appendChild(row);
+      }
       
-              cell = document.createElement('div');
-              cell.setAttribute('class','complaints-container-cell');
-              cell.innerHTML = "<span class=\'namespacing\'>"+concept_sets[t].complaints[i].name+"</span>";
-              cell.setAttribute('selected', 'false');
-              cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
-              cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
-              cell.setAttribute('group_concept_id', concept_sets[t].concept_id);
-              cell.setAttribute('group_name', concept_sets[t].group);
-              cell.setAttribute('complaint-type', type_of_complaint);
-              cell.setAttribute('name', concept_sets[t].complaints[i].name);
-              cell.setAttribute('onmousedown','complaintClicked(this);');
-              row.appendChild(cell);
+      cell = document.createElement('div');
+      cell.setAttribute('class','complaints-container-cell');
+      cell.innerHTML = "<span class=\'namespacing\'>"+concept_sets[t].complaints[i].name+"</span>";
+      cell.setAttribute('selected', 'false');
+      cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
+      cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
+      cell.setAttribute('group_concept_id', concept_sets[t].concept_id);
+      cell.setAttribute('group_name', concept_sets[t].group);
+      cell.setAttribute('complaint-type', type_of_complaint);
+      cell.setAttribute('name', concept_sets[t].complaints[i].name);
+      cell.setAttribute('onmousedown','complaintClicked(this);');
+      row.appendChild(cell);
 
-              row_count++;
-              if(row_count == 4)
-                row_count = 1;
-  } 
+      row_count++;
+      if(row_count == 4)
+        row_count = 1;
+    } 
   }
 
   if (sessionStorage.saveState == "true") {
@@ -336,7 +330,6 @@ var row_c;
 var row_c_item_count = 1;
 
 function selectedComplaints(e) {
-
   var e = e.cloneNode(true)
   var container = document.getElementById('selected_complaints_main_container');
 
@@ -380,8 +373,9 @@ function complaintClicked(e) {
           groupSelected.style = 'background-color: #aaaaf4 !important;';
         }
       }
-    }   
-  }else{
+    }
+
+  } else {
     var selected_e_id = e.getAttribute('id');
     e.remove();
     e = document.getElementById(selected_e_id);
@@ -390,9 +384,7 @@ function complaintClicked(e) {
     e.setAttribute('selected', 'false');
 
     function check_g(group_name) {
-
       var _group = document.getElementById('list-'+group_name);
-
       var cal_t = 0;
       var count = 0;
       var ls_total = 0;
@@ -403,9 +395,9 @@ function complaintClicked(e) {
           ls_total++;
           if (_selected == 'true') {
             //_group.children[g].children[_g].setAttribute('style','display: show; background-color: lightblue;');
-           cal_t += totalCount('true');
+            cal_t += totalCount('true');
           } else if(_selected == 'false') {
-           cal_t += totalCount('false');
+            cal_t += totalCount('false');
             //document.getElementById(group_name).setAttribute('style',' background-color: ;');
           }
         }
@@ -435,12 +427,14 @@ function complaintClicked(e) {
     document.getElementById('selected_complaints_main_container').setAttribute('class','');
 
     var find_selected = 0;
+
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
           if (childNodes[i].childNodes[j].getAttribute('selected') == 'true') 
           find_selected +=1;   
       }
     }
+
     if (find_selected == '0') {
         groupSelected.setAttribute('selected', 'false');
         groupSelected.style = 'background-color: #aaaaf4 !important;';
@@ -458,17 +452,19 @@ function groupClicked(e){
     if(groupList[i].getAttribute('selected') == 'false')
     groupList[i].setAttribute('style','background-color: none !important');
   }
-  e.setAttribute('style','background-color: #aaaaf4 !important');
 
+  e.setAttribute('style','background-color: #aaaaf4 !important');
   currentVisabList[0].setAttribute('class','complaints-list-hide');
   container_list.setAttribute('class','complaints-list-show');
 }
 
 function deSelectAll(key) {
   var list = document.getElementsByClassName('complaints-container-cell');
+
   for(var i = 0 ; i < list.length ; i++){
     list[i].style = 'background-color: "";';
   }
+
   presentingComplaintsHash[key] = [];
 }
 
@@ -553,7 +549,6 @@ function getPresentingComplaints(type_of_complaint) {
 }
 
 function prepareToSave() {
-
   if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
     nextPage()
     return
@@ -631,34 +626,33 @@ function showValidate() {
 
   messageBar.innerHTML = "";
   messageBar.innerHTML += "<p>" + message +
-     
-      "<div class='table-st'>"+td_string+"</div>"+
-      "</p><div style='display: block;'>" +
-      "<p style=\" \">" + msg +
-      "</p>"+
-      "<button class='button' style='float: none;' onclick='this.offsetParent.style.display=\"none\";  prepareToSave();' onmousedown='this.offsetParent.style.display=\"none\"; prepareToSave();'" +
-      "><span>Yes</span></button><button class='button' " +
-      "style='float: none; right: 3px;' onmousedown='this.offsetParent.style.display=\"none\"; '>" +
-      "<span>No</span></button>";
+    "<div class='table-st'>"+td_string+"</div>"+
+    "</p><div style='display: block;'>" +
+    "<p style=\" \">" + msg +
+    "</p>"+
+    "<button class='button' style='float: none;' onclick='this.offsetParent.style.display=\"none\";  prepareToSave();' onmousedown='this.offsetParent.style.display=\"none\"; prepareToSave();'" +
+    "><span>Yes</span></button><button class='button' " +
+    "style='float: none; right: 3px;' onmousedown='this.offsetParent.style.display=\"none\"; '>" +
+    "<span>No</span></button>";
   messageBar.style.display = "block";
 }
 
 function saveObs(encounter) { 
   var observations = [];
+  var concept_id =  8578;
 
-    var concept_id =  8578;
-    for(var i = 0 ; i < presentingComplaintsNameHash.length ; i++)
-    {
-      var data = presentingComplaintsNameHash[i].split(";");
-      observations.push({
-        concept_id: concept_id, 
-        value_text:data[2],
-        child: {
-          concept_id: data[0],
-          value_text: data[1]
-      }
-      })
+  for(var i = 0 ; i < presentingComplaintsNameHash.length ; i++)
+  {
+    var data = presentingComplaintsNameHash[i].split(";");
+    observations.push({
+      concept_id: concept_id, 
+      value_text:data[2],
+      child: {
+        concept_id: data[0],
+        value_text: data[1]
     }
+    })
+  }
   
   var obs = {
     encounter_id: encounter["encounter_id"],
@@ -811,7 +805,6 @@ function tick(e) {
 
 function redirection(location) {
   setPageState();
-
   let paths = {
     'radiology' : '/apps/OPD/views/encounters/radiology/view_radiology_results.html',
     'lab' : '/apps/OPD/views//encounters/labs.html'
