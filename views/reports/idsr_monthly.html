@@ -198,7 +198,7 @@ text-align: center;
 margin: 3.3px;
 }
 
-a {
+.rectangle_fab {
   background-color: #eaeaea;
 border: solid 8px #eaeaea;
 border-right: solid 60px #eaeaea;
@@ -243,6 +243,10 @@ table {
   border-collapse: collapse;
   margin-top: 10px;
   margin-left: 15px;
+}
+
+#idsr_monthly {
+  margin-bottom: 100px;
 }
 
 tr {
@@ -353,18 +357,15 @@ td {
   border-right-style: dotted !important;
   border-right-width: 1px;
 }
-
 </style>
 
 <script>
-
 var print_pdf_attr = {};
 
 function drillDown(indicator, report_name, quarter) {
-    indicator = indicator.split(",");
-    window.location = "/apps/ART/views/cohort_tool/driller/driller.html?resource_id=" + indicator[0] + "&report_name=" + indicator[1]+ "&quarter=" + Quarter;
+  indicator = indicator.split(",");
+  window.location = "/apps/ART/views/cohort_tool/driller/driller.html?resource_id=" + indicator[0] + "&report_name=" + indicator[1]+ "&quarter=" + Quarter;
 }
-
 
 function showDisaggregatedReport(){
   var url = window.location.href;
@@ -386,9 +387,7 @@ function showDisaggregatedReport(){
   url += '&total_alive_and_on_art=' + on_art;
   location = url;
 }
-
 </script>
-
 
 <div id="consistency_check">
   <div id="patients_consistency"></div>
@@ -415,7 +414,6 @@ function showDisaggregatedReport(){
 </div>
 
 <div id="content" style="margin-bottom: 65px;">
-
   <table>
     <tr id="">
       <td colspan="5" id="" style="border-right-style: solid; font-weight: bold; text-align: center;">MONTHLY DISEASE SURVEILLANCE REPORT</td>
@@ -435,6 +433,10 @@ function showDisaggregatedReport(){
     <tr>
       <td class="td-text-align-left">Month Dates: </td>
       <td class="td-text-align-left"><span id="wkdates"></span></td>
+    </tr>
+    <tr>
+      <td class="td-text-align-left">Visits (Total): </td>
+      <td class="td-text-align-left"><span id="total_visits"></span></td>
     </tr>
     <tr>
       <table id="idsr_monthly">
@@ -577,70 +579,28 @@ function showDisaggregatedReport(){
 </div>
 
 <footer class="footer">
-    <div class="container-footer">
-        <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
-            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
-        </button>
-        <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
-            <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
-        </button>
-        <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
-            <span>&nbsp; Export &nbsp;</span>
-        </button>
-        <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
-            <span>&nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp;&nbsp;</span>
-        </button>
-    </div>
+  <div class="container-footer">
+    <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
+      <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
+    </button>
+    <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
+      <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
+    </button>
+    <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
+      <span>&nbsp; Export &nbsp;</span>
+    </button>
+    <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
+      <span>&nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp;&nbsp;</span>
+    </button>
+  </div>
 </footer>
-
-<form id="patients" method="post" action="/cohort_tool/list_more_details" name="pat_drilldown">
-  <input id='patient_ids' type='hidden' name = 'patient_ids' />
-  <input id='indicator' type='hidden' name = 'indicator' />
-</form>
 
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
 <div id="report-cover"></div>
 <div id="report-cover-2"></div>
 
-
-<form id="pdf" method="post" action="/cohort_tool/pdf_printout_cohort.pdf" name="pdf_printout">
-</form>
-
 <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
 <script>
-
-function printPDF() {
-  var pdfForm = document.getElementById('pdf')
-  for (name in print_pdf_attr){
-    var input = document.createElement('input');
-    input.setAttribute('type','hidden');
-    input.setAttribute('name',"cohort_params[" + name + "]");
-    input.setAttribute('value', print_pdf_attr[name]);
-    pdfForm.appendChild(input);
-  }
-
-  var year = Year
-  
-  var cohort_quarter = ': ' + Quarter;
-
-  var input = document.createElement('input');
-  input.setAttribute('type','hidden');
-  input.setAttribute('name',"cohort_year");
-  input.setAttribute('value', year);
-  pdfForm.appendChild(input);
-
-  input = document.createElement('input');
-  input.setAttribute('type','hidden');
-  input.setAttribute('name',"cohort_quarter");
-  input.setAttribute('value', cohort_quarter);
-  pdfForm.appendChild(input);
-
-
-  document.pdf_printout.target = "my_pdf";
-  var w = (window.innerWidth - 80) ; var h = (window.innerHeight - 8);
-  window.open("","my_pdf","width=" + w + ",height=" + h + ",toolbar=0");
-  document.pdf_printout.submit();
-}
 
 function getUrlVars() {
   var vars = {};
@@ -653,93 +613,148 @@ function getUrlVars() {
 var idsrResults;
 
 function getIndicators() {
+  var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+    url += '/generate_monthly_idsr_report?'
+    url += '&request=true';
+    url += '&start_date='+ start_date;
+    url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+    url += '&program_id=' + sessionStorage.programID;
+  
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      runningReport = false
+      idsrResults = JSON.parse(this.responseText);
+      var count_for_condition = 1;
+      for (const [key, value] of Object.entries(idsrResults)) {
+        var underFIve = [
+          "Diarrhoea In Under 5",
+          "Malnutrition In Under 5",
+          "Underweight Newborns < 2500g in Under 5 Cases",
+          "Severe Pneumonia in under 5 cases"
+        ]
+        var row = document.getElementById('_'+count_for_condition);
+        row.children[1].innerHTML = key;
+        count_for_condition++;
+        var count_for_clmns = 2;
+        var total = 0;
+        var total_ids = '';
+        let tem_inrec = 0
+        if(count_for_condition == 5) 
+          tem_inrec = 1
 
-  var responseTracker = 0;
-  var trackerSupport = Math.round(idsr_diagnosis.length/2)+2;
-
-   
-    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
-        url += '/generate_monthly_idsr_report?'
-        url += '&request=true';
-        url += '&start_date='+ start_date;
-        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-        url += '&program_id=' + sessionStorage.programID;
-        
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-        runningReport = false
-        idsrResults = JSON.parse(this.responseText);
-        var count_for_condition = 1;
-        for (const [key, value] of Object.entries(idsrResults)) {
-              var row = document.getElementById('_'+count_for_condition);
-
-              row.children[1].innerHTML = key;
-
-              count_for_condition++;
-              var count_for_clmns = 2;
-              var total = 0;
-              var total_ids = '';
-
-              let tem_inrec = 0
-                if(count_for_condition == 5) 
-                                tem_inrec = 1
-
-              for (const [key1, value1] of Object.entries(value)) {
-
-
-      
-
-                      if (value1 != null) {
-                        //row.children[count_for_clmns].innerHTML = value1.length;
-                            total+=value1.length;
-                          
-                            var storage_name = key+key1;
-                            var ids ='';
-                            
-                            for(var k=0; k<value1.length; k++) {
-                              ids += '|'+value1[k]; 
-                            }
-
-                            console.log("sum: ",tem_inrec)
-                            if (tem_inrec == 1)
-                            console.log("here: ",row.children[count_for_clmns + tem_inrec])
-
-                            if(value1.length != 0) {
-                              row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
-                              sessionStorage.setItem(storage_name, ids);
-                              total_ids += ids;
-                            }
-
-                            count_for_clmns++;
-                      }
-                    }
-                    if (total > 0) {
-                      //row.children[count_for_clmns + tem_inrec].innerHTML = total;
-                      row.children[count_for_clmns + tem_inrec].innerHTML = '<a href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
-                      sessionStorage.setItem(key+'total', total_ids);
-                    }
+        for (const [key1, value1] of Object.entries(value)) {
+          if (value1 != null) {
+            
+            var storage_name = key+key1;
+            var ids ='';
+            
+            for(var k=0; k<value1.length; k++) {
+              ids += '|'+value1[k]; 
             }
-            //initializeTable();
-            document.getElementById('spinner').style = 'display: none';
-            document.getElementById('report-cover').style = 'display: none;';
-        
-        if(reload_status == true) 
-          location.reload();
 
-      } else if (this.readyState === 4) {
-        runningReport = true;
-        //setTimeout(getIndicators, 10000);
-      } else if (this.status == 500) {
-          //trackerSupport--;
+            if(value1.length != 0) {
+              total+=value1.length;
+              sessionStorage.setItem(storage_name, ids);
+              total_ids += ids;
+              
+              let ls_fv
+              let grt_fv
+
+              for (var el of row.children) {
+                if (el.getAttribute('id') == 'ls-5ys') {
+                  ls_fv = el
+                }
+
+                if (el.getAttribute('id') == 'grt-5yrs') {
+                  grt_fv = el
+                }
+              }
+
+              console.log("ls_fv: ", ls_fv)
+
+              if (key1 == '<5yrs') {
+               ls_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+              }
+              if (key1 == '>=5yrs') {
+                grt_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+              }
+            }
+
+            count_for_clmns++;
+          }
         }
-    };
-    xhttp.open("GET", url, true);
-    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-    xhttp.setRequestHeader('Content-type', "application/json");
-    xhttp.send();
-    
+
+        for (let under_five_condition of underFIve) {
+          if (key == under_five_condition) {
+            for (var el of row.children) {
+              if (el.getAttribute('id') == 'grt-5yrs') {
+                el.innerHTML = ""
+                el.style.backgroundColor = "gray"
+              }
+            } 
+          }
+        }
+
+        if (total > 0) {
+          for (var el of row.children) {
+                if (el.getAttribute('id') == 'total') {
+                  el.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+key+'total'+'\')">'+total+'</a>';
+                }
+              }
+          sessionStorage.setItem(key+'total', total_ids);
+        }
+      }
+
+      //initializeTable();
+      document.getElementById('spinner').style = 'display: none';
+      document.getElementById('report-cover').style = 'display: none;';
+      
+      if(reload_status == true) 
+        location.reload();
+
+    } else if (this.readyState === 4) {
+      runningReport = true;
+      //setTimeout(getIndicators, 10000);
+    } else if (this.status == 500) {}
+  };
+  xhttp.open("GET", url, true);
+  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+  xhttp.setRequestHeader('Content-type', "application/json");
+  xhttp.send();  
+}
+
+function getRegistration() {
+  var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+    url += '/registration?start_date=' + start_date;
+    url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+    url += '&program_id=' + sessionStorage.programID;
+
+  if(apiProtocol == undefined) {
+    setTimeout("getData()", 3000);
+    return;
+  }
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      document.getElementById('spinner').style = 'display: none;';
+      document.getElementById('report-cover').style = 'display: none;';
+      var obj = JSON.parse(this.responseText);
+      setVisitsValue(obj);
+    }
+  };
+
+  xhttp.open("GET", url, true);
+  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+  xhttp.setRequestHeader('Content-type', "application/json");
+  xhttp.send();
+}
+
+function setVisitsValue(data) {
+  var count = data.length
+  var e = document.getElementById('total_visits')
+  e.innerHTML = count
 }
 
 var myVar;
@@ -753,6 +768,7 @@ function checkIfReportReady() {
 
 }
 
+//temp hash (gets overriden)
 const idsr_diagnosis = ["Diarrhea",
 "Poliomyelitis",
 "AHFS",
@@ -788,208 +804,216 @@ document.getElementById('wkdates').innerHTML = start_date +"&nbsp;&nbsp;&nbsp;to
 document.getElementById('spinner').style = 'display: inline;';
 document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
-
-
+getRegistration();
 
 function printWindow() {
+  var items = document.getElementsByTagName("a");
+  for (let e of items) {
+    e.setAttribute("class", "")
+  }
   var footer = document.getElementsByClassName('footer')[0];
   footer.style = 'display: none;';
   window.print();
+  for (let e of items) {
+    e.setAttribute("class", "rectangle_fab")
+  }
   footer.style = 'display: inline;';
 }
 
 function initializeTable() {
   table = $('#idsr_monthly').DataTable({
-    
-            fixedHeader: false,
-            searching: false,
-            scrollY: 500,
-            Processing: true,
-            ServerSide: true,
-            scroller: {
-                loadingIndicator: true
-            },
-            dom: 'Bfrtip',
-            buttons: [
-            'copy', 'csv', 'pdf', 'print'
-          ]
+    fixedHeader: false,
+    searching: false,
+    scrollY: 500,
+    Processing: true,
+    ServerSide: true,
+    scroller: {
+    loadingIndicator: true
+    },
+    dom: 'Bfrtip',
+    buttons: [
+    'copy', 'csv', 'pdf', 'print'
+  ]
   });
 }
 
 function initializeTable_Modal() {
-            table = $('#patient_details_table').DataTable({
-            fixedHeader: true,
-            searching: true,
-            paging: true,
-            scrollY: 300,
-            Processing: true,
-            ServerSide: true,
-            scroller: {
-                loadingIndicator: true
-            },
-            dom: 'Bfrtip',
-            buttons: [
-            'copy', 'csv', 'pdf', 'print'
-        ]
-        });
-        lookForTag();
-    }
+  table = $('#patient_details_table').DataTable({
+  fixedHeader: true,
+  searching: true,
+  paging: true,
+  scrollY: 300,
+  Processing: true,
+  ServerSide: true,
+  scroller: {
+      loadingIndicator: true
+  },
+  dom: 'Bfrtip',
+  buttons: [
+  'copy', 'csv', 'pdf', 'print'
+  ]
+  });
+  lookForTag();
+}
 
-    function view_patientD(name)
-    {    
-         if($('#virtual-keyboard').length)
-             hide_keyboard();
+function view_patientD(name)
+{    
+  if($('#virtual-keyboard').length)
+    hide_keyboard();
 
-        $('.keyboard').attr('style','display:none');
-        document.getElementById('spinner').style = 'display: block;';  
-        document.getElementById('report-cover-2').style = 'display: block;';
-        dataTableContentLoader(name);
-    }
+  $('.keyboard').attr('style','display:none');
+  document.getElementById('spinner').style = 'display: block;';  
+  document.getElementById('report-cover-2').style = 'display: block;';
+  dataTableContentLoader(name);
+}
 
-    function dataTableContentLoader(name)
-    {   
-        var diagName;
-        var period;
-        if (name.indexOf('total') != -1) {
-          diagName = name.replace('total','');
-          period = "Total";
+function dataTableContentLoader(name)
+{   
+  var diagName;
+  var period;
+  if (name.indexOf('total') != -1) {
+    diagName = name.replace('total','');
+    period = "Total";
+  }
+
+  if (name.indexOf('<5yrs') != -1) {
+    diagName = name.replace('<5yrs','');
+    period = "Less Than Five Years";
+  }
+
+  if (name.indexOf('>=5yrs') != -1) {
+    diagName = name.replace('>=5yrs','');
+    period = "Greater Than Five Years";
+  }
+  
+  IDsArray = sessionStorage.getItem(name);
+  IDsArray =IDsArray.split('|');
+
+  var progressTracker = 0;
+
+  $('.modal-title').html('<b>Condition:</b> &nbsp;&nbsp; ' + diagName);
+  $('.period').html('<b>Age Group:</b>  &nbsp;&nbsp;' + period);
+  document.getElementById('modal').setAttribute('style','display:block');
+  $('#patient_details_body').html('');
+
+  for (var n=1; n<IDsArray.length; n++) {
+    var patient_id = IDsArray[n];
+    var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patients/';
+    url +=   patient_id;
+
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function(){
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          progressTracker++;
+          var results = JSON.parse(this.responseText);
+          var one_person = results.person
+          let addresses_obj = one_person.addresses[0]
+          let address = addresses_obj.state_province +", "+ addresses_obj.city_village +", "+ addresses_obj.address1
+
+          var tr = document.createElement('tr');
+          document.getElementById('patient_details_body').appendChild(tr);
+
+          var td = document.createElement('td');
+          td.setAttribute("class","td-text-align-left");
+          td.innerHTML = one_person.person_id;
+          tr.appendChild(td);
+
+          td = document.createElement('td');
+          td.setAttribute("class","td-text-align-left");
+          td.innerHTML = one_person.names[0].given_name;
+          tr.appendChild(td);
+
+          var td = document.createElement('td');
+          td.setAttribute("class","td-text-align-left");
+          td.innerHTML = one_person.names[0].family_name;
+          tr.appendChild(td);
+
+          td = document.createElement('td');
+          td.setAttribute("class","td-text-align-left");
+          td.innerHTML = one_person.gender;
+          tr.appendChild(td);
+
+          td = document.createElement('td');
+          td.setAttribute("class","td-text-align-left");
+          td.innerHTML = one_person.person_attributes[1].value;
+          tr.appendChild(td);
+          
+          td = document.createElement('td');
+          td.innerHTML = address;
+          tr.appendChild(td);
+
+          if (progressTracker == IDsArray.length-1) {
+            initializeTable_Modal();
+            $("label [aria-controls*='report']").attr('type','text');
+            document.getElementById('spinner').style = 'display: none;';
+            document.getElementById('report-cover-2').style = 'display: none;';
+            document.getElementById('report-cover').style = 'display: block;';
+          }
         }
+      }
+    };
 
-        if (name.indexOf('<5yrs') != -1) {
-          diagName = name.replace('<5yrs','');
-          period = "Less Than Five Years";
-        }
+    try {
+      req.open('GET', url, true);
+      req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+      req.send(null);
+    } catch (e) {
+    }   
+  }
+}
 
-        if (name.indexOf('>=5yrs') != -1) {
-          diagName = name.replace('>=5yrs','');
-          period = "Greater Than Five Years";
-        }
-        
-       IDsArray = sessionStorage.getItem(name);
-       IDsArray =IDsArray.split('|');
+function close_modal()
+{
+  document.getElementById('spinner').style = 'display: none;';
+  document.getElementById('report-cover').style = 'display: none;';
+  document.getElementById('patient_details_body').innerHTML = "";
+  document.getElementById('modal').setAttribute('style','display:none');
+  table.destroy();
+  hide_keyboard();
+}
 
-       var progressTracker = 0;
-
-        $('.modal-title').html('<b>Condition:</b> &nbsp;&nbsp; ' + diagName);
-        $('.period').html('<b>Age Group:</b>  &nbsp;&nbsp;' + period);
-        document.getElementById('modal').setAttribute('style','display:block');
-        $('#patient_details_body').html('');
-
-
-        for (var n=1; n<IDsArray.length; n++) {
-
-        var patient_id = IDsArray[n];
-        var url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patient_details_by_id?';
-        url +=   'patient_id='+patient_id;
-
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function(){
-        if (this.readyState == 4) {
-          if (this.status == 200) {
-              progressTracker++;
-              var results = JSON.parse(this.responseText);
-              var tr = document.createElement('tr');
-              document.getElementById('patient_details_body').appendChild(tr);
-
-              var td = document.createElement('td');
-              td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].patient_id;
-              tr.appendChild(td);
-
-              td = document.createElement('td');
-              td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].given_name;
-              tr.appendChild(td);
-
-              var td = document.createElement('td');
-              td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].family_name;
-              tr.appendChild(td);
-
-              td = document.createElement('td');
-              td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].gender;
-              tr.appendChild(td);
-
-              td = document.createElement('td');
-              td.setAttribute("class","td-text-align-left");
-              td.innerHTML = results[0].phone_number;
-              tr.appendChild(td);
-              
-              td = document.createElement('td');
-              td.innerHTML = results[0].address;
-              tr.appendChild(td);
-
-            if (progressTracker == IDsArray.length-1) {
-                initializeTable_Modal();
-                $("label [aria-controls*='report']").attr('type','text');
-                document.getElementById('spinner').style = 'display: none;';
-                document.getElementById('report-cover-2').style = 'display: none;';
-                document.getElementById('report-cover').style = 'display: block;';
-            }
-           }
-         }
-        };
-        try {
-          req.open('GET', url, true);
-          req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-          req.send(null);
-        } catch (e) {
-        }   
-        }
-    }
-
-    function close_modal()
-    {
-        document.getElementById('spinner').style = 'display: none;';
-        document.getElementById('report-cover').style = 'display: none;';
-        document.getElementById('patient_details_body').innerHTML = "";
-        document.getElementById('modal').setAttribute('style','display:none');
-        table.destroy();
-        hide_keyboard();
-    }
-
-    function hide_keyboard()
-    {
-        var vl = document.getElementById('virtual-keyboard');
-        var w = document.getElementsByTagName('body')[0];
-        w.removeChild(vl);
-    }
+function hide_keyboard()
+{
+  var vl = document.getElementById('virtual-keyboard');
+  var w = document.getElementsByTagName('body')[0];
+  w.removeChild(vl);
+}
 </script>
+
 <!-- Modal -->
 <div class="modal " id="modal" style="display: none;" > 
   <div class="modal-content" style="margin-left:0px; ">
       <div class="modal-header">
-          <div class="modal-title _title" ></div>
-          <div class="period _title" ></div>
+        <div class="modal-title _title" ></div>
+        <div class="period _title" ></div>
       </div>
       <div class="modal-body">
-          <div class="container">
-              <div class="row" id="modal-div">
-                  <div id="patient_details_card" style="margin-bottom: 10px; border-bottom: 1px solid; width: 95%;" >
-                      <table id="patient_details_table" class="display " >
-                          <thead>
-                          <tr>
-                              <th class="sorting_patient" >Patient ID</th>
-                              <th class="sorting_patient">Firstname</th>
-                              <th class="sorting_patient">Surname</th>
-                              <th class="sorting_patient">Gender</th>
-                              <th class="sorting_patient">Phone Number</th>
-                              <th class="sorting_patient">Address</th>
-                          </tr>
-                          </thead>
-                          <tbody id="patient_details_body">
-                          </tbody>
-                      </table>
-                     
-                  </div>
-              </div>
+        <div class="container">
+          <div class="row" id="modal-div">
+            <div id="patient_details_card" style="margin-bottom: 10px; border-bottom: 1px solid; width: 95%;" >
+              <table id="patient_details_table" class="display " >
+                <thead>
+                <tr>
+                  <th class="sorting_patient" >Patient ID</th>
+                  <th class="sorting_patient">Firstname</th>
+                  <th class="sorting_patient">Surname</th>
+                  <th class="sorting_patient">Gender</th>
+                  <th class="sorting_patient">Phone Number</th>
+                  <th class="sorting_patient">Address</th>
+                </tr>
+                </thead>
+                <tbody id="patient_details_body">
+                </tbody>
+              </table>
+            </div>
+          </div>
           </div>
       </div>
       <div class="bottom_buttons">
-          <button class="red"  onclick="close_modal()" style="margin-left: 2%;
-          margin-top: -1%;
-          margin-bottom: 2%;">Close</button>
+        <button class="red"  onclick="close_modal()" style="margin-left: 2%;
+        margin-top: -1%;
+        margin-bottom: 2%;">Close</button>
       </div>
   </div> 
 </div>

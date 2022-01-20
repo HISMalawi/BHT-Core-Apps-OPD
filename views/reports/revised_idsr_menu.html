@@ -62,37 +62,42 @@
       __$("buttons").removeChild(__$("addHere"));
     }
   }
-  fetchWeeks();
-  function load(weeks) {
 
-  var sel = document.getElementById('weeks');
-  var opt = document.createElement('option');
-
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-        for (var i=0; i<weeks.length; i++) {
-        var week = weeks[i];
-        var opt = document.createElement('option');
-        var dates = week[1].split(" ");
-        var txt = week[0].split('W');
-        var weekNumber = txt[1];
-        txt = txt[0] +"/W"+ txt[1] +" - ("+  dates[0] +" to "+ dates[2] +")";
-        opt.innerHTML = txt;
-        var value = dates[0]+ " " +dates[2]+" "+weekNumber+"&";
-        opt.setAttribute('value', value);
-        sel.appendChild(opt);  
-        }
-    } else {
-       load(weeks)
+function load(weeks) {
+  var ul = document.getElementById("tt_currentUnorderedListOptions");
+  if(ul != null) {
+    for (var i=0; i<weeks.length; i++) {
+      var week = weeks[i];
+      var dates = week[1].split(" ");
+      var txt = week[0].split('W');
+      var weekNumber = txt[1];
+      txt = txt[0] +"/W"+ txt[1] +" - ("+  dates[0] +" to "+ dates[2] +")";
+      var value = dates[0]+ " " +dates[2]+" "+weekNumber+"&";
+      var li = document.createElement("li");
+      li.setAttribute("tstvalue", value);
+      li.setAttribute("onmousedown", "null; updateTouchscreenInputForSelect(this); ");
+      li.setAttribute("style", "");
+      li.setAttribute("class", "even");
+      li.innerHTML = txt;
+      ul.appendChild(li); 
     }
+  }
 }
 
-function OptSubmit(vl) {
+function OptSubmit() {
     var selected_val = $("touchscreenInput0");
     var dates = selected_val.getAttribute('tstvalue');
     dates = dates.split(" ");
 
     document.location = "idsr.html?" + 'start_date='+dates[0]+'&end_date='+dates[1]+"&week_number="+dates[2];
 }
+
+
+function changeNextBTN() {
+  var nextBTN = document.getElementById("nextButton");
+  nextButton.setAttribute("onmousedown", "OptSubmit();");
+}
+
 </script>
 
 <style>
@@ -114,9 +119,9 @@ function OptSubmit(vl) {
 <body id="mateme" onload="">
   <div id="container">
     <div id="content">
-      <form id='week' action="javascript:OptSubmit(this);">
+      <form id='week' action="post">
         <select helpText="Select EPI Week" id="weeks" 
-          name="week" tt_onLoad="__$('keyboard').style.display = 'none';" 
+          name="week" tt_onLoad="__$('keyboard').style.display = 'none';fetchWeeks();changeNextBTN()" 
           tt_onUnLoad="__checkSelected();">
         </select>
 
