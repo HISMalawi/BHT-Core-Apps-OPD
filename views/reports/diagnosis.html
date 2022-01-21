@@ -69,6 +69,7 @@
     td {
       border-style: solid;
       border-width: 1px;
+      text-align: center !important;
     }
     
     #version {
@@ -156,6 +157,10 @@
       width: 100% !important;
     }
 
+    #diagnosis_table {
+      width: 100% !important;
+    }
+
     #patient_details_table_filter {
       display: none !important;
     }
@@ -216,25 +221,39 @@
     text-align: center;
     margin: 3.3px;
     }
+
+    .drill-down {
+      background-color: #eaeaea;
+      /* border: solid 8px #eaeaea;
+      border-right: solid 30px #eaeaea;
+      border-left: solid 30px #eaeaea;
+      font-size: large; */
+    }
+
+    .drill-down:focus, .drill-down:hover {
+      color: #e5e9ec;
+      background-color: #7eb9d0;
+      text-decoration: none;
+    }
     
     a {
       background-color: #eaeaea;
-    border: solid 8px #eaeaea;
-    border-right: solid 30px #eaeaea;
-    border-left: solid 30px #eaeaea;
-    font-size: large;
+      border: solid 8px #eaeaea;
+      border-right: solid 30px #eaeaea;
+      border-left: solid 30px #eaeaea;
+      font-size: large;
     }
     
     a:focus, a:hover {
-        color: #23527c;
-        text-decoration: none;
+      color: #23527c;
+      text-decoration: none;
     }
     
     #virtual-keyboard{
       z-index: 993 !important;
       text-align: center;
       left: 170px !important;
-      top: 320px !important;
+      top: 399px !important;
       height: auto !important;
     }
     
@@ -422,7 +441,6 @@
                 <th  >5 months to 14 yrs M</th>
                 <th  >&#62; 14 yrs F</th>
                 <th  >&#62; 14 yrs M</th>
-
                 <th  >Total</th>
             </tr>
         </thead>
@@ -434,6 +452,9 @@
     <div class="container-footer">
         <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
             <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
+        </button>
+        <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
+          <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
         </button>
         <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
             <span>&nbsp; Export &nbsp;</span>
@@ -451,26 +472,28 @@ url = new URL(url);
 var start_date = url.searchParams.get("start_date");
 var end_date = url.searchParams.get("end_date");
 
-    function initializeTable() {
+  function initializeTable(searching = true,paging = true, buttons = ['copy', 'csv'], reload = false) {
   table = $('#diagnosis_table').DataTable({
-    
-
-            fixedHeader: false,
-            scrollX: 300,
-            scrolly: 300,
-            Processing: true,
-            ServerSide: true,
-            scroller: {
-                loadingIndicator: true
-            },
-            dom: 'Bfrtip',
-            buttons: [
-            'copy', 'csv', 'pdf', 'print'
-          ]
+    fixedHeader: false,
+    searching: searching,
+    scrollX: 300,
+    scrolly: 300,
+    paging: paging,
+    Processing: true,
+    ServerSide: true,
+    scroller: {
+        loadingIndicator: true
+    },
+    dom: 'Bfrtip',
+    buttons: buttons
   });
-  document.getElementById('spinner').style = 'display: block;';
-  document.getElementById('report-cover').style = 'display: block;';
-  fetchData();
+
+  if (reload == false) {
+    document.getElementById('spinner').style = 'display: block;';
+    document.getElementById('report-cover').style = 'display: block;';
+    fetchData();
+    lookForTag();
+  }
 }
 
 var start_date = url.searchParams.get("start_date");
@@ -478,46 +501,45 @@ var end_date = url.searchParams.get("end_date");
 
 document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
 document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
-
 document.getElementById('facility-name').innerHTML = sessionStorage.currentLocation;
-
 var table;
 initializeTable();
 
-
-
 function fetchData()
-{
+{     
+  let url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
+      url += '/programs/' + sessionStorage.programID;
+      url += '/reports'
+      url += '/diagnosis?start_date=' + start_date;
+      url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+  let req = new XMLHttpRequest();
+  req.onreadystatechange = function(){
+  if (this.readyState == 4) {
+    if (this.status == 200) {
+        let results = JSON.parse(this.responseText);
+        diagnosisDetails = JSON.parse(this.responseText);
+        renderDetails(diagnosisDetails);
+      }
+    }
+  };
+  try {
+    req.open('GET', url, true);
+    req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+    req.send();
+  } catch (e) {
+  } 
+}
 
-    var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
-          url += '/programs/' + sessionStorage.programID;
-          url += '/reports'
-          url += '/diagnosis?start_date=' + start_date;
-          url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-          
-
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-          
-            diagnosisDetails = JSON.parse(this.responseText);
-            
-            renderDetails(diagnosisDetails);
-            
-
-        } else if (this.readyState === 4) {
-
-        } else if (this.status == 500) {
-
-        }
-      };
-
-      xhttp.open("GET", url, true);
-      xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-      xhttp.setRequestHeader('Content-type', "application/json");
-      xhttp.send();
-
-
+function printWindow() {
+  var footer = document.getElementsByClassName('footer')[0]
+  footer.style = 'display: none;'
+  table.destroy()
+  initializeTable(false,false,[],true)
+  document.getElementById('spinner').style = 'display: none;';
+  window.print()
+  table.destroy()
+  initializeTable(true,true,['copy', 'csv'], true)
+  footer.style = 'display: inline;';
 }
 
 function renderDetails(diagnosisDetails){
@@ -574,10 +596,9 @@ function renderDetails(diagnosisDetails){
                     ...row[8]];
                     // console.log(patient)
             }
-
           }
       }
-      table.row.add([row[0],
+      let roww = table.row.add([row[0],
       buildLink(diagnosis,row[1],dynamic_age_group,"F",1),
       buildLink(diagnosis,row[2],dynamic_age_group,"M",2),
       buildLink(diagnosis,row[3],dynamic_age_group,"F",3),
@@ -587,8 +608,25 @@ function renderDetails(diagnosisDetails){
       buildLink(diagnosis,row[7],dynamic_age_group,"F",7),
       buildLink(diagnosis,row[8],dynamic_age_group,"M",8),
       buildLink(diagnosis,row[9],dynamic_age_group,"Total",9)
-     
     ]).draw()
+    
+    let obj = roww.nodes()
+    tdChildNodes = obj[Object.keys(obj)[0]].childNodes
+
+    for (node of tdChildNodes) {
+      for (item of node.childNodes) {
+        let compare_string = "[object Text]"
+        str = String(item)
+        if (str !== compare_string) {
+          let fn = item.getAttribute('onclick')
+          let value = item.innerText
+          node.innerHTML = '';
+          node.setAttribute('onclick',fn)
+          node.setAttribute('class','drill-down')
+          node.innerText = value
+        }
+      }
+    }
   }
   document.getElementById('spinner').style = 'display: none;';
   document.getElementById('report-cover').style = 'display: none;';
@@ -615,40 +653,41 @@ function buildLink(diagnosis, patient_ids,age_group,gender,column_number){
     if(patient_ids.length < 1)
     return 0
     
-    return `<a href="javascript:drillDown('${diagnosis}','${age_group}','${gender}',${column_number})" >${patient_ids.length}</a>`
+    return `<a onclick="javascript:drillDown('${diagnosis}','${age_group}','${gender}',${column_number})">${patient_ids.length}</a>`
+    //return patient_ids.length
 }
 
 var patientTable;
 function drillDown(diagnosis,age_group,gender,column_number){
-  patientDetailsModal();
-  initializePatienDetailsTable();
+  patientDetailsModal()
+  initializePatienDetailsTable()
   let patient_ids = drill_down_patients[gender][age_group][column_number][diagnosis];
   for(var patient_id of patient_ids){
-    getPatientDetails(patient_id)
+    //getPatientDetails(patient_id)
+    getClientbyID(patient_id)
   }
 }
 
 function initializePatienDetailsTable() {
   patientTable = $('#patient_details_table').DataTable({
-    
-            fixedHeader: false,
-            scrollX: 100,
-            scrolly: 100,
-            Processing: true,
-            ServerSide: true,
-            pageLength: 6,
-            scroller: {
-                loadingIndicator: true
-            },
-            dom: 'Bfrtip',
-            buttons: [
-            'copy', 'csv', 'pdf', 'print'
-          ]
+    fixedHeader: false,
+    scrollX: 100,
+    scrolly: 100,
+    Processing: true,
+    ServerSide: true,
+    pageLength: 6,
+    scroller: {
+        loadingIndicator: true
+    },
+    dom: 'Bfrtip',
+    buttons: [
+    'copy', 'csv', 'pdf', 'print'
+    ]
   });
-
 }
+
 function getPatientDetails(patient_id){
-  let url = sessionStorage.apiProtocol + '://'+apiURL+':'+apiPort+'/api/v1/patient_details_by_id?';
+  let url = sessionStorage.apiProtocol + '://'+sessionStorage.apiURL+':'+sessionStorage.apiPort+'/api/v1/patient_details_by_id?';
   url +=   'patient_id='+patient_id;
   let req = new XMLHttpRequest();
   req.onreadystatechange = function(){
@@ -662,25 +701,27 @@ function getPatientDetails(patient_id){
   try {
     req.open('GET', url, true);
     req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-    req.send(null);
+    req.send();
   } catch (e) {
   } 
 }
 
 
 function loadPatientDetail(data){
-  for(const patients of data){
-    let patientDetails = []
-    for(const patient in patients){
-      if(patient != null)
-      patientDetails.push(patients[patient])
-    }
-   patientTable.row.add(patientDetails).draw()
-  }
-  
+  var one_person = data.person
+  patientDetails = []
+  patientDetails.push(one_person.person_id)
+  patientDetails.push(one_person.names[0].given_name)
+  patientDetails.push(one_person.names[0].family_name)
+  patientDetails.push(one_person.gender)
+  patientDetails.push(one_person.person_attributes[1].value)
+  let addresses_obj = one_person.addresses[0]
+  let address = addresses_obj.state_province +", "+ addresses_obj.city_village +", "+ addresses_obj.address1
+  patientDetails.push(address)
+  patientTable.row.add(patientDetails).draw()
   document.getElementById('spinner').style = 'display: none;';
   document.getElementById('report-cover-2').style = 'display: none;';
-  document.getElementById('report-cover').style = 'display: block;';
+  document.getElementById('report-cover').style = 'display: block;'; 
 }
 
 function patientDetailsModal()
@@ -701,7 +742,43 @@ function close_modal()
     document.getElementById('report-cover').style = 'display: none;';
     document.getElementById('modal').style = 'display: none;';
 }
+
+function getClientbyID(person_id) {
+    var url =
+    sessionStorage.apiProtocol +
+      "://" +
+      sessionStorage.apiURL +
+      ":" +
+      sessionStorage.apiPort +
+      "/api/v1/patients/" +
+      person_id
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+        
+
+        let results = JSON.parse(this.responseText);
+        loadPatientDetail(results);
+      
+        
+      } else if (this.status == 204) {
+        
+      }else if (this.status == 422) {
+
+      }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader(
+      "Authorization",
+      sessionStorage.getItem("authorization")
+    );
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+}
 </script>
+
+
 
 
 

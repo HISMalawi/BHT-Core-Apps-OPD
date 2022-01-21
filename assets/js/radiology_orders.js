@@ -283,13 +283,17 @@ function postRadiologyOrders(encounter) {
   submitParameters(obs, "/observations", "submitRadiologyParameters")
                    
 }
+var radiology_orders_string = "";
+var patient_data;
 function submitRadiologyParameters(array_obj) 
 {
-     var patient_name = sessionStorage.getItem("family_name")+" "+sessionStorage.getItem("given_name");
-     var accession_number = array_obj[0].children[0].accession_number;
-     var date_created = array_obj[0].date_created;
+  
+  if(sessionStorage.radiology_status == 'true'){
+    var patient_name = sessionStorage.getItem("family_name")+" "+sessionStorage.getItem("given_name");
+    var accession_number = array_obj[0].children[0].accession_number;
+    var date_created = array_obj[0].date_created;
 
-     var patient_data = {  
+    patient_data = {  
         patient_details:
          {
              "patient_name": patient_name ,
@@ -311,23 +315,7 @@ function submitRadiologyParameters(array_obj)
         radiology_orders: []
      };
  
-     var radiology_orders_string = "";
-     for(var key in array_obj)
-     {
-         var obj = array_obj[key];
-         patient_data.radiology_orders.push(
-         { 
-             "main_value_text": obj.value_text,
-             "obs_id": obj.obs_id,
-             "sub_value_text": obj.children[0].value_text,
-         });
-
-         if(radiology_orders_string == "")
-             radiology_orders_string = obj.children[0].value_text;
-         else
-             radiology_orders_string = radiology_orders_string +","+ obj.children[0].value_text;
-
-     }
+     radiologyOrderString(array_obj);
 
      sessionStorage.setItem("radiology_orders", radiology_orders_string); 
      sessionStorage.setItem("radiology_accession_number", accession_number); 
@@ -335,13 +323,37 @@ function submitRadiologyParameters(array_obj)
     
     document.getElementById('spinner').style = 'display: block;';
     submitParameters(patient_data, "/radiology/radiology_orders", "print_barcode")
+  }
+  else{
+    patient_data = {  radiology_orders: []};
+    radiologyOrderString(array_obj);
+    sessionStorage.setItem("radiology_orders", radiology_orders_string); 
+    print_barcode();
+  }
 }
 
+function radiologyOrderString(array_obj){
+  for(var key in array_obj)
+  {
+      var obj = array_obj[key];
+      patient_data.radiology_orders.push(
+      { 
+          "main_value_text": obj.value_text,
+          "obs_id": obj.obs_id,
+          "sub_value_text": obj.children[0].value_text,
+      });
 
+      if(radiology_orders_string == "")
+          radiology_orders_string = obj.children[0].value_text;
+      else
+          radiology_orders_string = radiology_orders_string +","+ obj.children[0].value_text;
+  }
+
+}
 function print_barcode()
 {
     document.getElementById('spinner').style = 'display: none;';
-    var radiology_barcode_url = "/views/print/radiology_barcode.html";
+    var radiology_barcode_url = "/apps/OPD/views/encounters/radiology/radiology_barcode.html";
     window.location =radiology_barcode_url;
 }
 

@@ -131,7 +131,7 @@ const port = sessionStorage.apiPort;
 const protocol = sessionStorage.apiProtocol;
 
 jQuery.getJSON({
-    url: protocol + '://' + url + ':' + port + '/api/v1/emr_lims_interface?id='+id,
+    url: protocol + '://' + url + ':' + port + '/api/v1/emr_lims_interface?id='+id+'&patient_id='+patient_id,
     data: {},
     type: 'GET',
     beforeSend: function (xhr) {

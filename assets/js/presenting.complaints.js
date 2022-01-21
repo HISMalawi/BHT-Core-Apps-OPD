@@ -1,10 +1,10 @@
-var presentingComplaintsHash = {};
-var presentingComplaintsNameHash = {};
+var presentingComplaintsHash = [];
+var presentingComplaintsNameHash = [];
+var ReEncounter = 'false'
 var _concept_set;
 sessionStorage.setItem('radiology_order_done','false');
 sessionStorage.setItem('lab_order_done','false');
 sessionStorage.setItem('radiology_is_set', 'false');
-
 
 function clearSelection(type_of_complaint) {
   presentingComplaintsHash[type_of_complaint] = [];
@@ -18,31 +18,43 @@ function insertAfter(newNode, existingNode) {
 }
 
 function build_search_field() {
-    var helpText0 = document.getElementById('helpText0');
-    var search_content = document.createElement('div');
-    search_content.setAttribute('id','search_content');
-    //helpText0.appendChild(search_content);
-  
-    insertAfter(search_content, helpText0);
-  
-    var search_text = document.createElement('span');
-    search_text.setAttribute('id','search_text');
-    search_text.innerHTML='Search:';
-    search_content.appendChild(search_text);
-  
-    var search_input = document.createElement('input');
-    search_input.setAttribute('id','search_field');
-    search_input.setAttribute('style','height:40px;width:400px;');
-    //search_input.setAttribute('onkeyup','getPresentingComplaints("Presenting complaint")');
-    search_input.setAttribute('onkeyup','search_results()');
-    search_content.appendChild(search_input);
-    lookForTag(); 
+  var helpText0 = document.getElementById('helpText0');
+  var search_content = document.createElement('div');
+  search_content.setAttribute('id','search_content');
+
+  insertAfter(search_content, helpText0);
+
+  var search_text = document.createElement('span');
+  search_text.setAttribute('id','search_text');
+  search_text.innerHTML='Search:';
+  search_content.appendChild(search_text);
+
+  var search_input = document.createElement('input');
+  search_input.setAttribute('id','search_field');
+  search_input.setAttribute('style','height:40px;width:400px;');
+  search_input.setAttribute('onkeyup','search_results(this)');
+  search_input.setAttribute('onfocusout','refocus(this)');
+  search_input.setAttribute('onmousedown','lookForTag(this)');
+  search_content.appendChild(search_input);
+  lookForTag(); 
 }
 
+function refocus(e) {
+  var timeOut = setTimeout(function() {
+    e.focus()
+  }, 10);
 
-function  search_results() {
-  var x = document.getElementById("search_field").value;
+  let VK = document.getElementById('virtual-keyboard');
+  if (VK != null) {
+    e.setAttribute('onfocus','lookForTag(this)');
+    search_results(e);
+  } else {
+    clearTimeout(timeOut);
+  }
+}
 
+function  search_results(e) {
+  var x = e.value;
   var groups_ls_parent = document.getElementById('side-bar-pre-grouped');
 
   if (x != '')
@@ -54,7 +66,6 @@ function  search_results() {
   for (n=0; n < groups_ls_parent.children.length; n++) {
     groups_ls_parent.children[n].setAttribute('style','display: show');
 
-
     for (var d=0; d < _concept_set.length; d++) {
       var _id = _concept_set[d].group;
       var _bv = document.getElementById(_id);
@@ -63,19 +74,6 @@ function  search_results() {
       _found_g_name_id = _bv.getAttribute('id');
       setVissiableForGroup(_found_g_name_id); 
     }
-
-    //console.log(groups_ls_parent.children[n].children[0]);
-
-    //var __selected = groups_ls_parent.children[n].children[0].getAttribute('selected');
-
-    //groupClicked(groups_ls_parent.children[0].children[0]);
-
-    // if (__selected == 'true') {
-    //   //groupClicked(groups_ls_parent.children[n].children[0]);
-    // } else {
-      
-    // }
-    //complaints-container-column
   }
 
   for (var t=0; t < _concept_set.length; t++) {
@@ -123,7 +121,6 @@ function  search_results() {
         }
       }
 
-
       condition_for_complaint = _srch_str.indexOf(x);
 
       if (condition_for_complaint > 0) {
@@ -166,7 +163,6 @@ function  search_results() {
       bv.parentElement.setAttribute('style','display: show');
       groupClicked(bv);
       _found_g_name_id = bv.getAttribute('id');
-      //setVissiableForGroup(bv.getAttribute('id'))
      }
   }
   setVissiableForGroup(_found_g_name_id);
@@ -194,19 +190,13 @@ function setVissiableForGroup(group) {
 }
 
 function buildPresentaingComplaints(type_of_complaint) {
-
-
- 
-    document.getElementById('buttons').setAttribute('style','width: 100% !important');
-    var frame = document.getElementById('inputFrame' + tstCurrentPage);
-    frame.style = 'height: 90%; display: flex';
-    frame.innerHTML = null;
-    getPresentingComplaints(type_of_complaint);
-    var clearButton = document.getElementById('clearButton');
-    clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
-
-   
-  
+  document.getElementById('buttons').setAttribute('style','width: 100% !important');
+  var frame = document.getElementById('inputFrame' + tstCurrentPage);
+  frame.style = 'height: 90%; display: flex';
+  frame.innerHTML = null;
+  getPresentingComplaints(type_of_complaint);
+  var clearButton = document.getElementById('clearButton');
+  clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
 }
 
 function buildOrderButton() {
@@ -216,33 +206,27 @@ function buildOrderButton() {
   orderButton.setAttribute('id','orderButton');
   orderButton.setAttribute('class','blue button navButton');
   orderButton.setAttribute('selected','false');
-  if(sessionStorage.radiology_status == 'true'){
-    orderButton.innerHTML = '<span>Orders</span>';
-    orderButton.setAttribute('onmousedown','ordersPopupModal()');
-  } else {
-    orderButton.innerHTML = '<span>Lab Order</span>';
-    orderButton.setAttribute('onmousedown','redirection(\"lab\")');
-  }
+  
+  orderButton.innerHTML = '<span>Orders</span>';
+  orderButton.setAttribute('onmousedown','ordersPopupModal()');
+
   navButton.appendChild(orderButton);
 }
 
 function presentingComplaints(concept_sets, type_of_complaint) {
-
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
   frame.innerHTML = null;
 
   var subMainConatiner = document.createElement('div');
   subMainConatiner.setAttribute('id','selected_complaints_main_container');
   
-
   var div1 = document.createElement('div');
   div1.setAttribute('style','display: flex;');
  
-
   var div2 = document.createElement('div');
   div2.setAttribute('id','ts');
- 
-  div2.setAttribute('style','width:100%');
+  
+  div2.setAttribute('style','width:100%; overflow:scroll');
   var side_bar_container = document.createElement('div');
   side_bar_container.setAttribute('id','side-bar-pre-grouped');
 
@@ -253,105 +237,62 @@ function presentingComplaints(concept_sets, type_of_complaint) {
   div1.appendChild(side_bar_container);
   div1.appendChild(main_container);
   div2.appendChild(div1);
-
- 
-
   frame.appendChild(div2);
-
-
-  
-
-  // for (var i=0; i<5; i++) {
-  //   var column = document.createElement('div');
-  //   column.setAttribute('class','complaints-container-column');
-  //   side_bar_container.appendChild(column);
-
-  //   var box;
-  //   box = document.createElement('div');
-  //   box.setAttribute('class','complaints-container-box');
-  //   box.innerHTML = "dog fight";
-  //   //cell.setAttribute('selected', 'false');
-  //   //cell.setAttribute('concept_id', concept_sets[i].concept_id);
-  //   //cell.setAttribute('complaint-type', type_of_complaint);
-  //   //cell.setAttribute('onmousedown','complaintClicked(this);');
-  //   column.appendChild(box);
-  // }
-
-  
-
-  //frame.appendChild(side_bar_container);
-
-
-
-  // var subMainConatiner = document.createElement('div');
-  // subMainConatiner.setAttribute('id','selected_complaints_main_container');
-  // main_container.appendChild(subMainConatiner);
-
-
-  
-
-  //frame.appendChild(main_container);
-  //var search_value = document.getElementById('search_filed').value;
  
   var row;
   var list;
 
   concept_names = []
   for(var t = 0 ; t < concept_sets.length; t++) {
-  var row_count = 1;
-    
-      var column = document.createElement('div');
-      column.setAttribute('class','complaints-container-column');
-      side_bar_container.appendChild(column);
-  
-      var box;
-      box = document.createElement('div');
-      box.setAttribute('class','complaints-container-box');
-      box.setAttribute('id',concept_sets[t].group);
-      box.innerHTML = concept_sets[t].group;
-      box.setAttribute('selected', 'false');
-      box.setAttribute('onmousedown','groupClicked(this);');
-      if (t == 0)
-      box.setAttribute('style','background-color: #aaaaf4 !important');
-      column.appendChild(box);
-    
-      list = document.createElement('div');
-      list.setAttribute('id','list-'+concept_sets[t].group);
-      if(t == 0)
-      list.setAttribute('class','complaints-list-show');
-      else
-      list.setAttribute('class','complaints-list-hide');
-      main_container.appendChild(list);
-    
+    var row_count = 1;
+    var column = document.createElement('div');
+    column.setAttribute('class','complaints-container-column');
+    side_bar_container.appendChild(column);
 
+    var box;
+    box = document.createElement('div');
+    box.setAttribute('class','complaints-container-box');
+    box.setAttribute('id',concept_sets[t].group);
+    box.innerHTML = concept_sets[t].group;
+    box.setAttribute('selected', 'false');
+    box.setAttribute('onmousedown','groupClicked(this);');
+    if (t == 0)
+    box.setAttribute('style','background-color: #aaaaf4 !important');
+    column.appendChild(box);
+  
+    list = document.createElement('div');
+    list.setAttribute('id','list-'+concept_sets[t].group);
+    if(t == 0)
+    list.setAttribute('class','complaints-list-show');
+    else
+    list.setAttribute('class','complaints-list-hide');
+    main_container.appendChild(list);
+    
     for(var i = 0 ; i < concept_sets[t].complaints.length; i++) {
       if(row_count == 1){
-                row = document.createElement('div');
-                row.setAttribute('class','complaints-container-row');
-                list.appendChild(row);
-              }
+        row = document.createElement('div');
+        row.setAttribute('class','complaints-container-row');
+        list.appendChild(row);
+      }
       
-              cell = document.createElement('div');
-              cell.setAttribute('class','complaints-container-cell');
-              cell.innerHTML = "<span class=\'namespacing\'>"+concept_sets[t].complaints[i].name+"</span>";
-              cell.setAttribute('selected', 'false');
-              cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
-              cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
-              cell.setAttribute('group_concept_id', concept_sets[t].concept_id);
-              cell.setAttribute('group_name', concept_sets[t].group);
-              cell.setAttribute('complaint-type', type_of_complaint);
-              cell.setAttribute('name', concept_sets[t].complaints[i].name);
-              cell.setAttribute('onmousedown','complaintClicked(this);');
-              row.appendChild(cell);
+      cell = document.createElement('div');
+      cell.setAttribute('class','complaints-container-cell');
+      cell.innerHTML = "<span class=\'namespacing\'>"+concept_sets[t].complaints[i].name+"</span>";
+      cell.setAttribute('selected', 'false');
+      cell.setAttribute('concept_id', concept_sets[t].complaints[i].concept_id);
+      cell.setAttribute('id', concept_sets[t].complaints[i].concept_id);
+      cell.setAttribute('group_concept_id', concept_sets[t].concept_id);
+      cell.setAttribute('group_name', concept_sets[t].group);
+      cell.setAttribute('complaint-type', type_of_complaint);
+      cell.setAttribute('name', concept_sets[t].complaints[i].name);
+      cell.setAttribute('onmousedown','complaintClicked(this);');
+      row.appendChild(cell);
 
-              row_count++;
-              if(row_count == 4)
-                row_count = 1;
-  } 
+      row_count++;
+      if(row_count == 4)
+        row_count = 1;
+    } 
   }
-  // var sideBarPreGrouped = document.getElementById('side-bar-pre-grouped');
-  //   var other = document.getElementById('Other');
-  //   sideBarPreGrouped.appendChild(other);
 
   if (sessionStorage.saveState == "true") {
      sessionStorage.saveState = "false";
@@ -362,7 +303,9 @@ function presentingComplaints(concept_sets, type_of_complaint) {
      
      localStorage.page_html = "";
      presentingComplaintsNameHash = JSON.parse(sessionStorage.presentingComplaintsNameHash);
-     presentingComplaintsHash = JSON.parse(sessionStorage.presentingComplaintsHash);
+     let tmp = []
+     tmp["Presenting complaint"] = JSON.parse(sessionStorage.presentingComplaintsHash);
+     presentingComplaintsHash = tmp
   }
 }
 
@@ -383,45 +326,32 @@ function autoHighLight(type_of_complaint) {
   }
 }
 
-
 var row_c;
 var row_c_item_count = 1;
 
 function selectedComplaints(e) {
-
   var e = e.cloneNode(true)
   var container = document.getElementById('selected_complaints_main_container');
-  //var subConatiner = document.createElement('div');
 
   if(row_c_item_count == 1) {
     row_c = document.createElement('div');
     row_c.setAttribute('class','complaints-container-row1');
   }
  
-  //row_c.appendChild(subConatiner);
-  //subConatiner.setAttribute('class','temp_comp');
-
- 
   row_c.append(e);
-
-
   container.append(row_c);
 
   row_c_item_count++;
   if (row_c_item_count == 8)
-       row_c_item_count = 1;
+    row_c_item_count = 1;
 }
 
 function complaintClicked(e) {
   var type_of_complaint = e.getAttribute('complaint-type');
-  //var groupID = e.parentElement.parentElement.getAttribute('id').split('list-')[1];
   var group_name = e.getAttribute('group_name');
   var groupSelected = document.getElementById(group_name);
   var childNodes = e.parentElement.parentElement.childNodes;
 
-  //console.log(groupID);
-
-  
   if(e.getAttribute('selected') == 'false'){
     if(e.innerHTML.toUpperCase() == 'NONE'){
       deSelectAll(type_of_complaint);
@@ -443,31 +373,18 @@ function complaintClicked(e) {
           groupSelected.style = 'background-color: #aaaaf4 !important;';
         }
       }
-    }   
-  }else{
+    }
+
+  } else {
     var selected_e_id = e.getAttribute('id');
     e.remove();
-
     e = document.getElementById(selected_e_id);
-
     group_name = e.getAttribute('group_name');
-
-
-
-
-    
-
-
-
     e.setAttribute('onmousedown','complaintClicked(this);');
     e.setAttribute('selected', 'false');
 
-
-
     function check_g(group_name) {
-
       var _group = document.getElementById('list-'+group_name);
-
       var cal_t = 0;
       var count = 0;
       var ls_total = 0;
@@ -478,20 +395,13 @@ function complaintClicked(e) {
           ls_total++;
           if (_selected == 'true') {
             //_group.children[g].children[_g].setAttribute('style','display: show; background-color: lightblue;');
-           cal_t += totalCount('true');
+            cal_t += totalCount('true');
           } else if(_selected == 'false') {
-           cal_t += totalCount('false');
+            cal_t += totalCount('false');
             //document.getElementById(group_name).setAttribute('style',' background-color: ;');
           }
         }
-
-        //console.log(cal_t);
-
       }
-
-      
-      console.log("count: ",count);
-      console.log("ls_T",ls_total);
 
       if (count == ls_total) {
         document.getElementById(group_name).setAttribute('style',' background-color: ;');
@@ -500,46 +410,31 @@ function complaintClicked(e) {
       }
 
       function totalCount(cond) {
-
-        //console.log(cond);
-        console.log(count);
         if (cond == 'true') {
           count = count - 1;
         } else if ( cond == 'false') {
           count = count + 1;
         }
-
-        //console.log(count);
-        //return count;
       }
     }
 
-
-
     check_g(group_name);
-
     e.style = 'background-color: "";';
     removeFromHash(type_of_complaint, e.getAttribute('concept_id'));
     removeFromNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
-
-    
-
-    //
-    //group_container.appendChild(e);
-    // var parent = e.parentElement;
-    // console.log(parent); 
-
 
     if (presentingComplaintsNameHash.length == 0)
     document.getElementById('selected_complaints_main_container').setAttribute('class','');
 
     var find_selected = 0;
+
     for (var i =0; i < childNodes.length; i++ ) {
       for (var j=0; j < childNodes[i].childNodes.length; j++) {
           if (childNodes[i].childNodes[j].getAttribute('selected') == 'true') 
           find_selected +=1;   
       }
     }
+
     if (find_selected == '0') {
         groupSelected.setAttribute('selected', 'false');
         groupSelected.style = 'background-color: #aaaaf4 !important;';
@@ -557,17 +452,19 @@ function groupClicked(e){
     if(groupList[i].getAttribute('selected') == 'false')
     groupList[i].setAttribute('style','background-color: none !important');
   }
-  e.setAttribute('style','background-color: #aaaaf4 !important');
 
+  e.setAttribute('style','background-color: #aaaaf4 !important');
   currentVisabList[0].setAttribute('class','complaints-list-hide');
   container_list.setAttribute('class','complaints-list-show');
 }
 
 function deSelectAll(key) {
   var list = document.getElementsByClassName('complaints-container-cell');
+
   for(var i = 0 ; i < list.length ; i++){
     list[i].style = 'background-color: "";';
   }
+
   presentingComplaintsHash[key] = [];
 }
 
@@ -588,13 +485,11 @@ function addToNameHash(e) {
   try {
     presentingComplaintsNameHash.push(e);
   }catch(e) {
-    //presentingComplaintsNameHash = [];
     presentingComplaintsNameHash.push(e);
   }
 }
 
-function arrayRemove(arr, value) { 
-    
+function arrayRemove(arr, value) {  
   return arr.filter(function(ele){ 
       return ele != value; 
   });
@@ -643,6 +538,8 @@ function getPresentingComplaints(type_of_complaint) {
       var objs = JSON.parse(this.responseText);
      presentingComplaints(objs, type_of_complaint);
      _concept_set = objs;
+
+     checkFor()
     }
   };
   xhttp.open("GET", (url + "?id=" + concept_set + "&name="), true);
@@ -652,7 +549,11 @@ function getPresentingComplaints(type_of_complaint) {
 }
 
 function prepareToSave() {
-  console.log(presentingComplaintsNameHash);
+  if ( ReEncounter == 'true' && isHashEmpty(presentingComplaintsHash)) {
+    nextPage()
+    return
+  }
+
   if(isHashEmpty(presentingComplaintsHash)) {
     showMessage('No selection made. Please select one or more complaints');
     return;
@@ -668,7 +569,7 @@ function prepareToSave() {
       observations.push({concept_id: concept_id, value_coded: temp[i]})
     }
   }
-  
+
   if(observations.length < 1) {
     showMessage('No selection made. Please selection one or more complaints');
     return;
@@ -688,7 +589,6 @@ function prepareToSave() {
   submitParameters(encounter, "/encounters", "saveObs");
 }
 
-//modified function for when orders/Lab oders button is selected
 function prepareToSaveForOrders() {
   
   if(isHashEmpty(presentingComplaintsHash)) {
@@ -724,39 +624,35 @@ function showValidate() {
     td_string+="<div class=\"td-st\">"+presentingComplaintsNameHash[i]+"</div>";
   }
 
-  //document.getElementById('messageBar').style.width = "700px";
-  //console.log(document.getElementById('messageBar'));
   messageBar.innerHTML = "";
   messageBar.innerHTML += "<p>" + message +
-     
-      "<div class='table-st'>"+td_string+"</div>"+
-      "</p><div style='display: block;'>" +
-      "<p style=\" \">" + msg +
-      "</p>"+
-      "<button class='button' style='float: none;' onclick='this.offsetParent.style.display=\"none\";  prepareToSave();' onmousedown='this.offsetParent.style.display=\"none\"; prepareToSave();'" +
-      "><span>Yes</span></button><button class='button' " +
-      "style='float: none; right: 3px;' onmousedown='this.offsetParent.style.display=\"none\"; '>" +
-      "<span>No</span></button>";
+    "<div class='table-st'>"+td_string+"</div>"+
+    "</p><div style='display: block;'>" +
+    "<p style=\" \">" + msg +
+    "</p>"+
+    "<button class='button' style='float: none;' onclick='this.offsetParent.style.display=\"none\";  prepareToSave();' onmousedown='this.offsetParent.style.display=\"none\"; prepareToSave();'" +
+    "><span>Yes</span></button><button class='button' " +
+    "style='float: none; right: 3px;' onmousedown='this.offsetParent.style.display=\"none\"; '>" +
+    "<span>No</span></button>";
   messageBar.style.display = "block";
 }
 
 function saveObs(encounter) { 
   var observations = [];
+  var concept_id =  8578;
 
-    var concept_id =  8578;
-    for(var i = 0 ; i < presentingComplaintsNameHash.length ; i++)
-    {
-      var data = presentingComplaintsNameHash[i].split(";");
-      observations.push({
-        concept_id: concept_id, 
-        value_text:data[2],
-        child: {
-          concept_id: data[0],
-          value_text: data[1]
-      }
-      })
+  for(var i = 0 ; i < presentingComplaintsNameHash.length ; i++)
+  {
+    var data = presentingComplaintsNameHash[i].split(";");
+    observations.push({
+      concept_id: concept_id, 
+      value_text:data[2],
+      child: {
+        concept_id: data[0],
+        value_text: data[1]
     }
-  
+    })
+  }
   
   var obs = {
     encounter_id: encounter["encounter_id"],
@@ -765,8 +661,14 @@ function saveObs(encounter) {
   submitParameters(obs, "/observations", "nextPage")  
 }
 
-function nextPage(obs){
-  nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+function nextPage(){
+  setEncounter()
+  nextEncounter(sessionStorage.patientID, sessionStorage.programID)
+}
+
+function setEncounter() {
+  sessionStorage.setItem("presenting_complaints_re_encountered", "true")
+  sessionStorage.setItem("patientID_re_encountered", sessionStorage.patientID)
 }
 
 function ordersPopupModal() {
@@ -903,10 +805,9 @@ function tick(e) {
 
 function redirection(location) {
   setPageState();
-
   let paths = {
-    'radiology' : './radiology/view_radiology_results.html',
-    'lab' : '/views/patient/labs.html'
+    'radiology' : '/apps/OPD/views/encounters/radiology/view_radiology_results.html',
+    'lab' : '/apps/OPD/views//encounters/labs.html'
   }
 
   if (location == 'radiology') {
@@ -965,7 +866,7 @@ function setPageState() {
   sessionStorage.setItem("saveState", "true");
 
   let selectedHash = JSON.stringify(presentingComplaintsNameHash);
-  let encounterHash = JSON.stringify(presentingComplaintsHash);
+  let encounterHash = JSON.stringify(presentingComplaintsHash['Presenting complaint']);
 
   sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
   sessionStorage.setItem('presentingComplaintsHash',encounterHash);
@@ -978,4 +879,169 @@ function closeOrdersPopupModal() {
   var main_container = document.getElementById('ordersModal');
   main_container.setAttribute('style','display: none');
   main_container.remove();
+}
+
+function checkFor() {
+  let id = sessionStorage.patientID;
+  let value = sessionStorage.sessionDate;
+  var url = sessionStorage.apiProtocol + '://' + apiURL + ':' + apiPort + '/api/v1/encounters?paginate=false&patient_id=' + id + '&date=' + value+'&program_id='+sessionStorage.programID;
+  var req = new XMLHttpRequest();;
+  req.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      var results = JSON.parse(this.responseText);
+      for(encounter of results) {
+        if (encounter.encounter_type == '122') {
+          ReEncounter = 'true'
+          let __complaints = []
+          for (observations of encounter.observations) {
+            if (observations.concept_id == '8578') {
+              __complaints.push({
+                "concept_id": observations.concept_id,
+                "group_name": observations.value_text
+              })
+            } else {
+              __complaints.push({
+                "concept_id": observations.concept_id,
+                "complaint_name": observations.value_text
+              })
+            }
+          }
+          getIdByMapping(groupPushedComplaints(__complaints))
+        }
+      }
+    }
+  };
+  try {
+      req.open('GET', url, true);
+      req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+      req.send(null);
+  } catch (e) {
+  }
+}
+
+function getIdByMapping(_groupPushedComplaints) {
+  let ids = []
+  for (group of _groupPushedComplaints.entries()) {
+    for(_complaint of group) {
+      if (typeof(_complaint.complaints_name) != "undefined") {
+        let names = []
+        for (group_names of _complaint.complaints_name) {
+          names.push(group_names.complaint_name)
+         }
+        for(_group of _concept_set) {
+          if(_group.group == _complaint.group_name) {
+            console.log('group: ', _group.group)
+            for (__complaints of _group.complaints) {
+              for (_name of names) {
+                if (__complaints.name == _name) {
+
+                  ids.push({
+                    'group_name' : _group.group,
+                    'complaint_id' : __complaints.concept_id
+                  })
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  selectComplaintsFromPrevious(ids)
+}
+
+function selectComplaintsFromPrevious(_ids = []) {
+  for (id of _ids) {
+
+    let groupSelected = document.getElementById('list-'+id.group_name);
+    let groupSelectedToHighlight = document.getElementById(id.group_name);
+
+    for (g=0; g<groupSelected.children.length; g++) {
+      for (var _g=0; _g<groupSelected.children[g].children.length; _g++) {
+        if (id.complaint_id == groupSelected.children[g].children[_g].getAttribute('id')) {
+          let e = groupSelected.children[g].children[_g]
+          let type_of_complaint = e.getAttribute('complaint-type');
+          let childNodes = e.parentElement.parentElement.childNodes;
+
+          if(e.getAttribute('selected') == 'false'){
+            if(e.innerHTML.toUpperCase() == 'NONE'){
+              deSelectAll(type_of_complaint);
+            }else{
+              deSelectNone(type_of_complaint)
+            }
+            e.setAttribute('selected', 'true');
+            e.style = 'background-color: lightblue;';
+            //addToHash(type_of_complaint, e.getAttribute('concept_id'));
+            selectedComplaints(e);
+            document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
+            e.style = 'background-color: #ccc;';
+            e.setAttribute('onmousedown','');
+            //addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
+            for (var i =0; i < childNodes.length; i++ ) {
+              for (var j=0; j < childNodes[i].childNodes.length; j++) {
+                if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {
+                  groupSelectedToHighlight.setAttribute('selected', 'true');
+                  groupSelectedToHighlight.style = 'background-color: #aaaaf4 !important;';
+                }
+              }
+            }   
+          }
+        }
+      }
+    }
+  }
+}
+
+function groupPushedComplaints(pushedComplaints) {
+  //temporaly holder for group name (previous value checking)
+  let temp_group_name = null;
+  let group_concept_id;
+  let groupedComplaints = [];
+  let complaint_names = [];
+  let _last_group_ame;
+
+  for ([count, __complaint] of pushedComplaints.entries()) {
+    if (temp_group_name == null) {
+      //initial group_name
+      temp_group_name = __complaint.group_name;
+      group_concept_id = __complaint.concept_id
+    }
+
+    //setting last group name
+    if (typeof(__complaint.group_name) != "undefined") {
+      _last_group_ame = __complaint.group_name;
+    }
+
+    if (typeof(__complaint.group_name) != "undefined") {
+      if (temp_group_name != __complaint.group_name) {
+        groupedComplaints.push({
+          "group_name": temp_group_name,
+          "concept_id": group_concept_id,
+          "complaints_name": complaint_names
+        });
+
+        complaint_names = [];
+        temp_group_name = __complaint.group_name;
+      }
+    }
+
+    //grouping complaints names
+    if(typeof(__complaint.complaint_name) != "undefined")
+    complaint_names.push({
+      "complaint_name": __complaint.complaint_name,
+      "concept_id": __complaint.concept_id,
+    })
+
+    //pushing the last group item
+    if (count == pushedComplaints.length - 1) {
+      groupedComplaints.push({
+        "group_name": _last_group_ame,
+        "concept_id": group_concept_id,
+        "complaints_name": complaint_names
+      });
+    }
+  }
+
+  return groupedComplaints;
 }
