@@ -630,6 +630,10 @@ function renderDetails(diagnosisDetails){
   }
   document.getElementById('spinner').style = 'display: none;';
   document.getElementById('report-cover').style = 'display: none;';
+
+  //fix for Exporting
+  table.destroy()
+  initializeTable(true,true,['copy', 'csv'], true)
 }
 
 var drill_down_patients = {}
