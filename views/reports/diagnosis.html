@@ -554,28 +554,28 @@ function renderDetails(diagnosisDetails){
           for(const patient in age_group){
             const patient_ids = diagnosisDetails[diagnosis][g][patient]
             for(const patient_id of patient_ids){
-                if(g == "F" && patient == "0-5 months"){
+              if(g == "F" && patient == "0-5 months"){
                     row[1].push(patient_id)
                     dynamic_age_group =patient;
                 } else if(g == "M" && patient == "0-5 months"){
                     row[2].push(patient_id)
                     dynamic_age_group =patient;
                 }
-                else if(g == "F" && patient.match(/6-11 months|12-23 months|2-4 years/) ){
+                else if(g == "F" && patient.match(/6 months to < 5 years/) ){
                     row[3].push(patient_id)
                     dynamic_age_group = "6 months to < 5 years";
 
                 }
-                else if(g == "M" && patient.match(/6-11 months|12-23 months|2-4 years/)){
+                else if(g == "M" && patient.match(/6 months to < 5 years/)){
                     row[4].push(patient_id)
                     dynamic_age_group = "6 months to < 5 years";
                 }
-                else if(g == "F" && patient.match(/5-9 years|10-14 years/)){
+                else if(g == "F" && patient.match(/5 years to < 14 years/)){
                     row[5].push(patient_id)
                     dynamic_age_group = "5 years to < 14 years";
                 }
 
-                else if(g == "M" && patient.match(/5-9 years|10-14 years/)){
+                else if(g == "M" && patient.match(/5 years to < 14 years/)){
                     row[6].push(patient_id)
                     dynamic_age_group = "5 years to < 14 years";
                 }
