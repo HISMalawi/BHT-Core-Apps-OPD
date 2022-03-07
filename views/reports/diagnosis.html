@@ -1,7 +1,7 @@
 <html>
   <meta charset="utf-8"/>
 
-<title>Diagnosis Report</title>
+<title id="title">OPD Diagnosis</title>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
 
@@ -453,9 +453,9 @@
         <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
             <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
         </button>
-        <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
+        <!-- <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
           <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
-        </button>
+        </button> -->
         <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
             <span>&nbsp; Export &nbsp;</span>
         </button>
@@ -472,7 +472,7 @@ url = new URL(url);
 var start_date = url.searchParams.get("start_date");
 var end_date = url.searchParams.get("end_date");
 
-  function initializeTable(searching = true,paging = true, buttons = ['copy', 'csv'], reload = false) {
+  function initializeTable(searching = true,paging = true, buttons = [ 'csv', 'pdf', 'print'], reload = false) {
   table = $('#diagnosis_table').DataTable({
     fixedHeader: false,
     searching: searching,
@@ -498,6 +498,8 @@ var end_date = url.searchParams.get("end_date");
 
 var start_date = url.searchParams.get("start_date");
 var end_date = url.searchParams.get("end_date");
+var start_date_formated = moment(start_date).format('DD/MMM/YYYY');
+var end_date_formated = moment(end_date).format('DD/MMM/YYYY');
 
 document.getElementById('start-date').innerHTML = moment(start_date).format('DD/MMM/YYYY');
 document.getElementById('end-date').innerHTML = moment(end_date).format('DD/MMM/YYYY');
@@ -538,7 +540,7 @@ function printWindow() {
   document.getElementById('spinner').style = 'display: none;';
   window.print()
   table.destroy()
-  initializeTable(true,true,['copy', 'csv'], true)
+  initializeTable(true,true,[ 'csv', 'pdf', 'print'], true)
   footer.style = 'display: inline;';
 }
 
@@ -633,7 +635,20 @@ function renderDetails(diagnosisDetails){
 
   //fix for Exporting
   table.destroy()
-  initializeTable(true,true,['copy', 'csv'], true)
+  addReportTitle()
+  initializeTable(true,true,[ 'csv', 'pdf', 'print'], true)
+}
+
+function addReportTitle() {
+  var titleTag = document.getElementById('title');
+  var current_facility_name = sessionStorage.currentLocation;
+  var start_date = url.searchParams.get("start_date");
+  var end_date = url.searchParams.get("end_date");
+  var start_date_formated = moment(start_date).format('DD/MMM/YYYY');
+  var end_date_formated = moment(end_date).format('DD/MMM/YYYY');
+  var period = start_date_formated +"  To  "+ end_date_formated
+  var tilteText = current_facility_name + "\n OPD Diagnosis Report \n"+ period;
+  titleTag.innerHTML = tilteText;
 }
 
 var drill_down_patients = {}
@@ -685,7 +700,7 @@ function initializePatienDetailsTable() {
     },
     dom: 'Bfrtip',
     buttons: [
-    'copy', 'csv', 'pdf', 'print'
+     'csv', 'pdf', 'print'
     ]
   });
 }
