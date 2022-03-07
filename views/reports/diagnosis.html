@@ -559,21 +559,21 @@ function renderDetails(diagnosisDetails){
                     row[2].push(patient_id)
                     dynamic_age_group =patient;
                 }
-                else if(g == "F" && patient.match(/6 months to < 5 years/) ){
+                else if(g == "F" && patient.match(/6 mth < 5 yrs/) ){
                     row[3].push(patient_id)
                     dynamic_age_group = "6 months to < 5 years";
 
                 }
-                else if(g == "M" && patient.match(/6 months to < 5 years/)){
+                else if(g == "M" && patient.match(/6 mth < 5 yrs/)){
                     row[4].push(patient_id)
                     dynamic_age_group = "6 months to < 5 years";
                 }
-                else if(g == "F" && patient.match(/5 years to < 14 years/)){
+                else if(g == "F" && patient.match(/5-14 yrs/)){
                     row[5].push(patient_id)
                     dynamic_age_group = "5 years to < 14 years";
                 }
 
-                else if(g == "M" && patient.match(/5 years to < 14 years/)){
+                else if(g == "M" && patient.match(/5-14 yrs/)){
                     row[6].push(patient_id)
                     dynamic_age_group = "5 years to < 14 years";
                 }
