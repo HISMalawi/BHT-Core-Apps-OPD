@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
 <link rel="stylesheet" href="/assets/css/custom.css">
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
@@ -613,22 +614,9 @@ function renderDetails(diagnosisDetails){
 
   //fix for Exporting
   table.destroy();
-  addReportTitle();
-  
+  addReportTitle("OPD Diagnosis Report")
   initializeTable(true,true,[ 'csv', 'pdf'], true);
   addToCSV()
-}
-
-function addReportTitle() {
-  var titleTag = document.getElementById('title');
-  var current_facility_name = sessionStorage.currentLocation;
-  var start_date = url.searchParams.get("start_date");
-  var end_date = url.searchParams.get("end_date");
-  var start_date_formated = moment(start_date).format('DD/MMM/YYYY');
-  var end_date_formated = moment(end_date).format('DD/MMM/YYYY');
-  var period = start_date_formated +"  -  "+ end_date_formated
-  var tilteText = current_facility_name + "\n OPD Diagnosis Report \n"+ period;
-  titleTag.innerHTML = tilteText;
 }
 
 function addToCSV() {
