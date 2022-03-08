@@ -1,3 +1,4 @@
+<title id="title"></title>
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
 
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
@@ -84,7 +85,7 @@
             <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png"/>
         </div>
         <div class='title-cell' id='title-cell-right'>
-            <table style="width: 100%; text-align: left; margin-left: 10px;">
+            <table style="width: 100%; text-align: left; margin-left: 10px; ">
                 <tr>
                     <th>Title:</th>
                     <td colspan="2" id="report-title">Clients / Patients with NIDs
@@ -92,15 +93,14 @@
                 </tr>
                 <tr>
                     <th>Period:</th>
-                    <td id="start-date">
                     <td>
-                    <td id="end-date">
+                        <span id="start-date"></span> - <span id="end-date"></span>
                     <td>
                 </tr>
             </table>
         </div>
     </div>
-</div>
+  </div>
 
 <div class="title-table">
     <div class='title-row'>
@@ -220,5 +220,6 @@
     }
 
     buildReportingTable();
+    addReportTitle("Clients / Patients with NIDs");
 </script>
 
