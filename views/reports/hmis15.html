@@ -1,32 +1,20 @@
 <html>
-  <meta charset="utf-8"/>
-  <title id="title"></title>
+<meta charset="utf-8"/>
+<title id="title"></title>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
-
 <link rel="stylesheet" href="/assets/css/custom.css">
-
-
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
-
-
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
-
-
 <script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
 <script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
-
-
-
 <script src="/assets/js/moment.js"></script>
-
-
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 <script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
 <style type="text/css" xmlns="http://www.w3.org/1999/html">
@@ -386,30 +374,6 @@ function showDisaggregatedReport(){
 }
 </script>
 
-<div id="consistency_check">
-  <div id="patients_consistency"></div>
-  <div id="cum_patients_consistency"></div>
-
-  <div id="total_registered_disag"></div>
-  <div id="cum_total_registered_disag"></div>
-  
-  <div id="gender_consistency"></div>
-  <div id="cum_gender_consistency"></div>
-  <div id="age_consistency"></div>
-  <div id="cum_age_consistency"></div>
-  <div id="reasons_consistency"></div>
-  <div id="cum_reasons_consistency"></div>
-  <div id="conditions_consistency"></div>
-  <div id="cum_conditions_consistency"></div>
-  <div id="died_consistency"></div>
-  <div id="total_consistency"></div>
-  <div id="regimen_consistency"></div>
-  <div id="pregnant_consistency"></div>
-  <div id="tb_status_consistency"></div>
-  <div id="side_effect_consistency"></div>
-  <div id="adherence_consistency"></div>
-</div>
-
 <div id="content" style="margin-bottom: 65px;">
   <table>
   <tr id="">
@@ -428,7 +392,7 @@ function showDisaggregatedReport(){
     <td class="td-text-align-left"><span id="wkdates"></span></td>
   </tr>
   <tr>
-    <td class="td-text-align-left">Visits (Total): </td>
+    <td class="td-text-align-left">Total OPD Visits: </td>
     <td class="td-text-align-left"><span id="total_visits"></span></td>
   </tr>
   <tr>
@@ -616,6 +580,7 @@ function getIndicators() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      getRegistration();
       runningReport = false
       var count_for_condition = 1;
       for (const [key, value] of Object.entries(JSON.parse(this.responseText))) {
@@ -675,10 +640,10 @@ function getRegistration() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-      document.getElementById('spinner').style = 'display: none;';
-      document.getElementById('report-cover').style = 'display: none;';
       var obj = JSON.parse(this.responseText);
       setVisitsValue(obj);
+      document.getElementById('spinner').style = 'display: none;';
+      document.getElementById('report-cover').style = 'display: none;';
     }
   };
   xhttp.open("GET", url, true);
@@ -713,7 +678,6 @@ document.getElementById('wkdates').innerHTML = start_date +"&nbsp;&nbsp;&nbsp;to
 document.getElementById('spinner').style = 'display: inline;';
 document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
-getRegistration();
 
 function printWindow() {
   var items = document.getElementsByTagName("a");

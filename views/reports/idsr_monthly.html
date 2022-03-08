@@ -376,30 +376,6 @@ function showDisaggregatedReport(){
 }
 </script>
 
-<div id="consistency_check">
-  <div id="patients_consistency"></div>
-  <div id="cum_patients_consistency"></div>
-
-  <div id="total_registered_disag"></div>
-  <div id="cum_total_registered_disag"></div>
-  
-  <div id="gender_consistency"></div>
-  <div id="cum_gender_consistency"></div>
-  <div id="age_consistency"></div>
-  <div id="cum_age_consistency"></div>
-  <div id="reasons_consistency"></div>
-  <div id="cum_reasons_consistency"></div>
-  <div id="conditions_consistency"></div>
-  <div id="cum_conditions_consistency"></div>
-  <div id="died_consistency"></div>
-  <div id="total_consistency"></div>
-  <div id="regimen_consistency"></div>
-  <div id="pregnant_consistency"></div>
-  <div id="tb_status_consistency"></div>
-  <div id="side_effect_consistency"></div>
-  <div id="adherence_consistency"></div>
-</div>
-
 <div id="content" style="margin-bottom: 65px;">
   <table>
     <tr id="">
@@ -610,6 +586,7 @@ function getIndicators() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      getRegistration();
       runningReport = false
       idsrResults = JSON.parse(this.responseText);
       var count_for_condition = 1;
@@ -791,7 +768,6 @@ document.getElementById('wkdates').innerHTML = start_date +"&nbsp;&nbsp;&nbsp;to
 document.getElementById('spinner').style = 'display: inline;';
 document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
-getRegistration();
 
 function printWindow() {
   var items = document.getElementsByTagName("a");
