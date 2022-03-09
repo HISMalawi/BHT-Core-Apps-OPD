@@ -1,418 +1,411 @@
 <html>
-  <meta charset="utf-8"/>
-
+<meta charset="utf-8"/>
 <title id="title">OPD Diagnosis</title>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
-
 <link rel="stylesheet" href="/assets/css/custom.css">
-
-
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
-
-
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
-
-
 <script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
 <script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
-
-
-
 <script src="/assets/js/moment.js"></script>
-
-
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
-
 <style type="text/css" xmlns="http://www.w3.org/1999/html">
-
-    #tasks {
-      visibility: hidden;
-      margin-right: 10px;
-    }
-    
-    @page {
-      size: auto;   /* auto is the current printer page size */
-      margin: 0mm;  /* this affects the margin in the printer settings */
-      font-size: 12px;
-    }
-    
-    body {
-      background-color:#FFFFFF; 
-      border: solid 1px black ;
-      margin: 0px;  /* the margin on the content before printing */
-    }
-    
-    #spinner{
-      display: none;
-    }
-    
-    #report-cover {
-      display: none;
-    }
-    
-    #report-cover-2 {
-      display: none;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    td {
-      border-style: solid;
-      border-width: 1px;
-      text-align: center !important;
-    }
-    
-    #version {
-      text-align: right;
-      padding-right: 5px;
-      font-size: 10px;
-    }
-    
-    .numbers {
-      width: 2.5%;
-      text-align: center;
-      border-width: 0px 1px 0px 0px;
-      border-style: dotted;
-    }
-    
-    .td-clear-left {
-     border-left-style: none;
-    }
-    
-    .td-clear-right {
-     border-right-style: none;
-    }
-    
-    .td-text-align-left {
-      text-align: left;
-      padding-left: 10px;
-      width: ;
-    }
-    
-    .td-text-align-right {
-      text-align: center;
-      padding-right: 0px;
-    
-    }
-    
-    .td-span-width {
-     
-    }
-    
-    .row-title {
-      width: 17.75%;
-      text-align: left;
-      padding-left: 5px;
-      border-style: dotted;
-    }
-    
-    .dataTables_wrapper {
-      padding: 1% !important;
-    }
-    
-    .signatures {
-      width: 39.875%;
-      text-align: left;
-      padding-left: 5px;
-      border-style: dotted;
-    }
-    
-    .row-name {
-      width: 39.875%;
-      text-align: left;
-      padding-left: 5px;
-      border-style: dotted;
-      border-left-style: solid;
-    }
-    
-    .no-borders {
-      border-width: 0px;
-    }
-    
-    #version-row td {
-      height: 30px;
-    }
-    
-    .modal {
-      position: fixed;
-      width: 93%;
-      margin-left: 4%;
-      top: 4%;
-      z-index: 992;
-      height: min-content;
-      max-height: auto;
-    }
-
-    #patient_details_table {
-      width: 100% !important;
-    }
-
-    #diagnosis_table {
-      width: 100% !important;
-    }
-
-    #patient_details_table_filter {
-      display: none !important;
-    }
-
-    .dataTables_scroll {
-      margin-top: 1% !important;
-    }
-    
-    .dt-button {
-      border: 1px solid #7eb9d0;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-        font-size: 28px;
-        font-family: arial, helvetica, sans-serif;
-        padding: 10px 10px 10px 10px;
-        text-decoration: none;
-        display: inline-block;
-        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
-        font-weight: bold;
-        color: #FFFFFF;
-        background-color: #a7cfdf;
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
-        background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
-        background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
-        background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
-        background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
-        background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
-        filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
-    }
-    
-    .keyboardButton {
-      border: 1px solid #7eb9d0;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 5px !important;
-    font-size: 25px !important;
-    font-family: arial, helvetica, sans-serif;
-    padding: 10px 10px 10px 10px;
-    text-decoration: none;
-    display: inline-block;
-    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
-    font-weight: 700;
-    color: #fff;
-    background-color: #a7cfdf;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
-    background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
-    background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
-    background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
-    background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
-    background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
-    min-width: 70px;
-    min-height: 55px;
-    cursor: pointer;
-    width: ;
-    height: 35px;
+  #tasks {
+    visibility: hidden;
+    margin-right: 10px;
+  }
+  
+  @page {
+    size: auto;   /* auto is the current printer page size */
+    margin: 0mm;  /* this affects the margin in the printer settings */
+    font-size: 12px;
+  }
+  
+  body {
+    background-color:#FFFFFF; 
+    border: solid 1px black ;
+    margin: 0px;  /* the margin on the content before printing */
+  }
+  
+  #spinner{
+    display: none;
+  }
+  
+  #report-cover {
+    display: none;
+  }
+  
+  #report-cover-2 {
+    display: none;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  td {
+    border-style: solid;
+    border-width: 1px;
+    text-align: center !important;
+  }
+  
+  #version {
+    text-align: right;
+    padding-right: 5px;
+    font-size: 10px;
+  }
+  
+  .numbers {
+    width: 2.5%;
     text-align: center;
-    margin: 3.3px;
-    }
+    border-width: 0px 1px 0px 0px;
+    border-style: dotted;
+  }
+  
+  .td-clear-left {
+    border-left-style: none;
+  }
+  
+  .td-clear-right {
+    border-right-style: none;
+  }
+  
+  .td-text-align-left {
+    text-align: left;
+    padding-left: 10px;
+    width: ;
+  }
+  
+  .td-text-align-right {
+    text-align: center;
+    padding-right: 0px;
+  
+  }
+  
+  .td-span-width {
+    
+  }
+  
+  .row-title {
+    width: 17.75%;
+    text-align: left;
+    padding-left: 5px;
+    border-style: dotted;
+  }
+  
+  .dataTables_wrapper {
+    padding: 1% !important;
+  }
+  
+  .signatures {
+    width: 39.875%;
+    text-align: left;
+    padding-left: 5px;
+    border-style: dotted;
+  }
+  
+  .row-name {
+    width: 39.875%;
+    text-align: left;
+    padding-left: 5px;
+    border-style: dotted;
+    border-left-style: solid;
+  }
+  
+  .no-borders {
+    border-width: 0px;
+  }
+  
+  #version-row td {
+    height: 30px;
+  }
+  
+  .modal {
+    position: fixed;
+    width: 93%;
+    margin-left: 4%;
+    top: 4%;
+    z-index: 992;
+    height: min-content;
+    max-height: auto;
+  }
 
-    .drill-down {
-      background-color: #eaeaea;
-      /* border: solid 8px #eaeaea;
-      border-right: solid 30px #eaeaea;
-      border-left: solid 30px #eaeaea;
-      font-size: large; */
-    }
+  #patient_details_table {
+    width: 100% !important;
+  }
 
-    .drill-down:focus, .drill-down:hover {
-      color: #e5e9ec;
-      background-color: #7eb9d0;
+  #diagnosis_table {
+    width: 100% !important;
+  }
+
+  #patient_details_table_filter {
+    display: none !important;
+  }
+
+  .dataTables_scroll {
+    margin-top: 1% !important;
+  }
+  
+  .dt-button {
+    border: 1px solid #7eb9d0;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      font-size: 28px;
+      font-family: arial, helvetica, sans-serif;
+      padding: 10px 10px 10px 10px;
       text-decoration: none;
-    }
-    
-    a {
-      background-color: #eaeaea;
-      border: solid 8px #eaeaea;
-      border-right: solid 30px #eaeaea;
-      border-left: solid 30px #eaeaea;
-      font-size: large;
-    }
-    
-    a:focus, a:hover {
-      color: #23527c;
-      text-decoration: none;
-    }
-    
-    #virtual-keyboard{
-      z-index: 993 !important;
-      text-align: center;
-      left: 170px !important;
-      top: 399px !important;
-      height: auto !important;
-    }
-    
-    .keyboardButton {
-        font-size: 35px;
-        font-family: arial, helvetica, sans-serif;
-        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
-        margin-top: 1%;
-    }
-    
-    .modal-header {
-      font-size: 16px !important;
-    }
-    
-    .gray-cell {
-      background-color: grey;
-    }
-    
-    .dt-buttons {
-      margin-left: 1.4%;
-    }
-    
-    
-    
-    
-    /* .......... second section starts here ------- */
-    table {
-      width: 97%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      margin-left: 15px;
-    }
-    
-    tr {
-      height: 45px;
-    }
-    
-    .vertical-separator {
-      border-width: 0px;
-    }
-    
-    td {
-      border-style: solid;
-      border-width: 1px;
-    }
-    
-    th {
-      border-style: solid;
-      border-width: 1px;
-    }
-    
-    .section-description td {
-      border-width: 0px;
-    }
-    
-    .horisonatl-separator td {
-      border-width: 0px;
-    }
-    
-    .numbers {
-      width: 2.5%;
-      text-align: center;
-      border-width: 0px 1px 0px 0px;
-      border-style: dotted;
-    }
-    
-    .sum-arrows {
-      width: 75px;
-      height: 55px;
-    }
-    
-    .postfixes {
-      font-size: x-small;
+      display: inline-block;
+      text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
       font-weight: bold;
-      position: relative;
-      top: -15px;
-      left: -40px;
-    }
-    
-    #spinner {
-        position: absolute;
-        top: 150px;
-        left: 40%;
-        z-index: 1001;
-      }
-    
-    #report-cover {
-        position: absolute;
-        background-color: black;
-        width: 100%;
-        height: 102%;
-        left: 0%;
-        top: 0%;
-        z-index: 990;
-        opacity: 0.65;
-    }
-    
-    #report-cover-2 {
-        position: absolute;
-        background-color: black;
-        width: 100%;
-        height: 102%;
-        left: 0%;
-        top: 0%;
-        z-index: 1000;
-        opacity: 0.65;
-    }
-    
-    td {
-      padding-right: 15px;
-      text-align: right;
-    }
-    
-    #consistency_check div{
-      color: red;
-      padding-left: 20px;
-    }
-    
-    #incosistence_title {
-      text-align: center;
-    }
-    
-    .granules {
-      width: 100%;
-      height: 32px;
-      margin: 10px;
-      display: table;
-    }
-    
-    .granules-row {
-      display: table-row;
-    }
-    
-    .granules-cell {
-      display: table-cell;
-      text-align: center;
-    }
-    
-    .granules span{
-      font-size: 10px;
-    }
-    
-    .granules-right-td {
-      border-right-style: dotted !important;
-      border-right-width: 1px;
-    }
-    
-    </style>
-<style type="text/css" xmlns="http://www.w3.org/1999/html">
+      color: #FFFFFF;
+      background-color: #a7cfdf;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
+      background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
+      background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
+      background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
+      background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
+      background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
+      filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
+  }
+  
+  .keyboardButton {
+    border: 1px solid #7eb9d0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 5px !important;
+  font-size: 25px !important;
+  font-family: arial, helvetica, sans-serif;
+  padding: 10px 10px 10px 10px;
+  text-decoration: none;
+  display: inline-block;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+  font-weight: 700;
+  color: #fff;
+  background-color: #a7cfdf;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#a7cfdf), to(#23538a));
+  background-image: -webkit-linear-gradient(top, #a7cfdf, #23538a);
+  background-image: -moz-linear-gradient(top, #a7cfdf, #23538a);
+  background-image: -ms-linear-gradient(top, #a7cfdf, #23538a);
+  background-image: -o-linear-gradient(top, #a7cfdf, #23538a);
+  background-image: linear-gradient(to bottom, #a7cfdf, #23538a);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#a7cfdf, endColorstr=#23538a);
+  min-width: 70px;
+  min-height: 55px;
+  cursor: pointer;
+  width: ;
+  height: 35px;
+  text-align: center;
+  margin: 3.3px;
+  }
 
+  .drill-down {
+    background-color: #eaeaea;
+    /* border: solid 8px #eaeaea;
+    border-right: solid 30px #eaeaea;
+    border-left: solid 30px #eaeaea;
+    font-size: large; */
+  }
+
+  .drill-down:focus, .drill-down:hover {
+    color: #e5e9ec;
+    background-color: #7eb9d0;
+    text-decoration: none;
+  }
+  
+  a {
+    background-color: #eaeaea;
+    border: solid 8px #eaeaea;
+    border-right: solid 30px #eaeaea;
+    border-left: solid 30px #eaeaea;
+    font-size: large;
+  }
+  
+  a:focus, a:hover {
+    color: #23527c;
+    text-decoration: none;
+  }
+  
+  #virtual-keyboard{
+    z-index: 993 !important;
+    text-align: center;
+    /* left: 170px !important; */
+    top: 270px !important;
+    height: 310px !important;
+  }
+  
+  .keyboardButton {
+      font-size: 35px;
+      font-family: arial, helvetica, sans-serif;
+      text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+      margin-top: 1%;
+      font-size: 20px !important;
+  }
+  
+  .modal-header {
+    font-size: 16px !important;
+  }
+  
+  .gray-cell {
+    background-color: grey;
+  }
+  
+  .dt-buttons {
+    margin-left: 1.4%;
+  }
+  
+  .keyboard {
+    /* height: 320px !important; */
+    position: absolute;
+    display: block;
+    z-index: 10;
+    bottom: 85px;
+    /* left: 150px !important; */
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 5px;
+    background-color: #fff;
+    width: 830px !important;
+  }
+      /* .......... second section starts here ------- */
+  table {
+    width: 97%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    margin-left: 15px;
+  }
+  
+  tr {
+    height: 45px;
+  }
+  
+  .vertical-separator {
+    border-width: 0px;
+  }
+  
+  td {
+    border-style: solid;
+    border-width: 1px;
+  }
+  
+  th {
+    border-style: solid;
+    border-width: 1px;
+  }
+  
+  .section-description td {
+    border-width: 0px;
+  }
+  
+  .horisonatl-separator td {
+    border-width: 0px;
+  }
+  
+  .numbers {
+    width: 2.5%;
+    text-align: center;
+    border-width: 0px 1px 0px 0px;
+    border-style: dotted;
+  }
+  
+  .sum-arrows {
+    width: 75px;
+    height: 55px;
+  }
+  
+  .postfixes {
+    font-size: x-small;
+    font-weight: bold;
+    position: relative;
+    top: -15px;
+    left: -40px;
+  }
+  
+  #spinner {
+      position: absolute;
+      top: 150px;
+      left: 40%;
+      z-index: 1001;
+    }
+  
+  #report-cover {
+      position: absolute;
+      background-color: black;
+      width: 100%;
+      height: 102%;
+      left: 0%;
+      top: 0%;
+      z-index: 990;
+      opacity: 0.65;
+  }
+  
+  #report-cover-2 {
+      position: absolute;
+      background-color: black;
+      width: 100%;
+      height: 102%;
+      left: 0%;
+      top: 0%;
+      z-index: 1000;
+      opacity: 0.65;
+  }
+  
+  td {
+    padding-right: 15px;
+    text-align: right;
+  }
+  
+  #consistency_check div{
+    color: red;
+    padding-left: 20px;
+  }
+  
+  #incosistence_title {
+    text-align: center;
+  }
+  
+  .granules {
+    width: 100%;
+    height: 32px;
+    margin: 10px;
+    display: table;
+  }
+  
+  .granules-row {
+    display: table-row;
+  }
+  
+  .granules-cell {
+    display: table-cell;
+    text-align: center;
+  }
+  
+  .granules span{
+    font-size: 10px;
+  }
+  
+  .granules-right-td {
+    border-right-style: dotted !important;
+    border-right-width: 1px;
+  }
+  
+  </style>
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
 </style>
 
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner" />
 <div id="report-cover"></div>
 <div id="report-cover-2"></div>
-
 <div id="content" style="margin-bottom: 65px;">
-
   <table>
   <tr id="">
     <td colspan="2" id="" style="border-right-style: solid; font-weight: bold; text-align: center;">OPD Diagnosis</td>
@@ -430,46 +423,42 @@
   </tr>
 </table>
 
-    <table id="diagnosis_table">
-        <thead>
-            <tr>
-                <th  >Diagnosis</th>
-                <th  >&#60;6 months F</th>
-                <th  >&#60;6 months M</th>
-                <th  >6 months &#60; 5 yrs F</th>
-                <th  >6 months &#60; 5 yrs M</th>
-                <th  >5 months to 14 yrs F</th>
-                <th  >5 months to 14 yrs M</th>
-                <th  >&#62; 14 yrs F</th>
-                <th  >&#62; 14 yrs M</th>
-                <th  >Total</th>
-            </tr>
-        </thead>
-       
-  </table>
-
+<table id="diagnosis_table">
+  <thead>
+    <tr>
+      <th  >Diagnosis</th>
+      <th  >&#60;6 months F</th>
+      <th  >&#60;6 months M</th>
+      <th  >6 months &#60; 5 yrs F</th>
+      <th  >6 months &#60; 5 yrs M</th>
+      <th  >5 months to 14 yrs F</th>
+      <th  >5 months to 14 yrs M</th>
+      <th  >&#62; 14 yrs F</th>
+      <th  >&#62; 14 yrs M</th>
+      <th  >Total</th>
+    </tr>
+  </thead>
+</table>
 </div>
 <footer class="footer">
-    <div class="container-footer">
-        <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
-            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
-        </button>
-        <!-- <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
-          <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
-        </button> -->
-        <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
-            <span>&nbsp; Export &nbsp;</span>
-        </button>
-        <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
-            <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
-        </button>
-    </div>
+  <div class="container-footer">
+    <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
+        <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
+    </button>
+    <!-- <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
+      <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
+    </button> -->
+    <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
+        <span>&nbsp; Export &nbsp;</span>
+    </button>
+    <button id="btnNext" class="red right" style="margin: 5px 0px 0px; padding: 0px; float: left;" onclick="location='/';">
+        <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cancel &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+    </button>
+  </div>
 </footer>
-
 <script>
-    var url = window.location.href;
+var url = window.location.href;
 url = new URL(url);
-
 var start_date = url.searchParams.get("start_date");
 var end_date = url.searchParams.get("end_date");
 
@@ -494,7 +483,9 @@ var end_date = url.searchParams.get("end_date");
     document.getElementById('report-cover').style = 'display: block;';
     fetchData();
     lookForTag();
+    console.log("hahahahahahaah")
   }
+  lookForTag();
 }
 
 var start_date = url.searchParams.get("start_date");
@@ -644,22 +635,14 @@ function renderDetails(diagnosisDetails){
 function addToCSV() {
   var last_row_index = table.row(':last').index()
   var last_row = table.row(':last')
-
   var last_row_node = last_row.node()
   last_row_node.setAttribute('id', 'last_node')
-
-
-
-
   //insert row
   table.row.add( [ 'fio', '', '','', '', '', '', '','','' ] )
     .node().id = 'myid';
   table.draw(false)
-
   var row = table.row('#myid');
   var inserted_row_index = row.index()
-  ///////////
-
   var newData = [
     "BHT-Core Version :"+sessionStorage.coreVersion,
     "    ART Version :"+sessionStorage.OPDVersion,
@@ -715,7 +698,7 @@ function buildLink(diagnosis, patient_ids,age_group,gender,column_number){
 
 var patientTable;
 function drillDown(diagnosis,age_group,gender,column_number){
-  patientDetailsModal()
+  //patientDetailsModal()
   initializePatienDetailsTable()
   let patient_ids = drill_down_patients[gender][age_group][column_number][diagnosis];
   for(var patient_id of patient_ids){
@@ -760,7 +743,6 @@ function getPatientDetails(patient_id){
   } catch (e) {
   } 
 }
-
 
 function loadPatientDetail(data){
   var one_person = data.person
@@ -832,10 +814,6 @@ function getClientbyID(person_id) {
     xhttp.send();
 }
 </script>
-
-
-
-
 
 <!-- Modal -->
 <div class="modal " id="modal" style="display: none;" > 

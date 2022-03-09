@@ -80,7 +80,7 @@
                 ["Diagnosis", "", "reports/report_dates.html?report=diagnosis", 'link'],
                 ["Registration report", "", "reports/report_dates.html?report=registration", 'link'],
                 ["LA report", "", "reports/report_dates.html?report=la", 'link'],
-                ["Malaria report", "", "reports/report_dates.html?report=malaria_report", 'link'],
+                ["Malaria report", "", "reports/report_dates.html?report=malaria", 'link'],
                 ["Cases seen report", "", "reports/report_dates.html?report=cases_seen", 'link'],
                 ["Mental health report", "", "reports/report_dates.html?report=mental_health", 'link'],
                 ["Drugs given", "", "reports/report_dates.html?report=drugs_given", 'link'],
@@ -140,11 +140,6 @@
             } else {
                 cell.setAttribute("onmousedown", "buildReportLinks('" + reports[i][2] + "');");
             }
-
-            if (reports[i][0] == 'Malaria report') {
-                cell.setAttribute("onmousedown", "underDevelopmentModal()");
-            }
-
             
             td.innerHTML = reports[i][0];
             tr.appendChild(td);
