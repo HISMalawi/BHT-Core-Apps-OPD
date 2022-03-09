@@ -331,8 +331,11 @@
                 jQuery("#la_4_dispensed").html(total_la_four_dispensed_drugs);
 
                 initializeTable();
+                console.log({data_table})
 
             }
+            //addToCSV(data_table)
+            console.log({data_table})
         };
         xhttp.open("GET", la_report_url, true);
         xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
@@ -340,8 +343,10 @@
         xhttp.send();
     }
 
+    var data_table 
+
     function initializeTable() {
-        data_table = $('#table_id').DataTable({
+        var data_table = $('#table_id').DataTable({
             fixedHeader: true,
             searching: true,
             paging: false,
