@@ -20,6 +20,11 @@
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
 <script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
 
+
+<script type="text/javascript" src="/assets/js/alertifyjs/alertify.js"></script>
+<link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css"> 
+<link rel="stylesheet" href="/apps/OPD/assets/css/poup.css" type="text/css">
+
 <style>
 
     body {
@@ -601,5 +606,6 @@
     }
     loadData()
 addReportTitle("Mental health report");
+alertify.alert('Notification', "metal health report is under development", function(){ window.location = "/" });
 </script>
 
