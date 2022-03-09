@@ -272,7 +272,7 @@ function loadData(data) {
     var given_name = data[i].given_name;
     var family_name = data[i].family_name;
     var gender  = data[i].gender;
-    var address = null;
+    var address = data[i].address;
     try {
       var birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
     }catch(e) { 

@@ -7,6 +7,12 @@
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
 
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
 
 <script type="text/javascript" src="/assets/js/moment.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
@@ -165,7 +171,10 @@
             scrollY: 430,
             scroller: {
                 loadingIndicator: true
-            }
+            },
+            dom: 'Bfrtip',  
+            buttons: [
+            'copy', 'csv', 'pdf', 'print']
         });
     }
 
@@ -202,6 +211,7 @@
             var given_name = data[i].given_name;
             var family_name = data[i].family_name;
             var gender = data[i].gender;
+            var address = data[i].address;
             try {
                 var birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
             } catch (e) {
@@ -214,7 +224,7 @@
             }
             var nid = data[i].nid;
 
-            data_table.row.add([nid, given_name, family_name, gender, birthdate, visit_date, '']);
+            data_table.row.add([nid, given_name, family_name, gender, birthdate, visit_date, address]);
             data_table.draw();
         }
     }
