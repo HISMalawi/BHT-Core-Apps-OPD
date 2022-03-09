@@ -304,7 +304,7 @@
     #table_id_info {
         left: 10px;
         position: absolute;
-        top: 488px;
+        top: 520px;
         font-weight: bold;
     }
 
@@ -344,30 +344,30 @@
         initializeTable();
 
         jQuery(".loader").html("<img src='/assets/images/ajax-loader.gif'/>");
-        var la_report_url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
-        la_report_url += '/programs/' + sessionStorage.programID + "/reports/la_prescriptions";
-        la_report_url += "?start_date=" + start_date + "&end_date=" + end_date;
+        var case_seen_report_url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
+        case_seen_report_url += '/programs/' + sessionStorage.programID + "/reports/la_prescriptions";
+        case_seen_report_url += "?start_date=" + start_date + "&end_date=" + end_date;
 
         
         
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-                
+                // jQuery(".loader").attr("style","display:none");
             }
         };
-        xhttp.open("GET", la_report_url, true);
+        xhttp.open("GET", case_seen_report_url, true);
         xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
         xhttp.setRequestHeader('Content-type', "application/json");
         xhttp.send();
     }
 
-    function initializeTable() {
+    function initializeTable() { 
         data_table = $('#table_id').DataTable({
             fixedHeader: true,
             searching: true,
             paging: false,
-            scrollY: 400,
+            scrollY: 500,
             Processing: true,
             ServerSide: true,
             scroller: {
@@ -382,6 +382,7 @@
         lookForTag();
     }
     addReportTitle('Cases seen report');
+    loadData();
 
 </script>
 
