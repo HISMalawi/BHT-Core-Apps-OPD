@@ -238,9 +238,9 @@
   #virtual-keyboard{
     z-index: 993 !important;
     text-align: center;
-    left: 170px !important;
-    top: 399px !important;
-    height: auto !important;
+    /* left: 170px !important; */
+    top: 270px !important;
+    height: 310px !important;
   }
   
   .keyboardButton {
@@ -248,6 +248,7 @@
       font-family: arial, helvetica, sans-serif;
       text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
       margin-top: 1%;
+      font-size: 20px !important;
   }
   
   .modal-header {
@@ -262,10 +263,20 @@
     margin-left: 1.4%;
   }
   
-  
-  
-  
-  /* .......... second section starts here ------- */
+  .keyboard {
+    /* height: 320px !important; */
+    position: absolute;
+    display: block;
+    z-index: 10;
+    bottom: 85px;
+    /* left: 150px !important; */
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 5px;
+    background-color: #fff;
+    width: 830px !important;
+  }
+      /* .......... second section starts here ------- */
   table {
     width: 97%;
     border-collapse: collapse;
@@ -472,7 +483,9 @@ var end_date = url.searchParams.get("end_date");
     document.getElementById('report-cover').style = 'display: block;';
     fetchData();
     lookForTag();
+    console.log("hahahahahahaah")
   }
+  lookForTag();
 }
 
 var start_date = url.searchParams.get("start_date");
@@ -685,7 +698,7 @@ function buildLink(diagnosis, patient_ids,age_group,gender,column_number){
 
 var patientTable;
 function drillDown(diagnosis,age_group,gender,column_number){
-  patientDetailsModal()
+  //patientDetailsModal()
   initializePatienDetailsTable()
   let patient_ids = drill_down_patients[gender][age_group][column_number][diagnosis];
   for(var patient_id of patient_ids){
