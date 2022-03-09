@@ -6,7 +6,7 @@
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
     <link rel="stylesheet" href="/assets/css/background.css" type="text/css">
-    
+    <script src="/assets/js/moment.js"></script>
     <script language="javascript" defer="async">
       //<!--
       tstUsername = "";
@@ -70,9 +70,11 @@ function load(weeks) {
     for (var i=0; i<weeks.length; i++) {
       var week = weeks[i];
       var dates = week[1].split(" ");
+      var start_date_formated = moment(dates[0]).format('DD/MMM/YYYY');
+      var end_date_formated = moment(dates[2]).format('DD/MMM/YYYY');
       var txt = week[0].split('W');
       var weekNumber = txt[1];
-      txt = txt[0] +"/W"+ txt[1] +" - ("+  dates[0] +" to "+ dates[2] +")";
+      txt = txt[0] +"/W"+ txt[1] +" - ("+  start_date_formated +"  -  "+ end_date_formated +")";
       var value = dates[0]+ " " +dates[2]+" "+weekNumber+"&";
       var li = document.createElement("li");
       li.setAttribute("tstvalue", value);
