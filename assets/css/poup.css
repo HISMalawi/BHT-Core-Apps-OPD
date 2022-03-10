@@ -1,42 +1,59 @@
 .alertify .ajs-dialog {
-    background-color: #ee5b5b;
-    border-radius: 20px;
+  background-color: tomato;
+  border-radius: 20px;
+  border: 5px outset tomato;
+  margin-top: 23%;
   }
   .alertify .ajs-header {
-    background-color: #ee5b5b;
-    border-top-left-radius: 20px !important;
-    border-top-right-radius: 20px !important;
-    font-size: 25px;
+  background-color: tomato;
+  border-top-left-radius: 20px !important;
+  border-top-right-radius: 20px !important;
+  font-size: 25px;
   }
   .alertify .ajs-footer {
-    background-color: #ee5b5b;
-    border-bottom-left-radius: 20px !important;
-    border-bottom-right-radius: 20px !important;
+  background-color: tomato;
+  border-bottom-left-radius: 20px !important;
+  border-bottom-right-radius: 20px !important;
   }
   .alertify .ajs-footer .ajs-buttons .ajs-button {
-    background-color: #4c9fdc;
-    width: 100px;
-    height: 45px;
-    border-radius: 5px;
+  background-color: #4c9fdc;
+  width: 200px;
+  border-radius: 5px;
+  font-size: xx-large;
   border: 1px solid #00c3ff;
   }
   .alertify .ajs-body .ajs-content {
-    font-size: 20px;
+  font-size: 2em;
   }
-  /* button {
-    background: url(../images/buttons/btn_left_hover_blue.png) left no-repeat;
+  .ajs-buttons.ajs-primary {
+      font-size: 1em;
+      font-style: bold;
+      color: white;
+      margin: 5px;
+      min-width: 75px;
+      min-height: 54px;
+      padding: 5px;
+      background:url(/images/btn_blue.png) right repeat;
+  }
+  .ajs-button .ajs-ok {
+      width: 200px;
+      min-width: 75px;
+      margin: 3px;
+  }
+
+    /* button {
+  background: url(../images/buttons/btn_left_hover_blue.png) left no-repeat;
   } */
-  .ajs-button {
-    background: url(/public/touchscreentoolkit/lib/images/buttons/btn_left_blue.png) right no-repeat !important;
-    
-  }
-  .ajs-button:hover {
-    background: url(/public/touchscreentoolkit/lib/images/buttons/btn_right_hover_blue.png) right no-repeat;
-  }
-  .ajs-close, .alertify.ajs-closable .ajs-commands button.ajs-close {
-    display: none;
-  }
-  .alertify .ajs-footer .ajs-buttons.ajs-primary {
-    display: flex;
-    justify-content: center;
-  }
+.ajs-button {
+background: url(/public/touchscreentoolkit/lib/images/buttons/btn_left_blue.png) right no-repeat !important;
+}
+.ajs-button:hover {
+background: url(/public/touchscreentoolkit/lib/images/buttons/btn_right_hover_blue.png) right no-repeat;
+}
+.ajs-close, .alertify.ajs-closable .ajs-commands button.ajs-close {
+display: none;
+}
+.alertify .ajs-footer .ajs-buttons.ajs-primary {
+display: flex;
+justify-content: center;
+}
