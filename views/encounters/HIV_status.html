@@ -582,11 +582,13 @@ var global_nid;
            validationRule="^(19|20)\d{2}$|Unknown" 
            field_type="number"
            condition="$('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false;"
+           validationMessage="Please enter a valid year"
            absoluteMin="1900" min="1900" tt_onLoad="setAbsoluteMaxYear()"
            tt_pageStyleClass="Numeric NumbersOnly"/>
 
         <select allowFreeText="false" helpText="HIV test day (estimation)"
            name="outcome" id="hiv_test_day_estimation" key="outcome"
+           validationMessage="Please enter a valid estimated age"
           condition="$('test_year').value.toLowerCase() == 'unknown' && $('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false;">
             <option value=""></option>
             <option value="6 months">6 months</option>
@@ -600,6 +602,7 @@ var global_nid;
         <select name="test_month" id="test_month" helpText="HIV test month"
                 condition="$('test_year').value.toLowerCase() != 'unknown' && $('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false"
                 validationRule="^[a-zA-Z ]*$|Unknown" 
+                validationMessage="Please enter a valid month"
                 validationMessage="Please enter a valid date" 
                 tt_onLoad=" validateMonth();__$(keyboard).style.display = none;">
             <option value=""></option>
@@ -623,6 +626,7 @@ var global_nid;
            field_type="number" helpText="HIV test day"
            condition="($('test_year').value != 'Unknown') && ($('test_month').value != 'Unknown') && $('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false;"
            validationRule="^(12[0-7]|1[01][0-9]|[1-9]?[0-9])$|Unknown"
+           validationMessage="Please enter a valid day"
            tt_onLoad="getDayOfMonthPicker($('test_year').value, $('test_month').value);setUpPageForDateValidation();"/>
 
 
