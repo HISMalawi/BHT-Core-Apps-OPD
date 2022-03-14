@@ -241,7 +241,8 @@
         }
 
         initializeTable();
-        addToCSV(data_table)
+        addToCSV(data_table);
+        copyToast();
     }
 
     function buildViewBtn(patient_id) {
@@ -260,6 +261,7 @@
 
     getData();
     addReportTitle("OPD medication given (without prescription)");
-    copyToast();
+
+    
 </script>
 
