@@ -657,7 +657,7 @@ function buildLink(diagnosis, patient_ids,age_group,gender,column_number){
 
 var patientTable;
 function drillDown(diagnosis,age_group,gender,column_number){
-  //patientDetailsModal()
+  patientDetailsModal()
   initializePatienDetailsTable()
   let patient_ids = drill_down_patients[gender][age_group][column_number][diagnosis];
   for(var patient_id of patient_ids){
