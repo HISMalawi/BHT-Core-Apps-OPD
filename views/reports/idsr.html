@@ -1,6 +1,6 @@
 <html>
 <meta charset="utf-8"/>
-<title>IDSR Weekly Report</title>
+<title id="title"></title>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
 <link rel="stylesheet" href="/assets/css/custom.css">
@@ -16,6 +16,7 @@
 <script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
 <script src="/assets/js/moment.js"></script>
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+<script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
 <style type="text/css" xmlns="http://www.w3.org/1999/html">
 
 #tasks {
@@ -395,7 +396,7 @@ var print_pdf_attr = {};
     <td class="td-text-align-left"><span id="wkdates"></span></td>
   </tr>
   <tr>
-    <td class="td-text-align-left">Visits (Total): </td>
+    <td class="td-text-align-left">Total OPD Visits: </td>
     <td class="td-text-align-left"><span id="total_visits"></span></td>
   </tr>
   <tr>
@@ -627,6 +628,7 @@ function getIndicators() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      getRegistration();
       runningReport = false
       idsrResults = JSON.parse(this.responseText);
       var count_for_condition = 1;
@@ -666,6 +668,30 @@ function getIndicators() {
         }
       }
 
+    function makeBlank(obj = []) {
+      for (sobj of obj) {
+        console.log(sobj.tr_id)
+        var tr = document.getElementById(sobj.tr_id)
+        for (var e of tr.children) {
+          var str = e.id
+          if ( sobj.e_id == str) {
+            e.innerHTML = ''
+          }
+        }
+      }
+    }
+
+    var _blnk = []
+    _blnk.push(    {
+      tr_id : "_12",
+      e_id  : "ls-5yrs"
+    })
+    _blnk.push(    {
+      tr_id : "_15",
+      e_id  : "grt-5yrs"
+    })
+
+    makeBlank(_blnk)
     document.getElementById('spinner').style = 'display: none';
     document.getElementById('report-cover').style = 'display: none;';
       
@@ -700,10 +726,10 @@ function getRegistration() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-      document.getElementById('spinner').style = 'display: none;';
-      document.getElementById('report-cover').style = 'display: none;';
       var obj = JSON.parse(this.responseText);
       setVisitsValue(obj);
+      document.getElementById('spinner').style = 'display: none;';
+      document.getElementById('report-cover').style = 'display: none;';
     }
   };
   xhttp.open("GET", url, true);
@@ -726,7 +752,6 @@ function checkIfReportReady() {
   // myVar = setTimeout(getIndicators, 10000);
   // if(runningReport == false)
   //   location.reload()
-
 }
 
 const idsr_diagnosis = ["Diarrhea",
@@ -764,7 +789,6 @@ document.getElementById('wkdates').innerHTML = start_date +"&nbsp;&nbsp;&nbsp;to
 document.getElementById('spinner').style = 'display: inline;';
 document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
-getRegistration();
 
 function printWindow() {
   var items = document.getElementsByTagName("a");
@@ -815,8 +839,7 @@ function initializeTable_Modal() {
   lookForTag();
 }
 
-function view_patientD(name)
-{    
+function view_patientD(name) {    
   if($('#virtual-keyboard').length)
     hide_keyboard();
 
@@ -826,7 +849,7 @@ function view_patientD(name)
   dataTableContentLoader(name);
 }
 
-function dataTableContentLoader(name){   
+function dataTableContentLoader(name) {   
   var diagName;
   var period;
   if (name.indexOf('total') != -1) {
@@ -921,8 +944,7 @@ function dataTableContentLoader(name){
   }
 }
 
-function close_modal()
-{
+function close_modal() {
   document.getElementById('spinner').style = 'display: none;';
   document.getElementById('report-cover').style = 'display: none;';
   document.getElementById('patient_details_body').innerHTML = "";
@@ -931,12 +953,12 @@ function close_modal()
   hide_keyboard();
 }
 
-function hide_keyboard()
-{
+function hide_keyboard() {
   var vl = document.getElementById('virtual-keyboard');
   var w = document.getElementsByTagName('body')[0];
   w.removeChild(vl);
 }
+addReportTitle("IDSR Weekly Report");
 </script>
 <!-- Modal -->
 <div class="modal " id="modal" style="display: none;" > 

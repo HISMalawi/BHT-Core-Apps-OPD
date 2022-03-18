@@ -1,0 +1,19 @@
+._toast {
+    width: 200px;
+    z-index: 2000;
+}
+
+.dt-button-info {
+    margin-top: 5px;
+    position: absolute;
+    z-index: 8000;
+    color: white;
+    width: auto;
+    border: solid 1px tomato;
+    background: tomato;
+    border: 5px outset tomato;
+    border-radius: 10px;
+    width: 230px;
+    text-align: center;
+    font-size: initial;
+}
