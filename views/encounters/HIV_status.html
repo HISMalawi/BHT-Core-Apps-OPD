@@ -57,6 +57,49 @@
   opacity: 0.65;
 }
 
+.alertify .ajs-dialog {
+  background-color: #ee5b5b;
+  border-radius: 20px;
+}
+.alertify .ajs-header {
+  background-color: #ee5b5b;
+  border-top-left-radius: 20px !important;
+  border-top-right-radius: 20px !important;
+  font-size: 25px;
+}
+.alertify .ajs-footer {
+  background-color: #ee5b5b;
+  border-bottom-left-radius: 20px !important;
+  border-bottom-right-radius: 20px !important;
+}
+.alertify .ajs-footer .ajs-buttons .ajs-button {
+  background-color: #4c9fdc;
+  width: 100px;
+  height: 45px;
+  border-radius: 5px;
+border: 1px solid #00c3ff;
+}
+.alertify .ajs-body .ajs-content {
+  font-size: 20px;
+}
+/* button {
+  background: url(../images/buttons/btn_left_hover_blue.png) left no-repeat;
+} */
+.ajs-button {
+  background: url(/public/touchscreentoolkit/lib/images/buttons/btn_left_blue.png) right no-repeat !important;
+  
+}
+.ajs-button:hover {
+  background: url(/public/touchscreentoolkit/lib/images/buttons/btn_right_hover_blue.png) right no-repeat;
+}
+.ajs-close, .alertify.ajs-closable .ajs-commands button.ajs-close {
+  display: none;
+}
+.alertify .ajs-footer .ajs-buttons.ajs-primary {
+  display: flex;
+  justify-content: center;
+}
+
 </style>
 
 <script>
@@ -101,7 +144,7 @@ function postNotesObs(encounter) {
   submitParameters(obs, "/observations", "nextPage")  
 }
 
-function nextPage(obs){
+function nextPage(){
   //document.location = tt_cancel_destination;
   nextEncounter(sessionStorage.patientID, parseInt(sessionStorage.programID));
 }
@@ -451,7 +494,7 @@ function fetchNID() {
   xhttp.send();
 }
 
-var opd_hiv_status;
+var opd_hiv_status = "";
 function getHIVOPDstatus() {
   
   var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
@@ -478,12 +521,16 @@ function getHIVOPDstatus() {
 getHIVOPDstatus();
 
 function ARTpatient() {
-  if(opd_hiv_status == undefined)
+  if(opd_hiv_status.match(/on ART/i)){
+    ARTError("The patient is already on ART")
     return false;
-  
-  return (opd_hiv_status.match(/on ART/i) ? true : false);
+  }
+  else
+    return false;
 }
-
+function ARTError(message) {
+  alertify.alert('HIV Status', message, function(){ nextPage() });
+}
 function patientPositiveButNotART() {
   if(opd_hiv_status == undefined)
     return false;
@@ -532,13 +579,16 @@ var global_nid;
 
        <!-- ................. test date ...................... --> 
         <input type="text" name="test_year" id="test_year" helpText="HIV test year"
+           validationRule="^(19|20)\d{2}$|Unknown" 
            field_type="number"
            condition="$('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false;"
+           validationMessage="Please enter a valid year"
            absoluteMin="1900" min="1900" tt_onLoad="setAbsoluteMaxYear()"
            tt_pageStyleClass="Numeric NumbersOnly"/>
 
         <select allowFreeText="false" helpText="HIV test day (estimation)"
            name="outcome" id="hiv_test_day_estimation" key="outcome"
+           validationMessage="Please enter a valid estimated age"
           condition="$('test_year').value.toLowerCase() == 'unknown' && $('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false;">
             <option value=""></option>
             <option value="6 months">6 months</option>
@@ -551,6 +601,8 @@ var global_nid;
 
         <select name="test_month" id="test_month" helpText="HIV test month"
                 condition="$('test_year').value.toLowerCase() != 'unknown' && $('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false"
+                validationRule="^[a-zA-Z ]*$|Unknown" 
+                validationMessage="Please enter a valid month"
                 validationMessage="Please enter a valid date" 
                 tt_onLoad=" validateMonth();__$(keyboard).style.display = none;">
             <option value=""></option>
@@ -573,6 +625,8 @@ var global_nid;
            id="test_day"
            field_type="number" helpText="HIV test day"
            condition="($('test_year').value != 'Unknown') && ($('test_month').value != 'Unknown') && $('hiv_status').value.toLowerCase() != 'never tested' && ARTpatient() == false;"
+           validationRule="^(12[0-7]|1[01][0-9]|[1-9]?[0-9])$|Unknown"
+           validationMessage="Please enter a valid day"
            tt_onLoad="getDayOfMonthPicker($('test_year').value, $('test_month').value);setUpPageForDateValidation();"/>
 
 
@@ -582,7 +636,7 @@ var global_nid;
           field_type="alpha"
           helpText="Location of HIV test"
           id="facility_name"
-          tt_onLoad="setupHIVtestLocation();setCurrentLocation();"
+          tt_onLoad="setupHIVtestLocation();"
           name="facility_name">
         </select>
         

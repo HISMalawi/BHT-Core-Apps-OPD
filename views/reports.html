@@ -53,7 +53,7 @@
         opacity: .99;
         border-radius: 14px 14px;
     }
-
+    
 </style>
 <script>
 
@@ -80,7 +80,7 @@
                 ["Diagnosis", "", "reports/report_dates.html?report=diagnosis", 'link'],
                 ["Registration report", "", "reports/report_dates.html?report=registration", 'link'],
                 ["LA report", "", "reports/report_dates.html?report=la", 'link'],
-                ["Malaria report", "", "reports/report_dates.html?report=malaria_report", 'link'],
+                ["Malaria report", "", "reports/report_dates.html?report=malaria", 'link'],
                 ["Cases seen report", "", "reports/report_dates.html?report=cases_seen", 'link'],
                 ["Mental health report", "", "reports/report_dates.html?report=mental_health", 'link'],
                 ["Drugs given", "", "reports/report_dates.html?report=drugs_given", 'link'],
@@ -141,10 +141,9 @@
                 cell.setAttribute("onmousedown", "buildReportLinks('" + reports[i][2] + "');");
             }
 
-            if (reports[i][0] == 'Malaria report') {
-                cell.setAttribute("onmousedown", "underDevelopmentModal()");
-            }
-
+            // if (reports[i][0] == 'Malaria report') {
+            //     cell.setAttribute("onmousedown", "underDevelopmentModal()");
+            // }
             
             td.innerHTML = reports[i][0];
             tr.appendChild(td);
@@ -166,13 +165,7 @@
     }
 
     function underDevelopmentModal() {
-        window.parent.document.body.setAttribute("class", "modal-open");
-        var div = document.createElement('div');
-        div.id = "modal-backdrop";
-        div.className = 'modal-backdrop fade in';
-        window.parent.document.body.appendChild(div);
-        window.parent.document.getElementById("mo-modal").setAttribute("class", "modal fade in under-development");
-        window.parent.document.getElementById("mo-modal").style = "display: block;";
+        alertify.alert('Lab order error', "Under development", function(){ redirectToLabOrder() });
     }
 
 </script>

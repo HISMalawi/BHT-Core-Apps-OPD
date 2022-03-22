@@ -1,3 +1,4 @@
+<title id="title"></title>
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
 
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
@@ -6,11 +7,23 @@
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
 
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
+<script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
 
 <script type="text/javascript" src="/assets/js/moment.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
 
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+<script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
+
+
+<script type="text/javascript" src="/assets/js/alertifyjs/alertify.js"></script>
+<link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css"> 
+<link rel="stylesheet" href="/apps/OPD/assets/css/poup.css" type="text/css">
 
 <style>
 
@@ -116,7 +129,7 @@
     }
 
     #scrollableDiv{
-        height: 62vh;
+        height: 69vh;
         overflow: auto;
     }
 </style>
@@ -144,7 +157,6 @@
                 </div>
             </div>
         </div>
-        <div id="scrollableDiv">
             <table id="table_id">
                 <thead>
                 <tr style="background-color: gray; height: 0px; color: white;">
@@ -471,7 +483,6 @@
 
                 </tbody>
             </table>
-        </div>
         <div id="footer" class="">
             <button class="button green navButton" onmousedown="javascript:location='/';"><span>Finish</span></button>
         </div>
@@ -522,7 +533,7 @@
     #table_id_info {
         left: 10px;
         position: absolute;
-        top: 488px;
+        top: 540px;
         font-weight: bold;
     }
 
@@ -557,6 +568,7 @@
 
 
     function loadData() {
+        initializeTable();
         jQuery(".loader").html("<img src='/assets/images/ajax-loader.gif'/>");
         var la_report_url = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1";
         la_report_url += '/programs/' + sessionStorage.programID + "/reports/la_prescriptions";
@@ -573,6 +585,27 @@
         xhttp.setRequestHeader('Content-type', "application/json");
         xhttp.send();
     }
+    function initializeTable() { 
+        data_table = $('#table_id').DataTable({
+            fixedHeader: true,
+            searching: true,
+            paging: false,
+            scrollY:390,
+            Processing: true,
+            ServerSide: true,
+            scroller: {
+                loadingIndicator: true
+            },
+            dom: 'Bfrtip',
+            buttons: [
+            'copy', 'csv', 'pdf', 'print'
+        ]
+        });
 
+        lookForTag();
+    }
+    loadData()
+addReportTitle("Mental health report");
+alertify.alert('Notification', "metal health report is under development", function(){ window.location = "/" });
 </script>
 

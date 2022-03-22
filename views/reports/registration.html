@@ -1,22 +1,19 @@
-
+<title id="title"></title>
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
-
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
-
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
-
 <script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
 <script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
-
 <script type="text/javascript" src="/assets/js/moment.js"></script>
-
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
+<script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
+<link rel="stylesheet" href="/apps/OPD/assets/css/toast.css" type="text/css">
 
 <style>
 #high-level-view {
@@ -99,21 +96,24 @@ th {
 
 <div class="title-table">
   <div class='title-row'>
-    <div class='title-cell' id='title-cell-left'>
-      <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png" />
-    </div>
-    <div class='title-cell' id='title-cell-right'>
-      <table style="width: 100%; text-align: left; margin-left: 10px;">
-        <tr>
-          <th>Title:</th><td colspan="2" id="report-title">Registration<td>
-        </tr>
-        <tr>
-          <th>Period:</th>
-          <td id="start-date"><td>
-          <td id="end-date"><td>
-        </tr>
-      </table>
-    </div>
+      <div class='title-cell' id='title-cell-left'>
+          <img src="/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png"/>
+      </div>
+      <div class='title-cell' id='title-cell-right'>
+          <table style="width: 100%; text-align: left; margin-left: 10px; ">
+              <tr>
+                  <th>Title:</th>
+                  <td colspan="2" id="report-title">Registration Report
+                  <td>
+              </tr>
+              <tr>
+                  <th>Period:</th>
+                  <td>
+                      <span id="start-date"></span> - <span id="end-date"></span>
+                  <td>
+              </tr>
+          </table>
+      </div>
   </div>
 </div>
   
@@ -268,7 +268,7 @@ function loadData(data) {
     var given_name = data[i].given_name;
     var family_name = data[i].family_name;
     var gender  = data[i].gender;
-    var address = null;
+    var address = data[i].address;
     try {
       var birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
     }catch(e) { 
@@ -289,9 +289,12 @@ function loadData(data) {
     data_table.draw();
     table_data.push([visit_type, given_name, family_name, gender, birthdate, visit_date, address]);
   }
+  addToCSV(data_table)
 
 }
 
 buildReportingTable();
+addReportTitle("Registration Report");
+copyToast();
 </script>
 

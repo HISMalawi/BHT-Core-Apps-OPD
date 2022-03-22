@@ -1,31 +1,27 @@
 <head>
-    <title>
-        Malaria Report
-    </title>
+<title id="title"></title>
 <link rel="stylesheet" href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" type="text/css">
-
 <script type="text/javascript" src="/apps/OPD/assets/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/assets/js/core.js"></script>
-
 <link rel="stylesheet" type="text/css" href="/apps/OPD/assets/css/DataTables/jquery.dataTables.min.css"/>
 <script type="text/javascript" src="/apps/OPD/assets/js/DataTables/datatables.min.js"></script>
-
 <script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="/apps/OPD/assets/js/report_customise.js"></script>
 <script type='text/javascript' src='/assets/js/datatables/jszip.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/pdfmake.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/vfs_fonts.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.html5.min.js'></script>
 <script type='text/javascript' src='/assets/js/datatables/buttons.print.min.js'></script>
-
 <script type="text/javascript" src="/assets/js/moment.js"></script>
-
 <script type="text/javascript" src="/assets/js/virtual.keyboard.js"></script>
-
+<script type="text/javascript" src="/assets/js/alertifyjs/alertify.js"></script>
+<link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css">
+<link rel="stylesheet" href="/apps/OPD/assets/css/poup.css" type="text/css">
 <style>
     div {
-    -moz-user-select: unset;
-    cursor: pointer;
-}
+        -moz-user-select: unset;
+        cursor: pointer;
+    }
     #spinner {
         position: absolute;
         top: 15%;
@@ -327,14 +323,11 @@
     </div>
 </div>
 
-
 <div id="buttons" class="buttonsDiv">
     <button class="button green navButton" onmousedown="location='/'"><span>Finish</span></button>
 </div>
-
-<img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
-<div id="report-cover"></div>
-
+<!-- <img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
+<div id="report-cover"></div> -->
 
 <style>
     .modal
@@ -491,7 +484,8 @@
 
     function buildReportingTable() {
         initializeTable();
-        getData();
+        underDevelopmentModal()
+        //getData();
     }
 
     var table_columns = [];
@@ -539,368 +533,321 @@
         lookForTag();
     }
 
-    function getData() {
+function getData() {
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
+    url += '/malaria_report?start_date=' + start_date;
+    url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
+    url += '&program_id=' + sessionStorage.programID;
 
-        var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
-        url += '/malaria_report?start_date=' + start_date;
-        url += '&end_date=' + end_date + "&date=" + sessionStorage.sessionDate;
-        url += '&program_id=' + sessionStorage.programID;
-
-        if (apiProtocol == undefined) {
-            setTimeout("getData()", 3000);
-            return;
-        }
-
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-                document.getElementById('spinner').style = 'display: none;';
-                document.getElementById('report-cover').style = 'display: none;';
-                var obj = JSON.parse(this.responseText);
-                //loadData(obj);
-                myFunction();
-            }
-        };
-        xhttp.open("GET", url, true);
-        xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-        xhttp.setRequestHeader('Content-type', "application/json");
-        xhttp.send();
+    if (apiProtocol == undefined) {
+        setTimeout("getData()", 3000);
+        return;
     }
 
-    function loadData(data) 
-    {
-        var count = 0;
-        var patientsD_counter = 0;
-
-                var total_patients = "";
-                total_patients = data['patientD_confirmed_malaria_cases'];
-
-
-                var total_patients_pr = "";
-                total_patients_pr = data['patientD_presumed_malaria_cases'];
-
-                var total_patients_ls_5 = "";
-                total_patients_ls_5 = data['patientD_confirmed_malaria_cases_less_than_five_years'];
-
-                var total_patients_gtr_5 = "";
-                total_patients_gtr_5 = data['patientD_confirmed_malaria_cases_greater_than_five_years'];
-
-
-                var total_patients_pr_ls_5 = "";
-                total_patients_pr_ls_5 = data['patientD_presumed_malaria_cases_less_than_five_years'];
-
-                var total_patients_pr_gtr_5 = "";
-                total_patients_pr_gtr_5 = data['patientD_presumed_malaria_cases_greater_than_five_years'];
-
-                sessionStorage.setItem("total_patients"+patientsD_counter, total_patients);
-                sessionStorage.setItem("total_patients_pr"+patientsD_counter, total_patients_pr);
-                sessionStorage.setItem("total_patients_ls_5"+patientsD_counter, total_patients_ls_5);
-                sessionStorage.setItem("total_patients_gtr_5"+patientsD_counter, total_patients_gtr_5);
-                sessionStorage.setItem("total_patients_pr_ls_5"+patientsD_counter, total_patients_pr_ls_5);
-                sessionStorage.setItem("total_patients_pr_gtr_5"+patientsD_counter, total_patients_pr_gtr_5);
-
-                total_patients = "total_patients"+patientsD_counter;
-                total_patients_pr = "total_patients_pr"+patientsD_counter;
-                total_patients_ls_5 = "total_patients_ls_5"+patientsD_counter;
-                total_patients_gtr_5 = "total_patients_gtr_5"+patientsD_counter;
-                total_patients_pr_ls_5 = "total_patients_pr_ls_5"+patientsD_counter;
-                total_patients_pr_gtr_5 = "total_patients_pr_gtr_5"+patientsD_counter;
-
-
-                data_table.row.add(['<h3 class="border_lines">Out Patient Department</h3>', 
-                    lessThanFive(),
-                    greaterThanFive(),
-                    total()]);
-                
-                data_table.row.add(['Confirmed (Co) Malaria Cases', 
-                    buildTotal(data['confirmed_malaria_cases_less_than_five_years'],total_patients_ls_5),
-
-                    buildTotal(data['confirmed_malaria_cases_greater_than_five_years'],total_patients_gtr_5),
-                    
-                    buildTotal(data['confirmed_malaria_cases'],total_patients)]);
-                    
-                data_table.row.add(['Presumed (Pr) Malaria Cases (Clinically Diagnosed )', 
-                    buildTotal(data['presumed_malaria_cases_less_than_five_years'],total_patients_pr_ls_5),
-
-                    buildTotal(data['presumed_malaria_cases_greater_than_five_years'],total_patients_pr_gtr_5),
-                    
-                    buildTotal(data['presumed_malaria_cases'],total_patients_pr)]);
-                data_table.row.add(['Confirmed malaria in pregnant woman (c)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Presumed (clinically diagnosed) malaria in pregnant woman (d)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Total OPD Malaria Cases (A+B+C+D)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Total OPD Attendance: All causes (Including malaria cases)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Confirmed malaria treatment failure (tf)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-
-                data_table.row.add(['<h3 class="border_lines">Treatment in OPD</h3>', 
-                    lessThanFive(),
-                    greaterThanFive(),
-                    total()]);
-                data_table.row.add(['Confirmed cases receiving first-line anti malarial medication (LA)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Presumed malaria cases receiving first-line anti malarial medication(LA)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Confirmed cases receiving second-line anti malarial medication (ASAQ)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Presumed malaria cases receiving second-line anti malarial medication(ASAQ)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-
-                data_table.row.add(['<h3 class="border_lines">Treatment in OPD</h3>', 
-                    lessThanFive(),
-                    greaterThanFive(),
-                    total()]);
-                data_table.row.add(['Confirmed cases receiving first-line anti malarial medication (LA)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Presumed malaria cases receiving first-line anti malarial medication(LA)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Confirmed cases receiving second-line anti malarial medication (ASAQ)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.row.add(['Presumed malaria cases receiving second-line anti malarial medication(ASAQ)', 
-                    buildTotal(0,0),
-                    buildTotal(0,0),
-                    buildTotal(0,0)]);
-                data_table.draw();
-                
-
-                count++;
-                patientsD_counter++;
-                if (count == 99) {
-                    count = 0;
-                    sleep(3000);
-                } 
-            
-        
-
-           /* for (var diagnosis in data) {
-
-                
-
-                if (diagnosis == 'Malaria')
-                {
-                    
-                    console.log( diagnosis);
-                    //console.log(data[diagnosis]);
-
-                    var total_patients = 0;
-
-                    console.log(data[diagnosis].female_less_than_five_yrs);
-                    //console.log(data[diagnosis].patientD_F_LessThanFiveYrs); 
-                    console.log(data[diagnosis].male_less_than_five_yrs);
-                    //console.log(data[diagnosis].patientD_M_LessThanFiveYrs);
-
-
-                    console.log(data[diagnosis].female_six_months_to_less_than_five_yrs);
-                    //console.log(data[diagnosis].patientD_confirmed_malaria_cases_less_than_five_years);
-                    console.log(data[diagnosis].male_six_months_to_less_than_five_yrs);
-                    //console.log(data[diagnosis].patientD_M_LessFiveYrs);
-
-                    data_table.row.add(['Confirmed (Co) Malaria Cases',data[diagnosis].female_less_than_five_yrs,
-                                                                       data[diagnosis].male_less_than_five_yrs,
-                                                                       data[diagnosis].female_six_months_to_less_than_five_yrs,
-                                                                       data[diagnosis].male_six_months_to_less_than_five_yrs,0
-                
-                    ]);
-
-                    data_table.row.add(['Presumed (Pr) Malaria Cases (Clinically Diagnosed )',data[diagnosis].female_less_than_five_yrs,
-                                                                       data[diagnosis].male_less_than_five_yrs,
-                                                                       data[diagnosis].female_six_months_to_less_than_five_yrs,
-                                                                       data[diagnosis].male_six_months_to_less_than_five_yrs,0
-                
-                    ]);
-                    data_table.draw();
-                    
-                } 
-    } */
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+            document.getElementById('spinner').style = 'display: none;';
+            document.getElementById('report-cover').style = 'display: none;';
+            var obj = JSON.parse(this.responseText);
+            //loadData(obj);
+            myFunction();
+        }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    //xhttp.send();
 }
 
-    function lessThanFive() {
-        var div = document.createElement('div');
-        div.setAttribute('class','border_lines');
-        div.innerHTML = '<div style="border-bottom: 1px solid #111;margin-top: 8px;"></div>';
-        var span = document.createElement('div');
-        span.innerHTML = '&#60; 5 yr';
-        span.appendChild(div);
-        return span.innerHTML;
-    }
+function loadData(data) {
+var count = 0;
+var patientsD_counter = 0;
 
-    function greaterThanFive() {
-        var div = document.createElement('div');
-        div.setAttribute('class','border_lines');
-        div.innerHTML = '<div style="border-bottom: 1px solid #111;margin-top: 8px;"></div>';
-        var span = document.createElement('div');
-        span.innerHTML = '&#62; 5 yr';
-        span.appendChild(div);
-        return span.innerHTML;
-    }
+    var total_patients = "";
+    total_patients = data['patientD_confirmed_malaria_cases'];
 
-    function total() {
-        var div = document.createElement('div');
-        div.setAttribute('class','border_lines');
-        div.innerHTML = '<div style="margin-top: 8px;"></div>';
-        var span = document.createElement('div');
-        span.innerHTML = '<span style="font-weight: bold;">Total</span>';
-        span.appendChild(div);
-        return span.innerHTML;
-    }
-     
-    function buildMinStat(patientD,period) 
-    {
-        var sp = document.createElement('span');
-        var table = document.createElement('table');
-        table.setAttribute('class', 'min-tables');
-        var tr = document.createElement('tr');
-        table.appendChild(tr);
+    var total_patients_pr = "";
+    total_patients_pr = data['patientD_presumed_malaria_cases'];
 
-        var td = document.createElement('td');
-        td.setAttribute('onclick', "view_patientD('"+patientD+"','"+period+"')");
-        td.setAttribute('id',patientD);
-        td.innerHTML = patientD;
-        tr.appendChild(td);
+    var total_patients_ls_5 = "";
+    total_patients_ls_5 = data['patientD_confirmed_malaria_cases_less_than_five_years'];
 
-        sp.appendChild(table);
-        return sp.innerHTML;
-    }
-
-    function buildMinStatFemale(female, patientD_F, diagnosis,period)
-    {
-       return buildMinStat(female, patientD_F, diagnosis,period);
-    } 
-    function buildMinStatMale(male, patientD_M,diagnosis,period)
-    {
-        return buildMinStat(male, patientD_M,diagnosis,period);
-    }
+    var total_patients_gtr_5 = "";
+    total_patients_gtr_5 = data['patientD_confirmed_malaria_cases_greater_than_five_years'];
 
 
-    function view_patientD(patientD,period)
-    {
-        if($('#virtual-keyboard').length)
-            hide_keyboard();
+    var total_patients_pr_ls_5 = "";
+    total_patients_pr_ls_5 = data['patientD_presumed_malaria_cases_less_than_five_years'];
 
-        $('.keyboard').attr('style','display:none');
-        $('#spinner').attr('style','display:block');
-        $('#report-cover').attr('style','display:block');
-        var y = $("#"+patientD).html();
-        var mil = y*40;
-        setTimeout(function(){ dataTableContentLoader(patientD,period); },mil);
-    }
+    var total_patients_pr_gtr_5 = "";
+    total_patients_pr_gtr_5 = data['patientD_presumed_malaria_cases_greater_than_five_years'];
 
-    function dataTableContentLoader(patientD,period)
-    {   console.log("he2: "+patientD);
-        patientD = sessionStorage.getItem(patientD);
-        $('.modal-title').html('<b>Diagnosis:</b> &nbsp;&nbsp; ' + "here");
-        $('.period').html('  &nbsp;&nbsp;' + period);
-        if(period == "")
-        $('.period').attr('style','display:none')
-        document.getElementById('modal').setAttribute('style','display:block');
-        patientD = patientD.substring(2);
-        patientD = patientD.split('|');
-        patientD = patientD.sort();
-     
-        $('#patient_details_body').html('');
-        patientD.forEach(value1 => 
-        {
-            var value = value1.split(',');
-                
-            var tr = document.createElement('tr');
-            document.getElementById('patient_details_body').appendChild(tr);
+    sessionStorage.setItem("total_patients"+patientsD_counter, total_patients);
+    sessionStorage.setItem("total_patients_pr"+patientsD_counter, total_patients_pr);
+    sessionStorage.setItem("total_patients_ls_5"+patientsD_counter, total_patients_ls_5);
+    sessionStorage.setItem("total_patients_gtr_5"+patientsD_counter, total_patients_gtr_5);
+    sessionStorage.setItem("total_patients_pr_ls_5"+patientsD_counter, total_patients_pr_ls_5);
+    sessionStorage.setItem("total_patients_pr_gtr_5"+patientsD_counter, total_patients_pr_gtr_5);
 
-            var td = document.createElement('td');
-            td.innerHTML = value[1];
-            tr.appendChild(td);
+    total_patients = "total_patients"+patientsD_counter;
+    total_patients_pr = "total_patients_pr"+patientsD_counter;
+    total_patients_ls_5 = "total_patients_ls_5"+patientsD_counter;
+    total_patients_gtr_5 = "total_patients_gtr_5"+patientsD_counter;
+    total_patients_pr_ls_5 = "total_patients_pr_ls_5"+patientsD_counter;
+    total_patients_pr_gtr_5 = "total_patients_pr_gtr_5"+patientsD_counter;
 
-            td = document.createElement('td');
-            td.innerHTML = value[0];
-            tr.appendChild(td);
-
-            var td = document.createElement('td');
-            td.innerHTML = value[2];
-            tr.appendChild(td);
-
-            td = document.createElement('td');
-            td.innerHTML = value[3];
-            tr.appendChild(td);
-
-            td = document.createElement('td');
-            td.innerHTML = value[4];
-            tr.appendChild(td);
-            
-            td = document.createElement('td');
-            td.innerHTML = value[5];
-            tr.appendChild(td);
-
-        });
-        
-
-        document.getElementById('spinner').style = 'display: none;';
-        //add export data buttons
-        initializeTable_Modal();
-
-        $("label [aria-controls*='report']").attr('type','text');
-    }
-
-    function close_modal()
-    {
-        $("label [aria-controls*='report']").attr('type','search');
-        $('#report-cover').attr('style','display:none');
-        document.getElementById('patient_details_body').innerHTML = "";
-        document.getElementById('modal').setAttribute('style','display:none');
-        table.destroy();
-        hide_keyboard();
-    }
-
-    function hide_keyboard()
-    {
-        var vl = document.getElementById('virtual-keyboard');
-        var w = document.getElementsByTagName('body')[0];
-        w.removeChild(vl);
-    }
-    function buildTotal(total,total_patients) 
-    {
-        var sp = document.createElement('span');
-        var table = document.createElement('table');
-        table.setAttribute('class', 'min-tables');
-        var tr = document.createElement('tr');
-        table.appendChild(tr);
-
-        var td = document.createElement('td');
-        td.setAttribute('onclick', "view_patientD('"+total_patients+"','')");
-        td.setAttribute('id',total_patients);
-        td.innerHTML = total;
-        tr.appendChild(td);
-        sp.appendChild(table);
-        return sp.innerHTML;
-    }
-
-    buildReportingTable();
+    data_table.row.add(['<h3 class="border_lines">Out Patient Department</h3>', 
+        lessThanFive(),
+        greaterThanFive(),
+        total()]);
     
+    data_table.row.add(['Confirmed (Co) Malaria Cases', 
+        buildTotal(data['confirmed_malaria_cases_less_than_five_years'],total_patients_ls_5),
+
+        buildTotal(data['confirmed_malaria_cases_greater_than_five_years'],total_patients_gtr_5),
+        
+        buildTotal(data['confirmed_malaria_cases'],total_patients)]);
+        
+    data_table.row.add(['Presumed (Pr) Malaria Cases (Clinically Diagnosed )', 
+        buildTotal(data['presumed_malaria_cases_less_than_five_years'],total_patients_pr_ls_5),
+
+        buildTotal(data['presumed_malaria_cases_greater_than_five_years'],total_patients_pr_gtr_5),
+        
+        buildTotal(data['presumed_malaria_cases'],total_patients_pr)]);
+    data_table.row.add(['Confirmed malaria in pregnant woman (c)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Presumed (clinically diagnosed) malaria in pregnant woman (d)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Total OPD Malaria Cases (A+B+C+D)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Total OPD Attendance: All causes (Including malaria cases)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Confirmed malaria treatment failure (tf)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+
+    data_table.row.add(['<h3 class="border_lines">Treatment in OPD</h3>', 
+        lessThanFive(),
+        greaterThanFive(),
+        total()]);
+    data_table.row.add(['Confirmed cases receiving first-line anti malarial medication (LA)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Presumed malaria cases receiving first-line anti malarial medication(LA)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Confirmed cases receiving second-line anti malarial medication (ASAQ)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Presumed malaria cases receiving second-line anti malarial medication(ASAQ)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+
+    data_table.row.add(['<h3 class="border_lines">Treatment in OPD</h3>', 
+        lessThanFive(),
+        greaterThanFive(),
+        total()]);
+    data_table.row.add(['Confirmed cases receiving first-line anti malarial medication (LA)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Presumed malaria cases receiving first-line anti malarial medication(LA)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Confirmed cases receiving second-line anti malarial medication (ASAQ)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.row.add(['Presumed malaria cases receiving second-line anti malarial medication(ASAQ)', 
+        buildTotal(0,0),
+        buildTotal(0,0),
+        buildTotal(0,0)]);
+    data_table.draw();
+    
+
+    count++;
+    patientsD_counter++;
+    if (count == 99) {
+        count = 0;
+        sleep(3000);
+    } 
+
+}
+
+function lessThanFive() {
+    var div = document.createElement('div');
+    div.setAttribute('class','border_lines');
+    div.innerHTML = '<div style="border-bottom: 1px solid #111;margin-top: 8px;"></div>';
+    var span = document.createElement('div');
+    span.innerHTML = '&#60; 5 yr';
+    span.appendChild(div);
+    return span.innerHTML;
+}
+
+function greaterThanFive() {
+    var div = document.createElement('div');
+    div.setAttribute('class','border_lines');
+    div.innerHTML = '<div style="border-bottom: 1px solid #111;margin-top: 8px;"></div>';
+    var span = document.createElement('div');
+    span.innerHTML = '&#62; 5 yr';
+    span.appendChild(div);
+    return span.innerHTML;
+}
+
+function total() {
+    var div = document.createElement('div');
+    div.setAttribute('class','border_lines');
+    div.innerHTML = '<div style="margin-top: 8px;"></div>';
+    var span = document.createElement('div');
+    span.innerHTML = '<span style="font-weight: bold;">Total</span>';
+    span.appendChild(div);
+    return span.innerHTML;
+}
+     
+function buildMinStat(patientD,period) 
+{
+    var sp = document.createElement('span');
+    var table = document.createElement('table');
+    table.setAttribute('class', 'min-tables');
+    var tr = document.createElement('tr');
+    table.appendChild(tr);
+
+    var td = document.createElement('td');
+    td.setAttribute('onclick', "view_patientD('"+patientD+"','"+period+"')");
+    td.setAttribute('id',patientD);
+    td.innerHTML = patientD;
+    tr.appendChild(td);
+
+    sp.appendChild(table);
+    return sp.innerHTML;
+}
+
+function buildMinStatFemale(female, patientD_F, diagnosis,period)
+{
+    return buildMinStat(female, patientD_F, diagnosis,period);
+} 
+function buildMinStatMale(male, patientD_M,diagnosis,period)
+{
+    return buildMinStat(male, patientD_M,diagnosis,period);
+}
+
+function view_patientD(patientD,period)
+{
+    if($('#virtual-keyboard').length)
+        hide_keyboard();
+
+    $('.keyboard').attr('style','display:none');
+    $('#spinner').attr('style','display:block');
+    $('#report-cover').attr('style','display:block');
+    var y = $("#"+patientD).html();
+    var mil = y*40;
+    setTimeout(function(){ dataTableContentLoader(patientD,period); },mil);
+}
+
+function dataTableContentLoader(patientD,period) {
+    console.log("he2: "+patientD);
+    patientD = sessionStorage.getItem(patientD);
+    $('.modal-title').html('<b>Diagnosis:</b> &nbsp;&nbsp; ' + "here");
+    $('.period').html('  &nbsp;&nbsp;' + period);
+    if(period == "")
+    $('.period').attr('style','display:none')
+    document.getElementById('modal').setAttribute('style','display:block');
+    patientD = patientD.substring(2);
+    patientD = patientD.split('|');
+    patientD = patientD.sort();
+    
+    $('#patient_details_body').html('');
+    patientD.forEach(value1 =>  {
+        var value = value1.split(',');
+            
+        var tr = document.createElement('tr');
+        document.getElementById('patient_details_body').appendChild(tr);
+
+        var td = document.createElement('td');
+        td.innerHTML = value[1];
+        tr.appendChild(td);
+
+        td = document.createElement('td');
+        td.innerHTML = value[0];
+        tr.appendChild(td);
+
+        var td = document.createElement('td');
+        td.innerHTML = value[2];
+        tr.appendChild(td);
+
+        td = document.createElement('td');
+        td.innerHTML = value[3];
+        tr.appendChild(td);
+
+        td = document.createElement('td');
+        td.innerHTML = value[4];
+        tr.appendChild(td);
+        
+        td = document.createElement('td');
+        td.innerHTML = value[5];
+        tr.appendChild(td);
+
+    });
+    
+    document.getElementById('spinner').style = 'display: none;';
+    //add export data buttons
+    initializeTable_Modal();
+
+    $("label [aria-controls*='report']").attr('type','text');
+}
+
+function close_modal() {
+    $("label [aria-controls*='report']").attr('type','search');
+    $('#report-cover').attr('style','display:none');
+    document.getElementById('patient_details_body').innerHTML = "";
+    document.getElementById('modal').setAttribute('style','display:none');
+    table.destroy();
+    hide_keyboard();
+}
+
+function hide_keyboard() {
+    var vl = document.getElementById('virtual-keyboard');
+    var w = document.getElementsByTagName('body')[0];
+    w.removeChild(vl);
+}
+
+function buildTotal(total,total_patients) {
+    var sp = document.createElement('span');
+    var table = document.createElement('table');
+    table.setAttribute('class', 'min-tables');
+    var tr = document.createElement('tr');
+    table.appendChild(tr);
+
+    var td = document.createElement('td');
+    td.setAttribute('onclick', "view_patientD('"+total_patients+"','')");
+    td.setAttribute('id',total_patients);
+    td.innerHTML = total;
+    tr.appendChild(td);
+    sp.appendChild(table);
+    return sp.innerHTML;
+}
+
+function underDevelopmentModal() {
+    alertify.alert('Notification', "Under development", function(){ window.location = '/' });
+}
+
+buildReportingTable();
+addReportTitle("Maria Report");
 </script>
 
 
