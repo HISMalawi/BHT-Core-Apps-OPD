@@ -132,13 +132,28 @@
 
 <div id="buttons" class="buttonsDiv">
     <button class="button blue navButton" onmousedown="javascript:location='/';"><span>Finish</span></button>
+    <button class="button green navButton" onmousedown="highLevelView();"><span>High level view</span></button>
 </div>
 
 <img src="/apps/OPD/assets/images/formloader.gif" id="spinner"/>
 <div id="report-cover"></div>
 
+<div id="high-level-view">
+  <table id="high-level-stats">
+    <thead>
+      <tr>
+        <th>Count</th>
+        <th>Drug Name</th>
+        <th>quantity</th>
+      </tr>
+    </thead>
+  </table>
+  <div id="popupdiv" style="top: 630px;width: 97%;" class="buttonsDiv">
+    <button class="button green navButton" onmousedown="closePopUp();"><span>Close</span></button>
+  </div>
+</div>
 <script>
-
+    var high_level_stats = {};
     var url = window.location.href;
     url = new URL(url);
     var report_type = url.searchParams.get("type");
@@ -196,6 +211,7 @@
                 document.getElementById('report-cover').style = 'display: none;';
                 var obj = JSON.parse(this.responseText);
                 loadData(obj);
+                buildHighlevelView(obj);
             }
         };
         xhttp.open("GET", url, true);
@@ -204,7 +220,7 @@
         xhttp.send();
     }
 
-    var high_level_stats = {};
+    var high_level_stats = [];
 
     function loadData(data) {
         var tbody = document.getElementById('table-body');
@@ -245,6 +261,25 @@
         copyToast();
     }
 
+    function buildHighlevelView(data){
+        for(value in data){
+            var drug = data[value].drug_name
+            var drugName = data.filter((item)=>{
+                return item.drug_name == drug
+            })
+            var quantity =0;
+            drugName = drugName.map((data) =>{
+                quantity += data.quantity
+                return {name : data.drug_name, value : quantity}
+            })[drugName.length - 1]
+
+            high_level_stats.push(drugName);
+        }
+
+        high_level_stats = high_level_stats.filter((v,i,a)=>a.findIndex(v2=>['place','name'].every(k=>v2[k] ===v[k]))===i)
+
+    }
+
     function buildViewBtn(patient_id) {
         var sp = document.createElement('span');
         var btn = document.createElement('button');
@@ -261,5 +296,35 @@
 
     getData();
     addReportTitle("OPD medication given (with prescription)");
+
+    function highLevelView() {
+    document.getElementById('report-cover').style = 'display: inline;';
+    document.getElementById('high-level-view').style = 'display: inline;';
+    
+    hls_table = $('#high-level-stats').DataTable({
+        fixedHeader: true,
+        searching: false,
+        paging: false,
+        scrollY: 550,
+        scroller: {
+        loadingIndicator: true
+        }
+    });
+
+    hls_table.clear();
+    for(var t in high_level_stats) {
+        var count = t
+        count++
+        hls_table.row.add([count,high_level_stats[t].name,high_level_stats[t].value]); 
+        hls_table.draw();
+  }
+
+}
+function closePopUp() {
+  document.getElementById('report-cover').style = 'display: none;';
+  var pop = document.getElementById('high-level-view');
+  pop.style = 'display: none;';
+  hls_table.destroy()
+}
 </script>
 
