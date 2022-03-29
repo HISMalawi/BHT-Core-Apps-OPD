@@ -75,6 +75,20 @@ td {
  border-left-style: none;
 }
 
+.dt-buttons {
+  margin: 0 20px 0;
+}
+
+#idsr_monthly {
+  width: 98% !important;
+  border-collapse: collapse !important;
+}
+
+#idsr_monthly_wrapper table.dataTable thead th, table.dataTable thead td {
+    padding: 10px 18px;
+    border-bottom: none !important;
+}
+
 .td-clear-right {
  border-right-style: none;
 }
@@ -413,15 +427,15 @@ function showDisaggregatedReport(){
           </tr>
          </thead>
         <tbody id="append-header">
-        <!-- <tr>
-          <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
-          <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
-        </tr>
-        <tr>
-          <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
-          <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
-          <td class="td-text-align-left td-span-width">Total</td>
-        </tr> -->
+
+        
+          <tr style="display: none">
+            <td class="td-text-align-right"></td>
+            <td class="td-text-align-right" style="width: 30%;">Diseases/Events/Conditions</td>
+            <td id="ls-5ys" class="td-text-align-right">&#60;5 years</td>
+            <td id="grt-5yrs" class="td-text-align-right">&#62;&#61;5 years</td>
+            <td id="total" class="td-text-align-right">Total</td>
+          </tr>
 
         <tr id="_1">
           <td class="td-text-align-right">1</td>
@@ -637,13 +651,16 @@ function getIndicators() {
                 }
               }
 
-              console.log("ls_fv: ", ls_fv)
-
               if (key1 == '<5yrs') {
-               ls_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+                ls_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+              // ls_fv.setAttribute('onclick','view_patientD(\''+storage_name+'\')')
+              // ls_fv.innerHTML = value1.length
               }
               if (key1 == '>=5yrs') {
-                grt_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+               //grt_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+               //grt_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
+              grt_fv.setAttribute('onclick','view_patientD(\''+storage_name+'\')')
+              grt_fv.innerHTML = value1.length
               }
             }
 
@@ -674,6 +691,7 @@ function getIndicators() {
 
       initializeTable();
       addHeader();
+      
       document.getElementById('spinner').style = 'display: none';
       document.getElementById('report-cover').style = 'display: none;';
       
@@ -786,8 +804,10 @@ function printWindow() {
   footer.style = 'display: inline;';
 }
 
+var table_1
+
 function initializeTable() {
-  table = $('#idsr_monthly').DataTable({
+  table_1 = table = $('#idsr_monthly').DataTable({
     fixedHeader: false,
     searching: false,
     scrollY: 825,
@@ -795,7 +815,7 @@ function initializeTable() {
     Processing: true,
     ServerSide: true,
     scroller: {
-    loadingIndicator: false
+    loadingIndicator: true
     },
     dom: 'Bfrtip',
     buttons: [
@@ -931,6 +951,23 @@ function dataTableContentLoader(name)
 }
 
 function addHeader() {
+  
+//   var systemVersions = `<tr style="display: none">
+//   <td class="td-text-align-right"></td>
+//   <td class="td-text-align-right" style="width: 30%;">hahahahah</td>
+//   <td id="ls-5ys" class="td-text-align-right"></td>
+//   <td id="grt-5yrs" class="td-text-align-right"></td>
+//   <td id="total" class="td-text-align-right"></td>
+// </tr>`
+
+//   //table.appendChild(systemVersions)
+//   table_1.destroy()
+//   initializeTable()
+//   $('#append-header').append(systemVersions)
+//  // initializeTable
+
+//  /////////////////////////////////////////////////////
+
   var header = `<tr>
           <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
           <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
