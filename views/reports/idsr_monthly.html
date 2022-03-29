@@ -233,7 +233,7 @@ table {
 }
 
 #idsr_monthly {
-  margin-bottom: 100px;
+  margin-bottom: -50px;
 }
 
 tr {
@@ -376,7 +376,7 @@ function showDisaggregatedReport(){
 }
 </script>
 
-<div id="content" style="margin-bottom: 65px;">
+<div id="content" style="margin-bottom: 100px;">
   <table>
     <tr id="">
       <td colspan="5" id="" style="border-right-style: solid; font-weight: bold; text-align: center;">MONTHLY DISEASE SURVEILLANCE REPORT</td>
@@ -408,10 +408,12 @@ function showDisaggregatedReport(){
            <th></th>
            <th></th>
            <th></th>
+           <th></th>
+           <th></th>
           </tr>
          </thead>
-        <tbody>
-        <tr>
+        <tbody id="append-header">
+        <!-- <tr>
           <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
           <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
         </tr>
@@ -419,7 +421,7 @@ function showDisaggregatedReport(){
           <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
           <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
           <td class="td-text-align-left td-span-width">Total</td>
-        </tr>
+        </tr> -->
 
         <tr id="_1">
           <td class="td-text-align-right">1</td>
@@ -670,7 +672,8 @@ function getIndicators() {
         }
       }
 
-      //initializeTable();
+      initializeTable();
+      addHeader();
       document.getElementById('spinner').style = 'display: none';
       document.getElementById('report-cover').style = 'display: none;';
       
@@ -787,11 +790,12 @@ function initializeTable() {
   table = $('#idsr_monthly').DataTable({
     fixedHeader: false,
     searching: false,
-    scrollY: 500,
+    scrollY: 825,
+    paging: false,
     Processing: true,
     ServerSide: true,
     scroller: {
-    loadingIndicator: true
+    loadingIndicator: false
     },
     dom: 'Bfrtip',
     buttons: [
@@ -924,6 +928,21 @@ function dataTableContentLoader(name)
     } catch (e) {
     }   
   }
+}
+
+function addHeader() {
+  var header = `<tr>
+          <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
+          <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
+        </tr>
+        <tr>
+          <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
+          <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
+          <td class="td-text-align-left td-span-width">Total</td>
+        </tr>`
+
+  $('#append-header').prepend(header)
+
 }
 
 function close_modal()
