@@ -562,9 +562,9 @@ function showDisaggregatedReport(){
     <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
       <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
     </button>
-    <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
+    <!-- <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
       <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
-    </button>
+    </button> -->
     <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
       <span>&nbsp; Export &nbsp;</span>
     </button>
@@ -840,6 +840,11 @@ document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
 
 function printWindow() {
+  var exportButtons = document.getElementsByClassName('dt-buttons')
+  for(var e of exportButtons) {
+    e.setAttribute('style','display: none')
+  }
+  //exportButtons.setAttribute('style','display: none')
   var items = document.getElementsByTagName("a");
   for (let e of items) {
     e.setAttribute("class", "")
@@ -851,6 +856,9 @@ function printWindow() {
     e.setAttribute("class", "rectangle_fab")
   }
   footer.style = 'display: inline;';
+  for(var e of exportButtons) {
+    e.setAttribute('style','display: block')
+  }
 }
 
 function initializeTable() {
@@ -867,7 +875,7 @@ function initializeTable() {
     },
     dom: 'Bfrtip',
     buttons: [
-    'csv', 'pdf'
+    'csv', 'pdf', 'print'
   ]
   });
 }
