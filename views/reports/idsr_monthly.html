@@ -322,7 +322,7 @@ td {
 
 td {
   padding-right: 15px;
-  text-align: right;
+  text-align: center;
 }
 
 #consistency_check div{
@@ -660,6 +660,7 @@ function getIndicators() {
                //grt_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
                //grt_fv.innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>'
               grt_fv.setAttribute('onclick','view_patientD(\''+storage_name+'\')')
+              grt_fv.setAttribute('class','grt_fv_drill')
               grt_fv.innerHTML = value1.length
               }
             }
@@ -688,10 +689,10 @@ function getIndicators() {
           sessionStorage.setItem(key+'total', total_ids);
         }
       }
-
-      initializeTable();
-      addHeader();
-      
+      addVersionControl()
+      initializeTable()
+      addButton()
+      addHeader()
       document.getElementById('spinner').style = 'display: none';
       document.getElementById('report-cover').style = 'display: none;';
       
@@ -700,13 +701,61 @@ function getIndicators() {
 
     } else if (this.readyState === 4) {
       runningReport = true;
-      //setTimeout(getIndicators, 10000);
     } else if (this.status == 500) {}
   };
   xhttp.open("GET", url, true);
   xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
   xhttp.setRequestHeader('Content-type', "application/json");
   xhttp.send();  
+}
+
+function addVersionControl() {
+  function getFormatedPeriod() {
+    var start_date = url.searchParams.get("start_date");
+    var end_date = url.searchParams.get("end_date");
+    var start_date_formated = moment(start_date).format('DD/MMM/YYYY');
+    var end_date_formated = moment(end_date).format('DD/MMM/YYYY');
+    var period = start_date_formated +"  -  "+ end_date_formated
+    return period;
+  }
+  var tr = document.getElementById('_16')
+  var tr_to_insert = document.createElement('tr')
+  tr_to_insert.setAttribute('style', 'display:none')
+  var td = document.createElement('td')
+  var td1 = document.createElement('td')
+  td1.innerHTML = "BHT-Core Version :"+sessionStorage.coreVersion+
+    "    OPD Version :"+sessionStorage.OPDVersion+
+    "    API Version :"+sessionStorage.apiVersion+
+    "    Report Period :"+getFormatedPeriod()+
+    "    Site :"+sessionStorage.currentLocation
+  var td2 = document.createElement('td')
+  var td3 = document.createElement('td')
+  var td4 = document.createElement('td')
+  tr_to_insert.append(td)
+  tr_to_insert.append(td1)
+  tr_to_insert.append(td2)
+  tr_to_insert.append(td3)
+  tr_to_insert.append(td4)
+  insertAfter(tr_to_insert, tr)
+}
+
+function insertAfter(newNode, existingNode) {
+  existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+}
+
+function addButton() {
+  var trs = document.getElementsByClassName('grt_fv_drill')
+
+  for(var e of trs) {
+    var anchor = document.createElement('a')
+    var value = e.innerHTML
+    e.innerHTML = ''
+    anchor.setAttribute('class','rectangle_fab')
+    anchor.setAttribute('href','#')
+    anchor.innerHTML = value
+    e.append(anchor)
+    
+  }
 }
 
 function getRegistration() {
@@ -804,14 +853,13 @@ function printWindow() {
   footer.style = 'display: inline;';
 }
 
-var table_1
-
 function initializeTable() {
-  table_1 = table = $('#idsr_monthly').DataTable({
+  table = $('#idsr_monthly').DataTable({
     fixedHeader: false,
     searching: false,
-    scrollY: 825,
+    scrollY: 880,
     paging: false,
+    aaSorting: [],
     Processing: true,
     ServerSide: true,
     scroller: {
@@ -819,7 +867,7 @@ function initializeTable() {
     },
     dom: 'Bfrtip',
     buttons: [
-    'copy', 'csv', 'pdf', 'print'
+    'csv', 'pdf'
   ]
   });
 }
@@ -951,23 +999,6 @@ function dataTableContentLoader(name)
 }
 
 function addHeader() {
-  
-//   var systemVersions = `<tr style="display: none">
-//   <td class="td-text-align-right"></td>
-//   <td class="td-text-align-right" style="width: 30%;">hahahahah</td>
-//   <td id="ls-5ys" class="td-text-align-right"></td>
-//   <td id="grt-5yrs" class="td-text-align-right"></td>
-//   <td id="total" class="td-text-align-right"></td>
-// </tr>`
-
-//   //table.appendChild(systemVersions)
-//   table_1.destroy()
-//   initializeTable()
-//   $('#append-header').append(systemVersions)
-//  // initializeTable
-
-//  /////////////////////////////////////////////////////
-
   var header = `<tr>
           <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
           <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
@@ -979,7 +1010,6 @@ function addHeader() {
         </tr>`
 
   $('#append-header').prepend(header)
-
 }
 
 function close_modal()
