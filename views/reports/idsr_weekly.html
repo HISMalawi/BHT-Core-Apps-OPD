@@ -75,6 +75,20 @@ td {
  border-left-style: none;
 }
 
+.dt-buttons {
+  margin: 0 20px 0;
+}
+
+#idsr_weekly {
+  width: 98% !important;
+  border-collapse: collapse !important;
+}
+
+#idsr_weekly_wrapper table.dataTable thead th, table.dataTable thead td {
+    padding: 10px 18px;
+    border-bottom: none !important;
+}
+
 .td-clear-right {
  border-right-style: none;
 }
@@ -230,7 +244,7 @@ table {
 }
 
 #idsr_weekly {
-  margin-bottom: 100px;
+  margin-bottom: -45px;
 }
 
 tr {
@@ -305,7 +319,7 @@ td {
 
 td {
   padding-right: 15px;
-  text-align: right;
+  text-align: center;
 }
 
 #consistency_check div{
@@ -373,7 +387,7 @@ var print_pdf_attr = {};
   <div id="adherence_consistency"></div>
 </div>
 
-<div id="content" style="margin-bottom: 65px;">
+<div id="content" style="margin-bottom: 100px;">
 
   <table>
   <tr id="">
@@ -401,15 +415,24 @@ var print_pdf_attr = {};
   </tr>
   <tr>
     <table id="idsr_weekly">
-  <tr>
-    <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
-    <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
-  </tr>
-  <tr>
-    <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
-    <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
-    <td class="td-text-align-left td-span-width">Total</td>
-  </tr>
+      <thead>
+        <tr>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+        </tr>
+       </thead>
+      <tbody id="append-header">
+
+        <tr style="display: none">
+          <td class="td-text-align-right"></td>
+          <td class="td-text-align-right" style="width: 30%;">Diseases/Events/Conditions</td>
+          <td id="ls-5ys" class="td-text-align-right">&#60;5 years</td>
+          <td id="grt-5yrs" class="td-text-align-right">&#62;&#61;5 years</td>
+          <td id="total" class="td-text-align-right">Total</td>
+        </tr>
 
   <tr id="_1">
     <td class="td-text-align-right" style="width: 5%;">1</td -->
@@ -574,6 +597,7 @@ var print_pdf_attr = {};
     <td id="grt-5yrs" class="td-text-align-right">0</td>
     <td id="total" class="td-text-align-right">0</td>
   </tr>
+  </tbody>
   </table>
 </tr>
 </table>
@@ -586,9 +610,9 @@ var print_pdf_attr = {};
     <button id="btnNext" class="green right" style="margin: 5px 0px 0px; padding: 0px; float: right;" onclick="location='/';">
       <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Finish &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</span>
     </button>
-    <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
+    <!-- <button id="activities" class="btn btn-success buttons blue" style="margin-right: 5px;" onmousedown="javascript:printWindow();">
       <span>&nbsp; &nbsp; &nbsp; Print &nbsp; &nbsp; &nbsp;</span>
-    </button>
+    </button> -->
     <button id="tasks" class="btn btn-success buttons blue" style="margin-right: 5px;"  onmousedown="">
       <span>&nbsp; Export &nbsp;</span>
     </button>
@@ -653,7 +677,10 @@ function getIndicators() {
           }
 
           if(value1.length != 0) {
-            row.children[count_for_clmns].innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
+            row.children[count_for_clmns].setAttribute('onclick','view_patientD(\''+storage_name+'\')')
+            row.children[count_for_clmns].setAttribute('class','grt_fv_drill')
+            row.children[count_for_clmns].innerHTML = value1.length
+           // row.children[count_for_clmns].innerHTML = '<a class="rectangle_fab" href="#" onclick="view_patientD(\''+storage_name+'\')">'+value1.length+'</a>';
             sessionStorage.setItem(storage_name, ids);
             total_ids += ids;
           }
@@ -692,6 +719,11 @@ function getIndicators() {
     })
 
     makeBlank(_blnk)
+    addVersionControl()
+    initializeTable()
+    addButton()
+    addHeader()
+    modifyEntriesNumber()
     document.getElementById('spinner').style = 'display: none';
     document.getElementById('report-cover').style = 'display: none;';
       
@@ -710,6 +742,69 @@ function getIndicators() {
   xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
   xhttp.setRequestHeader('Content-type', "application/json");
   xhttp.send();  
+}
+
+function addVersionControl() {
+  function getFormatedPeriod() {
+    var start_date = url.searchParams.get("start_date");
+    var end_date = url.searchParams.get("end_date");
+    var start_date_formated = moment(start_date).format('DD/MMM/YYYY');
+    var end_date_formated = moment(end_date).format('DD/MMM/YYYY');
+    var period = start_date_formated +"  -  "+ end_date_formated
+    return period;
+  }
+  var tr = document.getElementById('_23')
+  var tr_to_insert = document.createElement('tr')
+  tr_to_insert.setAttribute('style', 'display:none')
+  var td = document.createElement('td')
+  var td1 = document.createElement('td')
+  td1.innerHTML = "BHT-Core Version :"+sessionStorage.coreVersion+
+    "    OPD Version :"+sessionStorage.OPDVersion+
+    "    API Version :"+sessionStorage.apiVersion+
+    "    Report Period :"+getFormatedPeriod()+
+    "    Site :"+sessionStorage.currentLocation
+  var td2 = document.createElement('td')
+  var td3 = document.createElement('td')
+  var td4 = document.createElement('td')
+  tr_to_insert.append(td)
+  tr_to_insert.append(td1)
+  tr_to_insert.append(td2)
+  tr_to_insert.append(td3)
+  tr_to_insert.append(td4)
+  insertAfter(tr_to_insert, tr)
+}
+
+function addButton() {
+  var trs = document.getElementsByClassName('grt_fv_drill')
+
+  for(var e of trs) {
+    var anchor = document.createElement('a')
+    var value = e.innerHTML
+    e.innerHTML = ''
+    anchor.setAttribute('class','rectangle_fab')
+    anchor.setAttribute('href','#')
+    anchor.innerHTML = value
+    e.append(anchor)
+    
+  }
+}
+
+function insertAfter(newNode, existingNode) {
+  existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+}
+
+function addHeader() {
+  var header = `<tr>
+          <td rowspan="2" colspan="2" class="td-text-align-left">Diseases/Events/Conditions</td>
+          <td colspan="3" class="td-text-align-left" style="text-align: center;">Out-patient Cases</td>
+        </tr>
+        <tr>
+          <td class="td-text-align-left td-span-width">&#60;5 yrs</td>
+          <td class="td-text-align-left td-span-width">&#62;&#61;5 yrs</td>
+          <td class="td-text-align-left td-span-width">Total</td>
+        </tr>`
+
+  $('#append-header').prepend(header)
 }
 
 function getRegistration() {
@@ -791,6 +886,11 @@ document.getElementById('report-cover').style = 'display: inline;';
 getIndicators();
 
 function printWindow() {
+  var exportButtons = document.getElementsByClassName('dt-buttons')
+  for(var e of exportButtons) {
+    e.setAttribute('style','display: none')
+  }
+  //exportButtons.setAttribute('style','display: none')
   var items = document.getElementsByTagName("a");
   for (let e of items) {
     e.setAttribute("class", "")
@@ -802,20 +902,27 @@ function printWindow() {
     e.setAttribute("class", "rectangle_fab")
   }
   footer.style = 'display: inline;';
+  for(var e of exportButtons) {
+    e.setAttribute('style','display: block')
+  }
 }
 
 function initializeTable() {
-  table = $('#idsr_weekly').DataTable({       
-    scrollY: 300,
+  table = $('#idsr_weekly').DataTable({
+    fixedHeader: false,
+    searching: false,
+    scrollY: 1150,
+    paging: false,
+    aaSorting: [],
     Processing: true,
     ServerSide: true,
     scroller: {
-        loadingIndicator: true
+    loadingIndicator: true
     },
     dom: 'Bfrtip',
     buttons: [
-    'copy', 'csv', 'pdf', 'print'
-    ]
+    'csv', 'pdf', 'print'
+  ]
   });
 }
 
@@ -951,6 +1058,11 @@ function close_modal() {
   document.getElementById('modal').setAttribute('style','display:none');
   table.destroy();
   hide_keyboard();
+}
+
+function modifyEntriesNumber() {
+  var idsr_weekly_info = document.getElementById('idsr_weekly_info')
+  idsr_weekly_info.setAttribute('style','display:none')
 }
 
 function hide_keyboard() {
