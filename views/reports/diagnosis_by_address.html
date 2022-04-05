@@ -117,6 +117,11 @@
                 </thead>
                 <tbody>
                 </tbody>
+                <tfoot>
+                    <tr>
+                      <td id="footer-content"></td>
+                    </tr>
+                  </tfoot>
             </table>
         </div>
     </div>
@@ -144,6 +149,7 @@
 
     function buildReportingTable() {
         buildHeaders();
+        addFooterContent();
         initializeTable();
     }
 
@@ -176,8 +182,17 @@
             },
             dom: 'Bfrtip',
             buttons: [
-            'copy', 'csv', 'pdf', 'print'
-            ]
+                'copy',
+                {
+                extend: 'csv',
+                footer: true 
+                },
+                {
+                extend: 'pdf',
+                footer: true 
+                },
+                'print'
+            ],
         });
 
         lookForTag();
@@ -221,7 +236,7 @@
             data_table.destroy();
             initializeTable(); */
         }
-        addToCSV(data_table)
+        
     }
 
     function formatAddress(address) {
