@@ -693,6 +693,7 @@ function getIndicators() {
       initializeTable()
       addButton()
       addHeader()
+      modifyEntriesNumber()
       document.getElementById('spinner').style = 'display: none';
       document.getElementById('report-cover').style = 'display: none;';
       
@@ -1004,6 +1005,11 @@ function dataTableContentLoader(name)
     } catch (e) {
     }   
   }
+}
+
+function modifyEntriesNumber() {
+  var idsr_weekly_info = document.getElementById('idsr_monthly_info')
+  idsr_weekly_info.setAttribute('style','display:none')
 }
 
 function addHeader() {

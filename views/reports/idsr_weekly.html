@@ -723,6 +723,7 @@ function getIndicators() {
     initializeTable()
     addButton()
     addHeader()
+    modifyEntriesNumber()
     document.getElementById('spinner').style = 'display: none';
     document.getElementById('report-cover').style = 'display: none;';
       
@@ -1057,6 +1058,11 @@ function close_modal() {
   document.getElementById('modal').setAttribute('style','display:none');
   table.destroy();
   hide_keyboard();
+}
+
+function modifyEntriesNumber() {
+  var idsr_weekly_info = document.getElementById('idsr_weekly_info')
+  idsr_weekly_info.setAttribute('style','display:none')
 }
 
 function hide_keyboard() {
