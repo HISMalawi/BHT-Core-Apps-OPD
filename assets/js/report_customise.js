@@ -30,7 +30,6 @@ function toast() {
   var toast = document.getElementById('datatables_buttons_info')
   var button = document.getElementsByClassName('buttons-copy');
   button = button[0]
-  
   button.appendChild(toast)
   console.log({button})
 }
