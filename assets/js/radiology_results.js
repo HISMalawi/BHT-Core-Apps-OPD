@@ -79,6 +79,7 @@ function buildRadiologyOrderDisplay() {
 
     addCreateOrderBTN();
     fetchOrders();
+    getPACSLink();
 }
 
 function addCreateOrderBTN() {
@@ -127,7 +128,7 @@ function updateOrderTable(orders) {
             body_part,
             orderType,
             date_ordered, 
-            `<a href='#'>
+            `<a href='${pacsUrl}'>
                 <button class='button blue navButton'>
                     <span>View</span>
                 </button>
@@ -135,3 +136,20 @@ function updateOrderTable(orders) {
         ]).draw();
     }
 }
+
+let pacsUrl = ''
+function getPACSLink() {
+    jQuery.getJSON('/apps/OPD/application.json')
+    .done((configurations) => {
+        configurations.thirdpartyApps.forEach((application) => {
+            if (application.applicationName == 'pacs') {
+                pacsUrl = application.url
+            }
+        })
+    })
+    .fail((error) => {
+        console.error(error)
+        showMessage('There was an error bootstrapping the application.')
+    })
+}
+
