@@ -438,6 +438,11 @@
       <th  >Total</th>
     </tr>
   </thead>
+  <tfoot>
+    <tr>
+      <td id="footer-content"></td>
+    </tr>
+  </tfoot>
 </table>
 </div>
 <footer class="footer">
@@ -462,28 +467,37 @@ url = new URL(url);
 var start_date = url.searchParams.get("start_date");
 var end_date = url.searchParams.get("end_date");
 
-  function initializeTable(searching = true,paging = true, buttons = [ 'csv', 'pdf'], reload = false) {
-  table = $('#diagnosis_table').DataTable({
-    fixedHeader: false,
-    searching: true,
-    scrollX: 300,
-    scrolly: 300,
-    paging: true,
-    Processing: true,
-    ServerSide: true,
-    scroller: {
-        loadingIndicator: true
-    },
-    dom: 'Bfrtip',
-    buttons: buttons
-  });
+  function initializeTable(searching = true,paging = true, reload = false) {
+    table = $('#diagnosis_table').DataTable({
+      fixedHeader: false,
+      searching: true,
+      scrollX: 300,
+      scrolly: 300,
+      paging: false,
+      Processing: true,
+      ServerSide: true,
+      scroller: {
+          loadingIndicator: true
+      },
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'csv',
+          footer: true 
+        },
+        {
+          extend: 'pdf',
+          footer: true 
+        }
+      ],
+    });
 
-  if (reload == false) {
-    document.getElementById('spinner').style = 'display: block;';
-    document.getElementById('report-cover').style = 'display: block;';
-    fetchData();
-  }
-  lookForTag();
+    if (reload == false) {
+      document.getElementById('spinner').style = 'display: block;';
+      document.getElementById('report-cover').style = 'display: block;';
+      fetchData();
+    }
+    lookForTag();
 }
 
 var start_date = url.searchParams.get("start_date");
@@ -626,8 +640,8 @@ function renderDetails(diagnosisDetails){
   //fix for Exporting
   table.destroy();
   addReportTitle("OPD Diagnosis Report")
-  initializeTable(true,true,[ 'csv', 'pdf'], true);
-  addToCSV(table)
+  addFooterContent();
+  initializeTable(true,true, true);
 }
 
 var drill_down_patients = {}

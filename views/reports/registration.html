@@ -121,6 +121,11 @@ th {
   <div class='title-row'>
     <div id='data-cell'>
       <table id="report" class="display" style="width:100%">
+        <tfoot>
+          <tr>
+            <td id="footer-content"></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
@@ -189,6 +194,7 @@ function highLevelView() {
 
 function buildReportingTable() {
   buildHeaders();
+  addFooterContent();
   initializeTable();
 }
 
@@ -225,9 +231,18 @@ function initializeTable() {
       loadingIndicator: true
     },
     dom: 'Bfrtip',
-            buttons: [
-            'copy', 'csv', 'pdf', 'print'
-        ]
+    buttons: [
+        'copy',
+        {
+        extend: 'csv',
+        footer: true 
+        },
+        {
+        extend: 'pdf',
+        footer: true 
+        },
+        'print'
+    ]
   });
 
   lookForTag();
@@ -289,7 +304,6 @@ function loadData(data) {
     data_table.draw();
     table_data.push([visit_type, given_name, family_name, gender, birthdate, visit_date, address]);
   }
-  addToCSV(data_table)
 
 }
 

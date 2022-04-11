@@ -109,6 +109,11 @@
     <div class='title-row'>
         <div id='data-cell'>
             <table id="report" class="display" style="width:100%">
+                <tfoot>
+                    <tr>
+                      <td id="footer-content"></td>
+                    </tr>
+                  </tfoot>
             </table>
         </div>
     </div>
@@ -152,7 +157,7 @@
         for (var i = 0; i < headers.length; i++) {
             table_columns.push({title: headers[i]});
         }
-
+        addFooterContent();
         initializeTable();
         getData();
     }
@@ -171,7 +176,17 @@
             },
             dom: 'Bfrtip',  
             buttons: [
-            'copy', 'csv', 'pdf', 'print']
+                'copy',
+                {
+                extend: 'csv',
+                footer: true 
+                },
+                {
+                extend: 'pdf',
+                footer: true 
+                },
+                'print'
+            ]
         });
     }
 
@@ -224,7 +239,6 @@
             data_table.row.add([nid, given_name, family_name, gender, birthdate, visit_date, address]);
             data_table.draw();
         }
-        addToCSV(data_table)
     }
 
     buildReportingTable();
