@@ -127,7 +127,13 @@
 </div>
 
 <div>
-    <table id="example" class="display" width="100%"></table>
+    <table id="example" class="display" width="100%">
+        <tfoot>
+            <tr>
+              <td id="footer-content"></td>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 
 <div id="buttons" class="buttonsDiv">
@@ -175,7 +181,17 @@
             ], 
             dom: 'Bfrtip',  
             buttons: [
-            'copy', 'csv', 'pdf', 'print']
+                'copy',
+                {
+                extend: 'csv',
+                footer: true 
+                },
+                {
+                extend: 'pdf',
+                footer: true 
+                },
+                'print'
+            ]
         });
 
         lookForTag();
@@ -240,8 +256,8 @@
             dataSet.push(data_table_data);
         }
 
+        addFooterContent();
         initializeTable();
-        addToCSV(data_table);
         copyToast();
     }
 
