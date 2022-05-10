@@ -697,6 +697,17 @@ function initializePatienDetailsTable() {
   });
 }
 
+function getAge(dateString) {
+  var today = new Date();
+  var birthDate = new Date(dateString);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
+}
+
 function getPatientDetails(patient_id){
   let url = sessionStorage.apiProtocol + '://'+sessionStorage.apiURL+':'+sessionStorage.apiPort+'/api/v1/patient_details_by_id?';
   url +=   'patient_id='+patient_id;
@@ -724,6 +735,7 @@ function loadPatientDetail(data){
   patientDetails.push(one_person.names[0].given_name)
   patientDetails.push(one_person.names[0].family_name)
   patientDetails.push(one_person.gender)
+  patientDetails.push(getAge(one_person.birthdate))
   patientDetails.push(one_person.person_attributes[1].value)
   let addresses_obj = one_person.addresses[0]
   let address = addresses_obj.state_province +", "+ addresses_obj.city_village +", "+ addresses_obj.address1
@@ -806,6 +818,7 @@ function getClientbyID(person_id) {
                                 <th class="sorting_patient">Firstname</th>
                                 <th class="sorting_patient">Surname</th>
                                 <th class="sorting_patient">Gender</th>
+                                <th class="sorting_patient">Age</th>
                                 <th class="sorting_patient">Phone Number</th>
                                 <th class="sorting_patient">Address</th>
                             </tr>
