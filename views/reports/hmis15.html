@@ -739,6 +739,17 @@ function view_patientD(name)
   dataTableContentLoader(name);
 }
 
+function getAge(dateString) {
+  var today = new Date();
+  var birthDate = new Date(dateString);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
+}
+
 function dataTableContentLoader(name){   
   var period;  
   IDsArray = sessionStorage.getItem(name);
@@ -759,8 +770,8 @@ function dataTableContentLoader(name){
           if (this.status == 200) {
               progressTracker++;
               var results = JSON.parse(this.responseText);
-              var one_person = results.person
-              let addresses_obj = one_person.addresses[0]
+              var _person = results.person
+              let addresses_obj = _person.addresses[0]
               let address = addresses_obj.state_province +", "+ addresses_obj.city_village +", "+ addresses_obj.address1
 
               var tr = document.createElement('tr');
@@ -768,27 +779,32 @@ function dataTableContentLoader(name){
 
               var td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = one_person.person_id;
+              td.innerHTML = _person.person_id;
               tr.appendChild(td);
 
               td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = one_person.names[0].given_name;
+              td.innerHTML = _person.names[0].given_name;
               tr.appendChild(td);
 
               var td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = one_person.names[0].family_name;
+              td.innerHTML = _person.names[0].family_name;
               tr.appendChild(td);
 
               td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = one_person.gender;
+              td.innerHTML = _person.gender;
               tr.appendChild(td);
 
               td = document.createElement('td');
               td.setAttribute("class","td-text-align-left");
-              td.innerHTML = one_person.person_attributes[1].value;
+              td.innerHTML = getAge(_person.birthdate);
+              tr.appendChild(td);
+
+              td = document.createElement('td');
+              td.setAttribute("class","td-text-align-left");
+              td.innerHTML = _person.person_attributes[1].value;
               tr.appendChild(td);
               
               td = document.createElement('td');
@@ -851,6 +867,7 @@ addReportTitle("New Cases (OPD plus inpatient)");
                     <th class="sorting_patient">Firstname</th>
                     <th class="sorting_patient">Surname</th>
                     <th class="sorting_patient">Gender</th>
+                    <th class="sorting_patient">Age</th>
                     <th class="sorting_patient">Phone Number</th>
                     <th class="sorting_patient">Address</th>
                   </tr>
