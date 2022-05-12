@@ -76,6 +76,16 @@
     } 
     btn.setAttribute("onmousedown",`document.location='/views/patient_dashboard.html?patient_id=${sessionStorage.patientID}'`);
   }
+  function viewRadiologyButton(){
+    var nextButton = document.getElementById('clearButton');
+    nextButton.setAttribute('Style','display:block')
+    nextButton.innerHTML = "<span>View Radiology</span>"
+    nextButton.setAttribute('onmousedown','redirectToPacs();');
+    nextButton.append(btn)
+  }
+  function redirectToPacs(){
+    window.location.replace(pacsUrl);
+  }
 </script>
 
 <body id="mateme">
@@ -86,7 +96,7 @@
       <form>
 
         <input type="text" name="summary"
-          tt_onLoad="__$('keyboard').style.display = 'none';buildRadiologyOrderDisplay();configFinishBTN();" 
+          tt_onLoad="__$('keyboard').style.display = 'none';buildRadiologyOrderDisplay();viewRadiologyButton();configFinishBTN();" 
           tt_pageStyleClass= "NoControls" helpText="Radiology Results" optional = "true"/>
 
       
