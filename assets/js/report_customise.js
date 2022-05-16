@@ -33,3 +33,25 @@ function toast() {
   button.appendChild(toast)
   console.log({button})
 }
+
+function resolvePhone(attributes) {
+  let number
+  let other
+  if (attributes.length > 0) {
+      for(const attribute of attributes) {
+          if (parseInt(attribute.value)) {
+              if (this.isEmpty(number)) {
+                  number = attribute.value
+              } else
+              number+=' '+attribute.value
+          }
+          other = attribute.value
+      }
+      if(!isEmpty(number)) {
+          return number
+      } else return other
+  } else return 'N/A'
+}
+function isEmpty(val){
+return (val === undefined || val == null || val.length <= 0) ? true : false;
+}
