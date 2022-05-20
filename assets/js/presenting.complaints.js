@@ -218,7 +218,7 @@ function buildTriageComplaints() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
       
       data = JSON.parse(this.responseText);
-      if((data.length > 0)) {
+      if((data.length > 0 & typeof(data) != "undefined")) {
         data = data.filter((el) => {
           return el.type.name == "TRIAGE PRESENTING COMPLAINTS" && sessionStorage.sessionDate == moment(el.encounter_datetime).format('YYYY-MM-DD')
           })
