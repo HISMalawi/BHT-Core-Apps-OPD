@@ -57,13 +57,10 @@
 #cancelButton {
   display: none;
 }
-
 </style>
-
 <script type="text/javascript">
   var patient_id = sessionStorage.patientID;
   var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patient_id;
-
   function configFinishBTN(){
     let btn = __$('nextButton');
     if (sessionStorage.MiniWorkFlow == "true") {
@@ -76,23 +73,25 @@
     } 
     btn.setAttribute("onmousedown",`document.location='/views/patient_dashboard.html?patient_id=${sessionStorage.patientID}'`);
   }
+  function viewRadiologyButton(){
+    var nextButton = document.getElementById('clearButton');
+    nextButton.setAttribute('Style','display:block')
+    nextButton.innerHTML = "<span>View Radiology</span>"
+    nextButton.setAttribute('onmousedown','redirectToPacs();');
+    nextButton.append(btn)
+  }
+  function redirectToPacs(){
+    window.location.replace(pacsUrl);
+  }
 </script>
-
 <body id="mateme">
   <div id="container">
     <div id="content">
-
-
       <form>
-
         <input type="text" name="summary"
-          tt_onLoad="__$('keyboard').style.display = 'none';buildRadiologyOrderDisplay();configFinishBTN();" 
+          tt_onLoad="__$('keyboard').style.display = 'none';buildRadiologyOrderDisplay();configFinishBTN();viewRadiologyButton();" 
           tt_pageStyleClass= "NoControls" helpText="Radiology Results" optional = "true"/>
-
-      
-
       </form>
-
    </div>
  </div>
 </body>

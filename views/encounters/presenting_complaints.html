@@ -57,6 +57,30 @@ top: 330px !important;
 margin-right: 8px;
 font-size: 20px;
 }
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: x-large;
+  line-height: 2;
+}
+
+.summary-table th {
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  text-align: left;
+  padding-left: 5px 0px 10px 0px;
+  width: 20%;
+  height: 30px;
+}
+
+.summary-table td {
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  text-align: left;
+  padding-left: 5px 0px 10px 0px;
+  height: 30px;
+}
 body {
   -webkit-overflow-scrolling: touch; /* Lets it scroll lazy */
 }
@@ -73,33 +97,22 @@ function changeNextButton() {
   var nextButton = document.getElementById('nextButton');
   nextButton.setAttribute('onmousedown','prepareToSave();');
 }
-
 </script>
 
 <body id="mateme">
   <div  id="page-cover"></div>
   <div id="container">
     <div id="content">
-      
       <form>
-        <!--input type="text" name="summary"
-          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildPresentaingComplaints('Presenting complaint');buildOrderButton()"
-          tt_pageStyleClass= "NoControls" helpText="Presenting complaints" optional = "true"/-->
+        <input type="text" name="summary" id="triage_summary"
+        tt_onLoad="__$('keyboard').style.display = 'none';__$('clearButton').style.display = 'none';buildTriageComplaints();"
+        tt_pageStyleClass= "NoControls" helpText="Triage complaints summary" optional = "true"/>
 
-        <input type="text" name="summary"
-          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildPresentaingComplaints('Presenting complaint'); build_search_field(); buildOrderButton()"
-          tt_pageStyleClass= "NoControls" helpText="Presenting complaints" optional = "true"/>
-
-        <!--input type="text" name="summary"
-          tt_onLoad="__$('keyboard').style.display = 'none';changeNextButton();buildPresentaingComplaints('Specific presenting complaint');"
-          tt_pageStyleClass= "NoControls" helpText="Specific presenting complaints" optional = "true"/-->
-
-
-
+        <input type="text" name="summary" id="complaints_summary"
+          tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildPresentaingComplaints('Presenting complaint');"
+          tt_pageStyleClass= "NoControls" helpText="Presenting complaints"/>
       </form>
-
    </div>
  </div>
-
 </body>
 

@@ -18,7 +18,7 @@ function insertAfter(newNode, existingNode) {
 }
 
 function build_search_field() {
-  var helpText0 = document.getElementById('helpText0');
+  var helpText0 = document.getElementById('helpText1');
   var search_content = document.createElement('div');
   search_content.setAttribute('id','search_content');
 
@@ -194,22 +194,76 @@ function buildPresentaingComplaints(type_of_complaint) {
   var frame = document.getElementById('inputFrame' + tstCurrentPage);
   frame.style = 'height: 90%; display: flex';
   frame.innerHTML = null;
-  getPresentingComplaints(type_of_complaint);
+  getPresentingComplaints(type_of_complaint,"true");
   var clearButton = document.getElementById('clearButton');
   clearButton.setAttribute('onmousedown',"clearSelection('" + type_of_complaint + "');");
+  build_search_field();
+  buildOrderButton();
+}
+
+function buildTriageComplaints() {
+  var alredyCreatedOrderButton = document.getElementById('orderButton');
+  if (alredyCreatedOrderButton != null) {
+    alredyCreatedOrderButton.remove()
+  }
+  if (sessionStorage.saveState == "true") {
+    gotoNextPage()
+  } else {
+    var page_cover = document.getElementById("page-cover");
+    page_cover.style = "display: block;";
+    getPresentingComplaints("Presenting complaint","false")
+    var obsUrl = `${apiProtocol}://${apiURL}:${apiPort}/api/v1/encounters?patient_id=${sessionStorage.patientID}&${sessionStorage.programID}&${sessionStorage.sessionDate}&paginate=false`;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      
+      data = JSON.parse(this.responseText);
+      if((data.length > 0 & typeof(data) != "undefined")) {
+        data = data.filter((el) => {
+          return el.type.name == "TRIAGE PRESENTING COMPLAINTS" && sessionStorage.sessionDate == moment(el.encounter_datetime).format('YYYY-MM-DD')
+          })
+
+        if(typeof(data[0]) != "undefined") {
+          ReEncounter = 'false'
+          let __complaints = []
+          for (observations of data[0].observations) {
+            if (observations.concept_id == '8578') {
+              __complaints.push({
+                "concept_id": observations.concept_id,
+                "group_name": observations.value_text
+              })
+            } else {
+              __complaints.push({
+                "concept_id": observations.concept_id,
+                "complaint_name": observations.value_text
+              })
+            }
+          }
+          getIdByMapping(groupPushedComplaints(__complaints))
+        } else {
+          gotoNextPage()
+          page_cover.style = "display: none;"
+          var nextButton = document.getElementById('backButton')
+          nextButton.style = "display: none;"
+        }
+      }
+    }
+    };
+    xhttp.open("GET", obsUrl, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
+  }
 }
 
 function buildOrderButton() {
-  const navButton = document.getElementById('buttons');
-  const orderButton = document.createElement('button');
-
+  var navButton = document.getElementById('buttons');
+  var orderButton = document.createElement('button');
   orderButton.setAttribute('id','orderButton');
   orderButton.setAttribute('class','blue button navButton');
   orderButton.setAttribute('selected','false');
-  
   orderButton.innerHTML = '<span>Orders</span>';
   orderButton.setAttribute('onmousedown','ordersPopupModal()');
-
   navButton.appendChild(orderButton);
 }
 
@@ -524,7 +578,7 @@ function removeFromHash(key, concept_id) {
   }
 }
 
-function getPresentingComplaints(type_of_complaint) {
+function getPresentingComplaints(type_of_complaint, buildPage) {
   var complaint_concept_set = {};
   complaint_concept_set['Specific presenting complaint'] = 8677;
   complaint_concept_set['Presenting complaint'] = 10319;
@@ -536,10 +590,10 @@ function getPresentingComplaints(type_of_complaint) {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       var objs = JSON.parse(this.responseText);
-     presentingComplaints(objs, type_of_complaint);
-     _concept_set = objs;
-
-     checkFor()
+      
+      if(buildPage == "true")
+      presentingComplaints(objs, type_of_complaint);
+      _concept_set = objs;
     }
   };
   xhttp.open("GET", (url + "?id=" + concept_set + "&name="), true);
@@ -841,15 +895,12 @@ function setOrdersMiniWorkFlow() {
     showMessage('No selection made. Please select one or more');
     return;
   }
-
   if( _selected.radiology == 'true' && _selected.lab == 'false') {
     redirection('radiology');
   }
-
   if( _selected.radiology == 'false' && _selected.lab == 'true') {
     redirection('lab');
   }
-
   if ( _selected.radiology == 'true' && _selected.lab == 'true') {
     setMiniWorkFlowAction();
   }
@@ -864,10 +915,8 @@ function setPageState() {
   let page = document.getElementById('ts');
   localStorage.setItem("page_html", page.outerHTML);
   sessionStorage.setItem("saveState", "true");
-
   let selectedHash = JSON.stringify(presentingComplaintsNameHash);
   let encounterHash = JSON.stringify(presentingComplaintsHash['Presenting complaint']);
-
   sessionStorage.setItem('presentingComplaintsNameHash',selectedHash);
   sessionStorage.setItem('presentingComplaintsHash',encounterHash);
 }
@@ -881,44 +930,6 @@ function closeOrdersPopupModal() {
   main_container.remove();
 }
 
-function checkFor() {
-  let id = sessionStorage.patientID;
-  let value = sessionStorage.sessionDate;
-  var url = sessionStorage.apiProtocol + '://' + apiURL + ':' + apiPort + '/api/v1/encounters?paginate=false&patient_id=' + id + '&date=' + value+'&program_id='+sessionStorage.programID;
-  var req = new XMLHttpRequest();;
-  req.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      var results = JSON.parse(this.responseText);
-      for(encounter of results) {
-        if (encounter.encounter_type == '122') {
-          ReEncounter = 'true'
-          let __complaints = []
-          for (observations of encounter.observations) {
-            if (observations.concept_id == '8578') {
-              __complaints.push({
-                "concept_id": observations.concept_id,
-                "group_name": observations.value_text
-              })
-            } else {
-              __complaints.push({
-                "concept_id": observations.concept_id,
-                "complaint_name": observations.value_text
-              })
-            }
-          }
-          getIdByMapping(groupPushedComplaints(__complaints))
-        }
-      }
-    }
-  };
-  try {
-      req.open('GET', url, true);
-      req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
-      req.send(null);
-  } catch (e) {
-  }
-}
-
 function getIdByMapping(_groupPushedComplaints) {
   let ids = []
   for (group of _groupPushedComplaints.entries()) {
@@ -930,14 +941,14 @@ function getIdByMapping(_groupPushedComplaints) {
          }
         for(_group of _concept_set) {
           if(_group.group == _complaint.group_name) {
-            console.log('group: ', _group.group)
             for (__complaints of _group.complaints) {
               for (_name of names) {
                 if (__complaints.name == _name) {
 
                   ids.push({
                     'group_name' : _group.group,
-                    'complaint_id' : __complaints.concept_id
+                    'complaint_id' : __complaints.concept_id,
+                    'complaint_name': __complaints.name
                   })
                 }
               }
@@ -947,50 +958,42 @@ function getIdByMapping(_groupPushedComplaints) {
       }
     }
   }
-
-  selectComplaintsFromPrevious(ids)
+  var output = [];
+  ids.forEach(function(item) {
+    var existing = output.filter(function(v, i) {
+      return v.group_name == item.group_name;
+    });
+    if (existing.length) {
+      var existingIndex = output.indexOf(existing[0]);
+      output[existingIndex].complaint_name = output[existingIndex].complaint_name.concat(item.complaint_name);
+    } else {
+      if (typeof item.complaint_name == 'string')
+        item.complaint_name = [item.complaint_name];
+      output.push(item);
+    }
+  });
+  //console.dir(output);
+  summaryView(output)
 }
 
-function selectComplaintsFromPrevious(_ids = []) {
-  for (id of _ids) {
-
-    let groupSelected = document.getElementById('list-'+id.group_name);
-    let groupSelectedToHighlight = document.getElementById(id.group_name);
-
-    for (g=0; g<groupSelected.children.length; g++) {
-      for (var _g=0; _g<groupSelected.children[g].children.length; _g++) {
-        if (id.complaint_id == groupSelected.children[g].children[_g].getAttribute('id')) {
-          let e = groupSelected.children[g].children[_g]
-          let type_of_complaint = e.getAttribute('complaint-type');
-          let childNodes = e.parentElement.parentElement.childNodes;
-
-          if(e.getAttribute('selected') == 'false'){
-            if(e.innerHTML.toUpperCase() == 'NONE'){
-              deSelectAll(type_of_complaint);
-            }else{
-              deSelectNone(type_of_complaint)
-            }
-            e.setAttribute('selected', 'true');
-            e.style = 'background-color: lightblue;';
-            //addToHash(type_of_complaint, e.getAttribute('concept_id'));
-            selectedComplaints(e);
-            document.getElementById('selected_complaints_main_container').setAttribute('class','selected_complaints_main_container_class');
-            e.style = 'background-color: #ccc;';
-            e.setAttribute('onmousedown','');
-            //addToNameHash(e.getAttribute('group_concept_id')+';'+e.getAttribute('name')+';'+e.getAttribute('group_name'));
-            for (var i =0; i < childNodes.length; i++ ) {
-              for (var j=0; j < childNodes[i].childNodes.length; j++) {
-                if ( childNodes[i].childNodes[j].getAttribute('selected') == 'true') {
-                  groupSelectedToHighlight.setAttribute('selected', 'true');
-                  groupSelectedToHighlight.style = 'background-color: #aaaaf4 !important;';
-                }
-              }
-            }   
-          }
-        }
-      }
-    }
+function summaryView(complaints) {
+  var table = document.createElement('table');
+  table.setAttribute('class','summary-table');
+  for(var el of complaints){
+    var row = document.createElement('tr');
+    row.setAttribute('class','summary-table-row');
+    table.appendChild(row);
+    var th = document.createElement('th');
+    th.innerHTML = el.group_name;
+    row.appendChild(th);
+    var td = document.createElement('td');
+    td.innerHTML = el.complaint_name;   
+    row.appendChild(td);
   }
+  var f = document.getElementById('inputFrame' + tstCurrentPage);
+  f.appendChild(table);
+  let page_cover = document.getElementById("page-cover");
+  page_cover.style = "display: none;";
 }
 
 function groupPushedComplaints(pushedComplaints) {
@@ -1000,19 +1003,16 @@ function groupPushedComplaints(pushedComplaints) {
   let groupedComplaints = [];
   let complaint_names = [];
   let _last_group_ame;
-
   for ([count, __complaint] of pushedComplaints.entries()) {
     if (temp_group_name == null) {
       //initial group_name
       temp_group_name = __complaint.group_name;
       group_concept_id = __complaint.concept_id
     }
-
     //setting last group name
     if (typeof(__complaint.group_name) != "undefined") {
       _last_group_ame = __complaint.group_name;
     }
-
     if (typeof(__complaint.group_name) != "undefined") {
       if (temp_group_name != __complaint.group_name) {
         groupedComplaints.push({
@@ -1020,19 +1020,16 @@ function groupPushedComplaints(pushedComplaints) {
           "concept_id": group_concept_id,
           "complaints_name": complaint_names
         });
-
         complaint_names = [];
         temp_group_name = __complaint.group_name;
       }
     }
-
     //grouping complaints names
     if(typeof(__complaint.complaint_name) != "undefined")
     complaint_names.push({
       "complaint_name": __complaint.complaint_name,
       "concept_id": __complaint.concept_id,
     })
-
     //pushing the last group item
     if (count == pushedComplaints.length - 1) {
       groupedComplaints.push({
