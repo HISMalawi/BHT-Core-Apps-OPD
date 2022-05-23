@@ -97,14 +97,12 @@ function changeNextButton() {
   var nextButton = document.getElementById('nextButton');
   nextButton.setAttribute('onmousedown','prepareToSave();');
 }
-
 </script>
 
 <body id="mateme">
   <div  id="page-cover"></div>
   <div id="container">
     <div id="content">
-      
       <form>
         <input type="text" name="summary" id="triage_summary"
         tt_onLoad="__$('keyboard').style.display = 'none';__$('clearButton').style.display = 'none';buildTriageComplaints();"
@@ -114,9 +112,7 @@ function changeNextButton() {
           tt_onLoad="changeNextButton();__$('keyboard').style.display = 'none';buildPresentaingComplaints('Presenting complaint');"
           tt_pageStyleClass= "NoControls" helpText="Presenting complaints"/>
       </form>
-
    </div>
  </div>
-
 </body>
 
