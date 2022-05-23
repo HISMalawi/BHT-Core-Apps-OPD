@@ -140,7 +140,7 @@ function postDrugOrders(encounter) {
       for (selected_drug in selectedDrugs)
       {
             
-          var dosage = parseInt(__$("row_dosage_" + selected_drug).innerHTML);
+          var dosage = parseFloat(__$("row_dosage_" + selected_drug).innerHTML);
 
           var frequency = __$("row_frequency_" + selected_drug).innerHTML;
           var duration = parseInt(__$("row_duration_" + selected_drug).innerHTML);
