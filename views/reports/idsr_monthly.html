@@ -996,7 +996,7 @@ function dataTableContentLoader(name)
 
           td = document.createElement('td');
           td.setAttribute("class","td-text-align-left");
-          td.innerHTML = _person.person_attributes[1].value;
+          td.innerHTML = resolvePhone(_person.person_attributes);
           tr.appendChild(td);
           
           td = document.createElement('td');
